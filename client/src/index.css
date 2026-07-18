@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-maroon-50: #faf0f2;
+  --color-maroon-100: #f5e1e5;
+  --color-maroon-200: #ebc3cb;
+  --color-maroon-300: #dca3ae;
+  --color-maroon-400: #c67484;
+  --color-maroon-500: #b04d60;
+  --color-maroon-600: #93384a;
+  --color-maroon-700: #7b2939; /* Brand core maroon - monk robe colors */
+  --color-maroon-800: #662430;
+  --color-maroon-900: #55212a;
+  --color-maroon-950: #300f13;
+
+  --color-saffron-50: #fff9eb;
+  --color-saffron-100: #ffedd4;
+  --color-saffron-200: #ffd8a8;
+  --color-saffron-300: #ffbd70;
+  --color-saffron-400: #ff9b37;
+  --color-saffron-500: #ff9f00; /* Brand core saffron - monk robe colors */
+  --color-saffron-600: #cc7a00;
+  --color-saffron-700: #995c00;
+  --color-saffron-800: #734500;
+  --color-saffron-900: #4d2e00;
+  --color-saffron-950: #261700;
+
+  --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Custom premium scrollbar and smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+}
+
+body {
+  background-color: #faf9f6; /* Premium soft cream background */
+  color: #1c1917; /* Dark stone color for text readability */
+}
+
+/* Glassmorphism utility classes */
+.glass-nav {
+  background: rgba(250, 249, 246, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(123, 41, 57, 0.08);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(123, 41, 57, 0.05);
+}
+
+/* Micro-animations and hover transitions */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -8px rgba(123, 41, 57, 0.15);
+}
