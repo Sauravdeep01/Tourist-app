@@ -1,0 +1,22 @@
+const express = require('express');
+const {
+  getActiveTours,
+  getTourBySlug,
+  createTour,
+  updateTour,
+  deleteTour,
+} = require('../controllers/tourController');
+const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
+
+const router = express.Router();
+
+// Public routes
+router.get('/', getActiveTours);
+router.get('/:slug', getTourBySlug);
+
+// Protected routes
+router.post('/', requireAuth, requireRole('admin'), createTour);
+router.put('/:id', requireAuth, requireRole('owner'), updateTour);
+router.delete('/:id', requireAuth, requireRole('admin'), deleteTour);
+
+module.exports = router;

@@ -1,0 +1,97 @@
+const mongoose = require('mongoose');
+
+// Helper for bilingual fields
+const bilingualSchema = {
+  en: { type: String, default: '' },
+  zh: { type: String, default: '' },
+};
+
+// Activity sub-schema
+const activitySchema = new mongoose.Schema({
+  category: bilingualSchema,
+  description: bilingualSchema,
+}, { _id: false });
+
+// Daily Itinerary sub-schema
+const itineraryDaySchema = new mongoose.Schema({
+  day: { type: Number, required: true },
+  title: bilingualSchema,
+  activities: [activitySchema],
+  accommodationCity: bilingualSchema,
+  meals: bilingualSchema,
+}, { _id: false });
+
+// Hotels sub-schema
+const hotelSchema = new mongoose.Schema({
+  city: bilingualSchema,
+  nights: { type: Number, required: true },
+  hotelName: bilingualSchema,
+}, { _id: false });
+
+// Pricing & Supplement items
+const priceItemSchema = new mongoose.Schema({
+  label: bilingualSchema,
+  amount: bilingualSchema,
+}, { _id: false });
+
+// Inclusions / Exclusions items
+const inclusionItemSchema = new mongoose.Schema({
+  item: bilingualSchema,
+  details: bilingualSchema,
+}, { _id: false });
+
+const tourSchema = new mongoose.Schema(
+  {
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    title: bilingualSchema,
+    subtitle: bilingualSchema,
+    overview: bilingualSchema,
+    days: {
+      type: Number,
+      required: true,
+    },
+    nights: {
+      type: Number,
+      required: true,
+    },
+    itinerary: [itineraryDaySchema],
+    hotels: [hotelSchema],
+    hotelCategory: bilingualSchema,
+    pricing: [priceItemSchema],
+    supplements: [priceItemSchema],
+    priceFrom: {
+      type: Number,
+      default: null, // Omitted means "Price on request"
+    },
+    includes: [inclusionItemSchema],
+    excludes: [inclusionItemSchema],
+    notes: [bilingualSchema], // Array of bilingual notes/disclaimers
+    coverImage: {
+      type: String,
+      default: '',
+    },
+    images: {
+      type: [String],
+      default: [],
+    },
+    validFrom: bilingualSchema,
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model('Tour', tourSchema);

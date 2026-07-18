@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment secrets (DB URI, JWT secret, seed credentials, SMTP)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+*.log
+
+# Key/cert files
+*.pem
+*.key
+*.pfx
+*.p12
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
