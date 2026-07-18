@@ -6,12 +6,12 @@ const {
   updateInquiry,
   deleteInquiry,
 } = require('../controllers/inquiryController');
-const { requireAuth, requireRole, optionalAuth } = require('../middlewares/authMiddleware');
+const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// Public submission route (processes token optionally if user is logged in)
-router.post('/', optionalAuth, createInquiry);
+// Submission requires a logged-in tourist account (C-6) — every inquiry is tied to a registered user
+router.post('/', requireAuth, createInquiry);
 
 // Tourist specific routes
 router.get('/mine', requireAuth, requireRole('user'), getMyInquiries);

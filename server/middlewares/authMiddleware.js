@@ -50,27 +50,7 @@ const requireRole = (minRole) => {
   };
 };
 
-// Optional auth to attach user if JWT exists, but let guest requests proceed
-const optionalAuth = async (req, res, next) => {
-  const { authorization } = req.headers;
-
-  if (authorization && authorization.startsWith('Bearer ')) {
-    const token = authorization.split(' ')[1];
-    try {
-      const { id } = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(id).select('_id email role active');
-      if (user && user.active) {
-        req.user = user;
-      }
-    } catch (error) {
-      // Ignore token decoding issues for guests
-    }
-  }
-  next();
-};
-
 module.exports = {
   requireAuth,
   requireRole,
-  optionalAuth,
 };

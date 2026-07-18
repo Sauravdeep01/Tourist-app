@@ -36,7 +36,7 @@ const inquirySchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      default: null, // Set if inquiry is sent by a logged-in tourist
+      required: true, // Every inquiry must be tied to a registered tourist account (C-6)
     },
     tourTitle: {
       type: String,

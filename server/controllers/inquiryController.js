@@ -41,7 +41,7 @@ const createInquiry = async (req, res) => {
       wechatId: wechatId || '',
       country: req.body.country || 'China',
       tour: confirmedTourId,
-      user: req.user ? req.user.id : null, // Set if user is logged in
+      user: req.user.id, // Guaranteed present — requireAuth rejects unauthenticated requests (C-6)
       tourTitle,
       groupSize: groupSize || 1,
       travelDate: travelDate || '',
