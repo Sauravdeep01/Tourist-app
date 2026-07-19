@@ -14,8 +14,21 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS middleware configurations
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+].filter(Boolean);
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy error: Origin not allowed'));
+    }
+  },
   credentials: true,
 };
 app.use(cors(corsOptions));
