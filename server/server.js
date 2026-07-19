@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 // Route modules
@@ -16,6 +17,30 @@ const PORT = process.env.PORT || 5000;
 
 // Security HTTP headers
 app.use(helmet());
+
+// Rate Limiting Configurations
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 300, // Limit each IP to 300 requests per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests from this IP, please try again after 15 minutes.' },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // Limit each IP to 30 auth requests per 15 minutes (protects against brute-force attacks)
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many authentication attempts from this IP, please try again after 15 minutes.' },
+});
+
+// Apply global rate limiting to all /api routes
+app.use('/api', apiLimiter);
+
+// Apply strict rate limiting to authentication routes
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/signup', authLimiter);
 
 // CORS middleware configurations
 const allowedOrigins = [
