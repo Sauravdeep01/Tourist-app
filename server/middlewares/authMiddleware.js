@@ -15,7 +15,7 @@ const requireAuth = async (req, res, next) => {
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
     
     // Fetch user and make sure they are active
-    const user = await User.findById(id).select('_id email role active');
+    const user = await User.findById(id).select('_id email role active emailVerified');
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
@@ -28,6 +28,20 @@ const requireAuth = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({ error: 'Request is not authorized' });
   }
+};
+
+// Rejects accounts whose email is not yet OTP-verified (§3.7a). In practice
+// login already refuses to issue a token to an unverified account, so this
+// is defense-in-depth for any future auth path (e.g. a token minted before
+// verification completed).
+const requireVerified = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  if (!req.user.emailVerified) {
+    return res.status(403).json({ error: 'Please verify your email first', code: 'EMAIL_NOT_VERIFIED' });
+  }
+  next();
 };
 
 // Middleware to check minimum role required
@@ -53,4 +67,5 @@ const requireRole = (minRole) => {
 module.exports = {
   requireAuth,
   requireRole,
+  requireVerified,
 };

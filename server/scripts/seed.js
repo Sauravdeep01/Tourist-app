@@ -66,10 +66,17 @@ const seedDatabase = async () => {
         passwordHash,
         role: 'admin',
         active: true,
+        emailVerified: true, // seeded accounts bypass the OTP flow
       });
       console.log(`Admin account created: ${adminEmail}`);
     } else {
-      console.log('Admin account already exists, skipping.');
+      if (!adminExists.emailVerified) {
+        adminExists.emailVerified = true;
+        await adminExists.save();
+        console.log('Admin account already exists — marked as verified (v1.5 migration).');
+      } else {
+        console.log('Admin account already exists, skipping.');
+      }
     }
 
     // Seed Owner
@@ -83,10 +90,17 @@ const seedDatabase = async () => {
         passwordHash,
         role: 'owner',
         active: true,
+        emailVerified: true, // seeded accounts bypass the OTP flow
       });
       console.log(`Owner account created: ${ownerEmail}`);
     } else {
-      console.log('Owner account already exists, skipping.');
+      if (!ownerExists.emailVerified) {
+        ownerExists.emailVerified = true;
+        await ownerExists.save();
+        console.log('Owner account already exists — marked as verified (v1.5 migration).');
+      } else {
+        console.log('Owner account already exists, skipping.');
+      }
     }
 
     // 3. Seed Tour Packages (Bilingual)

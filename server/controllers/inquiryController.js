@@ -5,20 +5,10 @@ const { sendInquiryEmail } = require('../utils/email');
 // Submit quote / booking inquiry (Public)
 const createInquiry = async (req, res) => {
   try {
-    const { name, email, phone, wechatId, tourId, groupSize, travelDate, message } = req.body;
+    const { name, email, phone, phoneCountryCode, wechatId, tourId, groupSize, travelDate, message } = req.body;
 
-    // Validation: name is required
-    if (!name || !name.trim()) {
-      return res.status(400).json({ error: 'Name is required' });
-    }
-
-    // Validation: at least one contact method
-    const hasEmail = email && email.trim();
-    const hasPhone = phone && phone.trim();
-    const hasWechat = wechatId && wechatId.trim();
-    if (!hasEmail && !hasPhone && !hasWechat) {
-      return res.status(400).json({ error: 'At least one contact method (email, phone, or WeChat ID) is required' });
-    }
+    // Field rules already checked by validateInquiry (§6.6) — this handler
+    // trusts the shape of req.body.
 
     // Determine tour title snapshot
     let tourTitle = 'General Inquiry';
@@ -38,6 +28,7 @@ const createInquiry = async (req, res) => {
       name,
       email: email || '',
       phone: phone || '',
+      phoneCountryCode: phoneCountryCode || (phone ? '+86' : ''),
       wechatId: wechatId || '',
       country: req.body.country || 'China',
       tour: confirmedTourId,

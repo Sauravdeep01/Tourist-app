@@ -1,29 +1,36 @@
 const nodemailer = require('nodemailer');
 
-const sendInquiryEmail = async (inquiry) => {
-  // Check if SMTP is configured
+// Shared transporter builder — returns null if SMTP is not configured so
+// callers can skip silently instead of throwing (NFR-6).
+const buildTransporter = () => {
   const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   const port = process.env.SMTP_PORT || 587;
-  const notifyEmail = process.env.NOTIFY_EMAIL;
 
-  if (!host || !user || !pass || !notifyEmail) {
+  if (!host || !user || !pass) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host,
+    port: Number(port),
+    secure: Number(port) === 465,
+    auth: { user, pass },
+  });
+};
+
+const sendInquiryEmail = async (inquiry) => {
+  const notifyEmail = process.env.NOTIFY_EMAIL;
+  const transporter = buildTransporter();
+
+  if (!transporter || !notifyEmail) {
     // Skip silently if email settings are incomplete
     return;
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host,
-      port: Number(port),
-      secure: Number(port) === 465,
-      auth: {
-        user,
-        pass,
-      },
-    });
-
+    const user = process.env.SMTP_USER;
     const mailOptions = {
       from: `"Buddhist Pilgrimage Tours" <${user}>`,
       to: notifyEmail,

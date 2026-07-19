@@ -6,12 +6,13 @@ const {
   updateInquiry,
   deleteInquiry,
 } = require('../controllers/inquiryController');
-const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
+const { requireAuth, requireRole, requireVerified } = require('../middlewares/authMiddleware');
+const { validateInquiry } = require('../middlewares/validators');
 
 const router = express.Router();
 
-// Submission requires a logged-in tourist account (C-6) — every inquiry is tied to a registered user
-router.post('/', requireAuth, createInquiry);
+
+router.post('/', requireAuth, requireVerified, validateInquiry, createInquiry);
 
 // Tourist specific routes
 router.get('/mine', requireAuth, requireRole('user'), getMyInquiries);

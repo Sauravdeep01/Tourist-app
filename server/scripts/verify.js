@@ -6,7 +6,7 @@ const BASE_URL = `http://localhost:${PORT}/api`;
 
 const runTests = async () => {
   console.log('=== STARTING BACKEND REST API VERIFICATION ===');
-  
+
   let adminToken = '';
   let ownerToken = '';
   let userToken = '';
@@ -31,7 +31,7 @@ const runTests = async () => {
       );
     }
 
-    console.log('\n[TEST 2] POST /api/auth/login (Admin)');
+    console.log('\n[TEST 2] POST /api/auth/login (Admin — seeded accounts are pre-verified)');
     const adminLoginRes = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,7 +74,6 @@ const runTests = async () => {
     if (toursRes.status !== 200 || tours.length === 0) {
       throw new Error('Failed to get public tours');
     }
-    // Store first tour's info for inquiry testing
     testTourId = tours[0]._id;
     console.log('✓ Tours list retrieved. First tour slug:', tours[0].slug);
 
@@ -88,53 +87,84 @@ const runTests = async () => {
     }
     console.log('✓ Tour details retrieved successfully.');
 
-    // 6. User Signup
+    // 6. Signup validation failure (weak password) — checks the
+    // { errors: [{ field, message }] } shape from validators.js (FE-10)
+    console.log('\n[TEST 6] POST /api/auth/signup (invalid — weak password, expect 400 with field errors)');
+    const badSignupRes = await fetch(`${BASE_URL}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Bad Pw', email: `badpw_${Date.now()}@example.com`, password: 'short' }),
+    });
+    const badSignupData = await badSignupRes.json();
+    console.log('Response status:', badSignupRes.status, badSignupData);
+    if (badSignupRes.status !== 400 || !Array.isArray(badSignupData.errors) || !badSignupData.errors.length) {
+      throw new Error('Expected 400 with field errors for weak password signup');
+    }
+    console.log('✓ Weak-password signup correctly rejected with field-level errors');
+
+    // 7. User Signup (email + password) — account is created UNVERIFIED (§3.7)
     const testUserEmail = `tourist_${Date.now()}@example.com`;
-    console.log(`\n[TEST 6] POST /api/auth/signup (Email: ${testUserEmail})`);
+    console.log(`\n[TEST 7] POST /api/auth/signup (Email: ${testUserEmail})`);
     const signupRes = await fetch(`${BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: 'Test Tourist',
         email: testUserEmail,
-        password: 'Password123!',
-        phone: '+86-13800000000',
+        password: 'Password123',
+        phoneCountryCode: '+86',
+        phone: '1380000000'.slice(0, 10),
         wechatId: 'test_wechat',
         country: 'China',
       }),
     });
     const signupData = await signupRes.json();
-    console.log('Response status:', signupRes.status);
-    if (signupRes.status !== 201 || !signupData.token) {
-      throw new Error('User signup failed');
+    console.log('Response status:', signupRes.status, signupData);
+    if (signupRes.status !== 201) {
+      throw new Error('Signup should return 201');
     }
-    userToken = signupData.token;
-    console.log('✓ User signed up successfully. Role:', signupData.role);
+    console.log('✓ User signed up successfully');
 
-    // 7. Get Profile (Me)
-    console.log('\n[TEST 7] GET /api/auth/me (User)');
+    // 8. Login directly (no OTP verification needed)
+    console.log('\n[TEST 8] POST /api/auth/login');
+    const loginRes = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: testUserEmail, password: 'Password123' }),
+    });
+    const loginData = await loginRes.json();
+    console.log('Response status:', loginRes.status, loginData);
+    if (loginRes.status !== 200 || !loginData.token) {
+      throw new Error('Login failed');
+    }
+    userToken = loginData.token;
+    console.log('✓ Login successful, JWT issued. Role:', loginData.role);
+
+    // 10. Get Profile (Me)
+    console.log('\n[TEST 10] GET /api/auth/me (User)');
     const meRes = await fetch(`${BASE_URL}/auth/me`, {
-      headers: { 'Authorization': `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${userToken}` },
     });
     const meData = await meRes.json();
-    console.log('Response status:', meRes.status, 'Name:', meData.name);
-    if (meRes.status !== 200 || meData.role !== 'user') {
+    console.log('Response status:', meRes.status, 'Name:', meData.name, 'Verified:', meData.emailVerified);
+    if (meRes.status !== 200 || meData.role !== 'user' || !meData.emailVerified) {
       throw new Error('Get profile failed');
     }
     console.log('✓ Profile retrieved successfully');
 
-    // 8. Submit Inquiry (User Logged In)
-    console.log('\n[TEST 8] POST /api/inquiries (Logged in)');
+    // 11. Submit Inquiry (verified user, JWT required per C-6)
+    console.log('\n[TEST 11] POST /api/inquiries (Logged in + verified)');
     const inquiryRes = await fetch(`${BASE_URL}/inquiries`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${userToken}`,
+        Authorization: `Bearer ${userToken}`,
       },
       body: JSON.stringify({
         name: 'Test Tourist',
         email: testUserEmail,
-        phone: '+86-13800000000',
+        phone: '1380000000',
+        phoneCountryCode: '+86',
         tourId: testTourId,
         groupSize: 4,
         travelDate: 'October 2026',
@@ -149,10 +179,10 @@ const runTests = async () => {
     testInquiryId = inquiryData.id;
     console.log('✓ Inquiry submitted and snapshotted successfully');
 
-    // 9. View My Inquiries
-    console.log('\n[TEST 9] GET /api/inquiries/mine (User History)');
+    // 12. View My Inquiries
+    console.log('\n[TEST 12] GET /api/inquiries/mine (User History)');
     const myInquiriesRes = await fetch(`${BASE_URL}/inquiries/mine`, {
-      headers: { 'Authorization': `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${userToken}` },
     });
     const myInquiries = await myInquiriesRes.json();
     console.log('Response status:', myInquiriesRes.status, `Found ${myInquiries.length} history items`);
@@ -161,10 +191,10 @@ const runTests = async () => {
     }
     console.log('✓ My inquiries history retrieved successfully. Status of first item:', myInquiries[0].status);
 
-    // 10. Owner List Inquiries
-    console.log('\n[TEST 10] GET /api/inquiries (Owner Dashboard)');
+    // 13. Owner List Inquiries
+    console.log('\n[TEST 13] GET /api/inquiries (Owner Dashboard)');
     const allInquiriesRes = await fetch(`${BASE_URL}/inquiries`, {
-      headers: { 'Authorization': `Bearer ${ownerToken}` },
+      headers: { Authorization: `Bearer ${ownerToken}` },
     });
     const allInquiries = await allInquiriesRes.json();
     console.log('Response status:', allInquiriesRes.status, `Found ${allInquiries.length} total inquiries`);
@@ -173,13 +203,13 @@ const runTests = async () => {
     }
     console.log('✓ Operator listed inquiries successfully');
 
-    // 11. Owner Edit Inquiry (Update Status & Private Note)
-    console.log(`\n[TEST 11] PATCH /api/inquiries/${testInquiryId} (Owner Update)`);
+    // 14. Owner Edit Inquiry (Update Status & Private Note)
+    console.log(`\n[TEST 14] PATCH /api/inquiries/${testInquiryId} (Owner Update)`);
     const updateInquiryRes = await fetch(`${BASE_URL}/inquiries/${testInquiryId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ownerToken}`,
+        Authorization: `Bearer ${ownerToken}`,
       },
       body: JSON.stringify({
         status: 'contacted',
@@ -193,8 +223,8 @@ const runTests = async () => {
     }
     console.log('✓ Inquiry status and admin notes updated successfully');
 
-    // 12. Public Settings Retrieval
-    console.log('\n[TEST 12] GET /api/settings (Public)');
+    // 15. Public Settings Retrieval (public again in v1.5 — C-6)
+    console.log('\n[TEST 15] GET /api/settings (Public)');
     const settingsRes = await fetch(`${BASE_URL}/settings`);
     const settings = await settingsRes.json();
     console.log('Response status:', settingsRes.status, 'Phone:', settings.phone);
@@ -203,10 +233,10 @@ const runTests = async () => {
     }
     console.log('✓ Global site settings retrieved successfully');
 
-    // 13. RBAC Gating: Owner trying to query Accounts (Admin-only)
-    console.log('\n[TEST 13] GET /api/accounts (Security test: Owner calling Admin route)');
+    // 16. RBAC Gating: Owner trying to query Accounts (Admin-only)
+    console.log('\n[TEST 16] GET /api/accounts (Security test: Owner calling Admin route)');
     const unauthorizedRes = await fetch(`${BASE_URL}/accounts`, {
-      headers: { 'Authorization': `Bearer ${ownerToken}` },
+      headers: { Authorization: `Bearer ${ownerToken}` },
     });
     console.log('Response status:', unauthorizedRes.status);
     if (unauthorizedRes.status !== 403) {
@@ -214,10 +244,10 @@ const runTests = async () => {
     }
     console.log('✓ RBAC check passed: Owner was rejected with 403 Forbidden');
 
-    // 14. Admin querying Accounts
-    console.log('\n[TEST 14] GET /api/accounts (Admin calling Admin route)');
+    // 17. Admin querying Accounts
+    console.log('\n[TEST 17] GET /api/accounts (Admin calling Admin route)');
     const authorizedRes = await fetch(`${BASE_URL}/accounts`, {
-      headers: { 'Authorization': `Bearer ${adminToken}` },
+      headers: { Authorization: `Bearer ${adminToken}` },
     });
     const accounts = await authorizedRes.json();
     console.log('Response status:', authorizedRes.status, `Staff account count: ${accounts.length}`);
@@ -226,9 +256,8 @@ const runTests = async () => {
     }
     console.log('✓ Admin successfully authorized and retrieved staff account list');
 
-    console.log('\n=== ALL 14 TESTS COMPLETED SUCCESSFULLY! ===');
+    console.log('\n=== ALL TESTS COMPLETED SUCCESSFULLY! ===');
     process.exit(0);
-
   } catch (err) {
     console.error('\n✕ VERIFICATION FAILED:', err.message);
     process.exit(1);

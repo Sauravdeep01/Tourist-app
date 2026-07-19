@@ -25,6 +25,15 @@ const userSchema = new mongoose.Schema(
       default: 'user',
       index: true,
     },
+
+    emailVerified: {
+      type: Boolean,
+      default: true,
+    },
+    phoneCountryCode: {
+      type: String,
+      default: '+86',
+    },
     phone: {
       type: String,
       default: '',
@@ -47,8 +56,14 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+
+
+
+
+
 // Method to verify passwords during authentication
 userSchema.methods.comparePassword = async function (enteredPassword) {
+  if (!this.passwordHash) return false;
   return await bcrypt.compare(enteredPassword, this.passwordHash);
 };
 

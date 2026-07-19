@@ -19,6 +19,11 @@ const inquirySchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    phoneCountryCode: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     wechatId: {
       type: String,
       trim: true,
@@ -36,11 +41,11 @@ const inquirySchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true, // Every inquiry must be tied to a registered tourist account (C-6)
+      required: true, 
     },
     tourTitle: {
       type: String,
-      required: true, // Snapshot of the tour name to keep it readable even if tour is deleted
+      required: true, 
     },
     groupSize: {
       type: Number,
