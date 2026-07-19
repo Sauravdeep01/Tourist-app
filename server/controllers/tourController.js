@@ -50,11 +50,19 @@ const updateTour = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Admin can edit everything, Owner can edit pricing and texts.
-    // The endpoint accepts any partial fields matching the schema and updates them.
+    const updateData = { ...req.body };
+
+    // Admin can edit all fields. Owner can edit pricing, itinerary, texts, and media
+    // but is prohibited from modifying core administrative fields (slug, active, featured).
+    if (req.user.role !== 'admin') {
+      delete updateData.slug;
+      delete updateData.active;
+      delete updateData.featured;
+    }
+
     const updatedTour = await Tour.findByIdAndUpdate(
       id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
