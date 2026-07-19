@@ -62,8 +62,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Body parser
-app.use(express.json());
+// Body parser with strict payload size limits to prevent DoS memory exhaustion
+app.use(express.json({ limit: '50kb' }));
+app.use(express.urlencoded({ extended: true, limit: '50kb' }));
 
 // Public Health Check Endpoint
 app.get('/api/health', (req, res) => {
