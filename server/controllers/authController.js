@@ -4,8 +4,8 @@ const User = require('../models/User');
 const { isValidCountryCode } = require('../utils/countryCodes');
 
 // Helper to generate a 7-day JWT token
-const createToken = (id, email, role) => {
-  return jwt.sign({ id, email, role }, process.env.JWT_SECRET, {
+const createToken = (id, email, role, tokenVersion = 0) => {
+  return jwt.sign({ id, email, role, tokenVersion }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 };
@@ -68,7 +68,7 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = createToken(user._id, user.email, user.role);
+    const token = createToken(user._id, user.email, user.role, user.tokenVersion || 0);
 
     res.status(200).json({
       token,
@@ -190,6 +190,8 @@ const changePassword = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     user.passwordHash = await bcrypt.hash(newPassword, salt);
+    // Invalidate existing active tokens on password change
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
     await user.save();
 
     res.status(200).json({ message: 'Password changed successfully' });
@@ -199,9 +201,25 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Logout endpoint (invalidates current user tokens by incrementing tokenVersion)
+const logout = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (user) {
+      user.tokenVersion = (user.tokenVersion || 0) + 1;
+      await user.save();
+    }
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('logout error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
+  }
+};
+
 module.exports = {
   signup,
   login,
+  logout,
   getMe,
   updateMe,
   changePassword,

@@ -90,6 +90,11 @@ const updateOwnerAccount = async (req, res) => {
       account.passwordHash = await bcrypt.hash(newPassword, salt);
     }
 
+    // Invalidate existing sessions on password reset or account status change
+    if (newPassword || active !== undefined) {
+      account.tokenVersion = (account.tokenVersion || 0) + 1;
+    }
+
     await account.save();
 
     res.status(200).json({

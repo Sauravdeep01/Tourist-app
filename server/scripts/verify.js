@@ -254,7 +254,26 @@ const runTests = async () => {
     if (authorizedRes.status !== 200 || accounts.length === 0) {
       throw new Error('Admin failed to query accounts list');
     }
-    console.log('✓ Admin successfully authorized and retrieved staff account list');
+    // 18. Token Revocation & Logout Test
+    console.log('\n[TEST 18] POST /api/auth/logout & Revocation Check');
+    const logoutRes = await fetch(`${BASE_URL}/auth/logout`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${userToken}` },
+    });
+    console.log('Logout response status:', logoutRes.status);
+    if (logoutRes.status !== 200) {
+      throw new Error('Logout failed');
+    }
+
+    // Verify revoked token is now rejected
+    const revokedCheckRes = await fetch(`${BASE_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${userToken}` },
+    });
+    console.log('Revoked token request status:', revokedCheckRes.status);
+    if (revokedCheckRes.status !== 401) {
+      throw new Error('Token revocation failure: Revoked token was accepted!');
+    }
+    console.log('✓ Logout and token revocation verified successfully');
 
     console.log('\n=== ALL TESTS COMPLETED SUCCESSFULLY! ===');
     process.exit(0);
