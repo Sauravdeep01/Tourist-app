@@ -47,7 +47,8 @@ const signup = async (req, res) => {
     if (error.code === 11000) {
       return res.status(409).json({ error: 'This email is already registered — try logging in.' });
     }
-    res.status(500).json({ error: error.message });
+    console.error('signup error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -76,7 +77,8 @@ const login = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('login error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -104,7 +106,8 @@ const getMe = async (req, res) => {
       country: user.country,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('getMe error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -157,7 +160,8 @@ const updateMe = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('updateMe error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -190,7 +194,8 @@ const changePassword = async (req, res) => {
 
     res.status(200).json({ message: 'Password changed successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('changePassword error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 

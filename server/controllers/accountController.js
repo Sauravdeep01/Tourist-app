@@ -11,7 +11,8 @@ const listStaffAccounts = async (req, res) => {
 
     res.status(200).json(accounts);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('listStaffAccounts error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -54,7 +55,8 @@ const createOwnerAccount = async (req, res) => {
       active: ownerUser.active,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('createOwnerAccount error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -101,7 +103,8 @@ const updateOwnerAccount = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('updateOwnerAccount error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 

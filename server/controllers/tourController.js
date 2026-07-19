@@ -9,7 +9,8 @@ const getActiveTours = async (req, res) => {
 
     res.status(200).json(tours);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('getActiveTours error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -24,7 +25,8 @@ const getTourBySlug = async (req, res) => {
 
     res.status(200).json(tour);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('getTourBySlug error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -41,7 +43,8 @@ const createTour = async (req, res) => {
     const newTour = await Tour.create(req.body);
     res.status(201).json(newTour);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('createTour error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -72,7 +75,8 @@ const updateTour = async (req, res) => {
 
     res.status(200).json(updatedTour);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('updateTour error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -88,7 +92,8 @@ const deleteTour = async (req, res) => {
 
     res.status(200).json({ message: 'Tour package deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('deleteTour error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 

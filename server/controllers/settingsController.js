@@ -13,7 +13,8 @@ const getSettings = async (req, res) => {
 
     res.status(200).json(settings);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('getSettings error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -37,7 +38,8 @@ const updateSettings = async (req, res) => {
 
     res.status(200).json(settings);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('updateSettings error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 

@@ -57,7 +57,8 @@ const createInquiry = async (req, res) => {
       id: newInquiry._id,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('createInquiry error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -69,7 +70,8 @@ const getMyInquiries = async (req, res) => {
 
     res.status(200).json(inquiries);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('getMyInquiries error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -87,7 +89,8 @@ const getInquiries = async (req, res) => {
 
     res.status(200).json(inquiries);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('getInquiries error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -109,7 +112,8 @@ const updateInquiry = async (req, res) => {
 
     res.status(200).json(inquiry);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('updateInquiry error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
@@ -125,7 +129,8 @@ const deleteInquiry = async (req, res) => {
 
     res.status(200).json({ message: 'Inquiry deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('deleteInquiry error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
   }
 };
 
