@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const connectDB = require('./config/db');
 
 // Route modules
@@ -12,6 +13,9 @@ const accountRoutes = require('./routes/accountRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Security HTTP headers
+app.use(helmet());
 
 // CORS middleware configurations
 const allowedOrigins = [
