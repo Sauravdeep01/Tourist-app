@@ -1,3 +1,4 @@
+const sanitizeHtml = require('sanitize-html');
 const { isValidCountryCode } = require('../utils/countryCodes');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,7 +12,35 @@ const hasValue = (v) => v !== undefined && v !== null && v !== '';
 
 const respondWithErrors = (res, errors) => res.status(400).json({ errors });
 
+// Recursively strips HTML and script tags from input data to prevent Stored XSS
+const sanitizeValue = (val, keyName = '') => {
+  // Preserve raw password strings (passwords are hashed directly and never rendered in HTML)
+  if (keyName.toLowerCase().includes('password')) {
+    return val;
+  }
+  if (typeof val === 'string') {
+    return sanitizeHtml(val, {
+      allowedTags: [],
+      allowedAttributes: {},
+    });
+  }
+  if (Array.isArray(val)) {
+    return val.map((item) => sanitizeValue(item, keyName));
+  }
+  if (typeof val === 'object' && val !== null) {
+    const cleaned = {};
+    for (const key of Object.keys(val)) {
+      cleaned[key] = sanitizeValue(val[key], key);
+    }
+    return cleaned;
+  }
+  return val;
+};
+
 const validateSignup = (req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
   const errors = [];
   const { name, email, password, phoneCountryCode, phone, wechatId } = req.body;
 
@@ -62,6 +91,9 @@ const validateLogin = (req, res, next) => {
 };
 
 const validateInquiry = (req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
   const errors = [];
   const { name, email, phone, phoneCountryCode, wechatId, groupSize, message } = req.body;
 
@@ -113,6 +145,9 @@ const validateInquiry = (req, res, next) => {
 
 
 const validateTour = (req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
   const errors = [];
   const { slug, title, days, nights, priceFrom } = req.body;
 
@@ -152,6 +187,9 @@ const validateTour = (req, res, next) => {
 };
 
 const validateSettings = (req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
   const errors = [];
   const { phone, whatsapp, email, wechatId } = req.body;
 
