@@ -21,11 +21,10 @@ const itineraryDaySchema = new mongoose.Schema({
   meals: bilingualSchema,
 }, { _id: false });
 
-// Hotels sub-schema
-const hotelSchema = new mongoose.Schema({
+// City Stay sub-schema (nights stays per city)
+const cityStaySchema = new mongoose.Schema({
   city: bilingualSchema,
   nights: { type: Number, required: true },
-  hotelName: bilingualSchema,
 }, { _id: false });
 
 // Pricing & Supplement items
@@ -60,7 +59,7 @@ const tourSchema = new mongoose.Schema(
       required: true,
     },
     itinerary: [itineraryDaySchema],
-    hotels: [hotelSchema],
+    cityStays: [cityStaySchema],
     hotelCategory: bilingualSchema,
     pricing: [priceItemSchema],
     supplements: [priceItemSchema],

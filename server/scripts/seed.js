@@ -35,7 +35,7 @@ const seedDatabase = async () => {
         zh: '印度比哈尔邦巴特那 Astir Passage 私人有限公司',
       },
     };
-    
+
     // Upsert single settings document
     await Settings.deleteMany({});
     await Settings.create(defaultSettings);
@@ -43,7 +43,7 @@ const seedDatabase = async () => {
 
     // 2. Seed Admin & Owner Accounts
     console.log('Seeding staff accounts...');
-    
+
     const adminEmail = process.env.ADMIN_EMAIL;
     const adminPassword = process.env.ADMIN_PASSWORD;
     const ownerEmail = process.env.OWNER_EMAIL;
@@ -103,6 +103,7 @@ const seedDatabase = async () => {
       }
     }
 
+
     // 3. Seed Tour Packages (Bilingual)
     console.log('Seeding tour packages...');
 
@@ -137,16 +138,16 @@ const seedDatabase = async () => {
         en: '5-Star or Similar',
         zh: '五星级或同等级',
       },
-      hotels: [
-        { city: { en: 'Delhi', zh: '德里' }, nights: 1, hotelName: { en: 'Hyatt Centric / Radisson Kaushambi or equivalent', zh: '凯悦中心 / 考尚比雷迪森酒店或同等' } },
-        { city: { en: 'Varanasi', zh: '瓦拉纳西' }, nights: 1, hotelName: { en: 'The Madin or equivalent', zh: '麦丁酒店或同等' } },
-        { city: { en: 'Bodh Gaya', zh: '菩提伽耶' }, nights: 2, hotelName: { en: 'Mahabodhi or equivalent', zh: '菩提大酒店或同等' } },
-        { city: { en: 'Patna', zh: '巴特那' }, nights: 1, hotelName: { en: 'Hotel Maurya or equivalent', zh: '莫里亚酒店或同等' } },
-        { city: { en: 'Kushinagar', zh: '拘尸那伽' }, nights: 1, hotelName: { en: 'Imperial or equivalent', zh: '帝国酒店或同等' } },
-        { city: { en: 'Lumbini', zh: '蓝毗尼' }, nights: 1, hotelName: { en: 'Crystal Garden or equivalent', zh: '水晶花园酒店或同等' } },
-        { city: { en: 'Shravasti', zh: '舍卫城' }, nights: 1, hotelName: { en: 'Imperial or equivalent', zh: '帝国酒店或同等' } },
-        { city: { en: 'Lucknow', zh: '勒克瑙' }, nights: 1, hotelName: { en: 'Ramada by Wyndham Lucknow or equivalent', zh: '勒克瑙温德姆华美达酒店或同等' } },
-        { city: { en: 'Agra', zh: '阿格拉' }, nights: 1, hotelName: { en: 'Agra Crystal Sarovar / Ramada or equivalent', zh: '阿格拉水晶萨罗瓦尔 / 华美达酒店或同等' } },
+      cityStays: [
+        { city: { en: 'Delhi', zh: '德里' }, nights: 1 },
+        { city: { en: 'Varanasi', zh: '瓦拉纳西' }, nights: 1 },
+        { city: { en: 'Bodh Gaya', zh: '菩提伽耶' }, nights: 2 },
+        { city: { en: 'Patna', zh: '巴特那' }, nights: 1 },
+        { city: { en: 'Kushinagar', zh: '拘尸那伽' }, nights: 1 },
+        { city: { en: 'Lumbini', zh: '蓝毗尼' }, nights: 1 },
+        { city: { en: 'Shravasti', zh: '舍卫城' }, nights: 1 },
+        { city: { en: 'Lucknow', zh: '勒克瑙' }, nights: 1 },
+        { city: { en: 'Agra', zh: '阿格拉' }, nights: 1 },
       ],
       itinerary: [
         {
@@ -161,7 +162,7 @@ const seedDatabase = async () => {
             },
             {
               category: { en: 'Dinner', zh: '晚餐' },
-              description: { en: 'Check-in and enjoy a warm welcome dinner at hotel.', zh: '入住酒店并享用温馨的欢迎晚餐。' }
+              description: { en: 'Check-in and enjoy a warm welcome dinner.', zh: '入住并享用温馨的欢迎晚餐。' }
             }
           ]
         },
@@ -324,7 +325,7 @@ const seedDatabase = async () => {
         { label: { en: 'Tipping (12-pax group)', zh: '小费（12人团队）' }, amount: { en: 'US$ 6 per person per day', zh: '每人每天 6 美元' } }
       ],
       includes: [
-        { item: { en: 'Accommodation', zh: '住宿' }, details: { en: '10 nights twin-sharing accommodation in 5-star hotels', zh: '五星级酒店 10 晚双人合住' } },
+        { item: { en: 'Accommodation', zh: '住宿' }, details: { en: '10 nights twin-sharing accommodation', zh: '10 晚双人合住' } },
         { item: { en: 'Meals', zh: '餐饮' }, details: { en: 'All meals (10 Breakfasts / 10 Lunches / 11 Dinners)', zh: '行程内所有餐食（10早/10午/11晚）' } },
         { item: { en: 'Transport', zh: '交通' }, details: { en: 'All transfers & sightseeing by private air-conditioned coach', zh: '全程私人空调大巴接送与观光' } },
         { item: { en: 'Guide', zh: '导游' }, details: { en: 'Chinese-speaking professional guide from arrival to departure', zh: '全程中文专业导游陪同' } },
@@ -332,12 +333,11 @@ const seedDatabase = async () => {
       ],
       excludes: [
         { item: { en: 'Airfares', zh: '机票' }, details: { en: 'International and domestic airfares (except Varanasi-Delhi supplement)', zh: '国际和国内大交通机票（除瓦拉纳西-德里机票附加费外）' } },
-        { item: { en: 'Tips', zh: '小费' }, details: { en: 'Tips to drivers, local guides, hotel bellboys', zh: '给司机、导游、行李员的小费' } },
+        { item: { en: 'Tips', zh: '小费' }, details: { en: 'Tips to drivers, local guides', zh: '给司机、导游的小费' } },
         { item: { en: 'Personal Expenses', zh: '个人消费' }, details: { en: 'Laundry, soft drinks, international telephone calls, etc.', zh: '洗衣、饮料、国际电话等个人费用' } }
       ],
       notes: [
-        { en: 'Prices are indicative and subject to availability at booking.', zh: '此价格仅供参考，最终价格以实际预订时房态及车况为准。' },
-        { en: 'Hotel star ratings are matching local standard standards.', zh: '酒店星级标准均符合当地评定标准。' }
+        { en: 'Prices are indicative and subject to availability at booking.', zh: '此价格仅供参考，最终价格以实际预订时车况为准。' }
       ]
     };
 
@@ -345,21 +345,27 @@ const seedDatabase = async () => {
       slug: '13-day-buddhist-circuit-india',
       title: {
         en: '13-Day Buddhist Circuit, India',
-        zh: '印度佛教圣地13天',
+        zh: '印度佛教圣地13天行程报价',
       },
       subtitle: {
         en: 'Extended Spiritual Journey Across Northern India',
         zh: '北印度神圣灵修深度之旅',
       },
       overview: {
-        en: 'An extended spiritual circuit with overnight stays in Rajgir and Vaishali. Transport provided by a premium 41-seater A/C coach.',
-        zh: '延长的朝圣线路，在王舍城和吠舍离过夜。由41座豪华空调客车提供交通服务。',
+        en: 'An extended spiritual circuit covering key Buddhist sites across India with 12 nights stay by city.',
+        zh: '涵盖印度主要佛教圣地的深度朝圣之旅，按城市安排12晚住宿。',
       },
       days: 13,
       nights: 12,
-      coverImage: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=600',
+      coverImage: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=800',
       images: [
-        'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=600',
+        'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=800',
+        'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=800',
+        'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=800',
+        'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=800',
+        'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=800',
+        'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800',
+        'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800',
       ],
       validFrom: {
         en: 'Valid from October 2026',
@@ -368,20 +374,16 @@ const seedDatabase = async () => {
       featured: false,
       active: true,
       priceFrom: 941,
-      hotelCategory: {
-        en: '4-Star / 5-Star Mix',
-        zh: '豪华酒店/精品酒店混合',
-      },
-      hotels: [
-        { city: { en: 'Delhi', zh: '德里' }, nights: 2, hotelName: { en: 'Hotel Vivanta New Delhi, Dwarka', zh: '德里德瓦卡维万塔酒店' } },
-        { city: { en: 'Varanasi', zh: '瓦拉纳西' }, nights: 1, hotelName: { en: 'Radisson / Madin / Clarks', zh: '雷迪森 / 麦丁 / 克拉克斯酒店' } },
-        { city: { en: 'Bodh Gaya', zh: '菩提伽耶' }, nights: 2, hotelName: { en: 'Welcomhotel by ITC Hotels & Convention Centre', zh: 'ITC 维康大酒店及会议中心' } },
-        { city: { en: 'Rajgir', zh: '王舍城' }, nights: 1, hotelName: { en: 'Rajgir Residency / Indo Hoke', zh: '王舍城大酒店 / 印度法华宾馆' } },
-        { city: { en: 'Vaishali', zh: '吠舍离' }, nights: 1, hotelName: { en: 'Vaishali Residency', zh: '吠舍离瑞西登斯酒店' } },
-        { city: { en: 'Kushinagar', zh: '拘尸那伽' }, nights: 1, hotelName: { en: 'Royal Residency / Om Residency', zh: '皇家度假酒店 / 奥姆瑞西登斯' } },
-        { city: { en: 'Shravasti', zh: '舍卫城' }, nights: 1, hotelName: { en: 'Platinum / Sravasti Residency', zh: '白金酒店 / 舍卫瑞西登斯' } },
-        { city: { en: 'Lucknow', zh: '勒克瑙' }, nights: 1, hotelName: { en: 'The Piccadilly', zh: '皮卡迪利酒店' } },
-        { city: { en: 'Agra', zh: '阿格拉' }, nights: 1, hotelName: { en: 'Grand Mercure / Clarks Shiraz', zh: '美爵酒店 / 克拉克斯设拉子酒店' } },
+      cityStays: [
+        { city: { en: 'Delhi', zh: '德里' }, nights: 2 },
+        { city: { en: 'Varanasi', zh: '瓦拉纳西' }, nights: 1 },
+        { city: { en: 'Bodhgaya', zh: '菩提伽耶' }, nights: 2 },
+        { city: { en: 'Rajgir', zh: '王舍城' }, nights: 1 },
+        { city: { en: 'Vaishali', zh: '吠舍离' }, nights: 1 },
+        { city: { en: 'Kushinagar', zh: '拘尸那伽' }, nights: 1 },
+        { city: { en: 'Sravasti', zh: '舍卫城' }, nights: 1 },
+        { city: { en: 'Lucknow', zh: '勒克瑙' }, nights: 1 },
+        { city: { en: 'Agra', zh: '阿格拉' }, nights: 1 },
       ],
       itinerary: [
         {
@@ -392,7 +394,7 @@ const seedDatabase = async () => {
           activities: [
             {
               category: { en: 'Arrival', zh: '到达' },
-              description: { en: 'Welcome to India! Pick up from airport and check-in.', zh: '欢迎来到印度！机场接机并办理酒店入住。' }
+              description: { en: 'Welcome to India! Pick up from airport and transfer to city.', zh: '欢迎来到印度！机场接机并送往休息。' }
             }
           ]
         },
@@ -542,27 +544,36 @@ const seedDatabase = async () => {
         }
       ],
       pricing: [
-        { label: { en: 'Group size: 15 + 1 pax', zh: '成团人数：15 + 1人' }, amount: { en: 'USD 1,032 per person', zh: '每人 1,032 美元' } },
-        { label: { en: 'Group size: 20 + 1 pax', zh: '成团人数：20 + 1人' }, amount: { en: 'USD 975 per person', zh: '每人 975 美元' } },
-        { label: { en: 'Group size: 25 + 1 pax', zh: '成团人数：25 + 1人' }, amount: { en: 'USD 941 per person', zh: '每人 941 美元' } },
-        { label: { en: 'Single room supplement', zh: '单人间附加费' }, amount: { en: 'USD 652 per room', zh: '每间房 652 美元' } }
+        { label: { en: '15 + 01 Pax paying', zh: '15 + 01 付费人数' }, amount: { en: 'USD 1032 Per person', zh: 'USD 1032 每人' } },
+        { label: { en: '20 + 01 Pax paying', zh: '20 + 01 付费人数' }, amount: { en: 'USD 975 Per person', zh: 'USD 975 每人' } },
+        { label: { en: '25 + 01 Pax paying', zh: '25 + 01 付费人数' }, amount: { en: 'USD 941 Per person', zh: 'USD 941 每人' } },
+        { label: { en: 'Single Room Supplement', zh: '单人间附加费' }, amount: { en: 'USD 652 Per single room', zh: 'USD 652 每间' } }
       ],
       supplements: [
-        { label: { en: 'Delhi–Varanasi flight supplement', zh: '德里-瓦拉纳西机票附加费' }, amount: { en: 'USD 100 per person', zh: '每人 100 美元' } },
-        { label: { en: 'Guide airfare supplement', zh: '导游机票附加费' }, amount: { en: 'USD 100', zh: '100 美元' } }
+        { label: { en: 'Delhi - Varanasi flight supplement', zh: '德里－瓦拉纳西航班附加费' }, amount: { en: 'USD 100 PP (EXTRA)', zh: '每人100美元（额外收费）' } },
+        { label: { en: 'Guide Airfare Supplement', zh: '导游机票附加费' }, amount: { en: 'USD 100 (EXTRA)', zh: '100美元（额外收费）' } }
       ],
       includes: [
-        { item: { en: 'Coach', zh: '豪华客车' }, details: { en: 'Transport by 41-seater premium A/C coach', zh: '41座舒适空调大巴服务' } },
-        { item: { en: 'Meals', zh: '餐食' }, details: { en: 'Full board meals as per the itinerary', zh: '行程内所列全餐' } },
-        { item: { en: 'Guide', zh: '中文导游' }, details: { en: 'Chinese-speaking escort / guide throughout', zh: '全程专业中文导游服务' } }
+        { item: { en: 'Accommodation', zh: '双人间住宿' }, details: { en: 'Accommodation on Twin sharing basis as per itinerary', zh: '按行程安排双人间住宿' } },
+        { item: { en: 'Transport', zh: '空调大巴交通' }, details: { en: 'Transport using A/C Large coach 41 Seater as per itinerary', zh: '按行程提供41座空调大巴交通' } },
+        { item: { en: 'Meals', zh: '餐饮安排' }, details: { en: 'Meals as per the itinerary', zh: '按行程安排餐饮' } },
+        { item: { en: 'Guide', zh: '中文导游' }, details: { en: '01 Chinese speaking guide as per itinerary', zh: '按行程配备1名中文导游' } },
+        { item: { en: 'Mineral Water', zh: '矿泉水' }, details: { en: '02 bottle of mineral water per day per person', zh: '每人每天提供2瓶矿泉水' } },
+        { item: { en: 'Monuments', zh: '景点门票' }, details: { en: 'Monuments as per the itinerary. Single entry only.', zh: '按行程参观景点，仅含单次门票' } }
       ],
       excludes: [
-        { item: { en: 'Tips', zh: '司机导游小费' }, details: { en: 'Tips for drivers and guides', zh: '司机和导游的日常小费' } },
-        { item: { en: 'Personal', zh: '个人消费' }, details: { en: 'Soft drinks, phone calls, laundry, personal insurance', zh: '饮料、通话、洗衣及个人旅游保险' } }
+        { item: { en: 'Personal Expenses', zh: '个人费用' }, details: { en: 'Any personal expenses', zh: '任何个人费用' } },
+        { item: { en: 'Tips', zh: '小费' }, details: { en: 'Tips for guide and driver', zh: '导游及司机小费' } },
+        { item: { en: 'Optional Tours', zh: '自选项目' }, details: { en: 'Any optional tours', zh: '任何自选观光项目' } },
+        { item: { en: 'Insurance', zh: '旅游保险' }, details: { en: 'Travel insurance', zh: '旅游保险' } },
+        { item: { en: 'Airfare', zh: '机票' }, details: { en: 'International / domestic airfare (unless stated)', zh: '国际/国内机票（除非特别说明）' } },
+        { item: { en: 'Visa Fees', zh: '签证费' }, details: { en: 'Visa fees', zh: '签证费' } },
+        { item: { en: 'Unmentioned Items', zh: '其他未含' }, details: { en: 'Anything not mentioned in the inclusion list', zh: '一切未在包含项目中列明的费用' } }
       ],
       notes: [
-        { en: 'Flight baggage is 15 kg check-in + 7 kg hand baggage.', zh: '航班行李限额为15公斤托运+7公斤手提。' },
-        { en: 'Rooms are subject to availability.', zh: '房间需视实际预订情况而定。' }
+        { en: 'Airfare is Subject to Change at the time of booking, NO FOC on Airfares.', zh: '机票价格以预订时为准，机票不含免费名额。' },
+        { en: 'The baggage policy for flight will be 15 kg Check-in Baggage + 07 Hand Baggage.', zh: '航班行李政策：15公斤托运行李 + 7公斤手提行李。' },
+        { en: 'Rooms are subject to availability at the time of final confirmation.', zh: '客房以最终确认时的空房情况为准。' }
       ]
     };
 
