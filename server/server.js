@@ -11,6 +11,7 @@ const tourRoutes = require('./routes/tourRoutes');
 const inquiryRoutes = require('./routes/inquiryRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 const accountRoutes = require('./routes/accountRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -77,6 +78,7 @@ app.use('/api/tours', tourRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/accounts', accountRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Fallback Route for non-existing endpoints
 app.use((req, res, next) => {
