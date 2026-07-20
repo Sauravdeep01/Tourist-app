@@ -8,6 +8,7 @@ const connectDB = require('./config/db');
 // Route modules
 const authRoutes = require('./routes/authRoutes');
 const tourRoutes = require('./routes/tourRoutes');
+const destinationRoutes = require('./routes/destinationRoutes');
 const inquiryRoutes = require('./routes/inquiryRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 const accountRoutes = require('./routes/accountRoutes');
@@ -75,6 +76,7 @@ app.get('/api/health', (req, res) => {
 // Register MVC Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tours', tourRoutes);
+app.use('/api/destinations', destinationRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/accounts', accountRoutes);

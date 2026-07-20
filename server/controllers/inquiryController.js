@@ -7,8 +7,6 @@ const createInquiry = async (req, res) => {
   try {
     const { name, email, phone, phoneCountryCode, wechatId, tourId, groupSize, travelDate, message } = req.body;
 
-    // Field rules already checked by validateInquiry (§6.6) — this handler
-    // trusts the shape of req.body.
 
     // Determine tour title snapshot
     let tourTitle = 'General Inquiry';
@@ -32,7 +30,7 @@ const createInquiry = async (req, res) => {
       wechatId: wechatId || '',
       country: req.body.country || 'China',
       tour: confirmedTourId,
-      user: req.user.id, // Guaranteed present — requireAuth rejects unauthenticated requests (C-6)
+      user: req.user.id, 
       tourTitle,
       groupSize: groupSize || 1,
       travelDate: travelDate || '',
@@ -42,8 +40,6 @@ const createInquiry = async (req, res) => {
 
     const newInquiry = await Inquiry.create(inquiryData);
 
-    // Trigger email notification asynchronously (handling SMTP errors gracefully)
-    // We do not await this, or we wrap it in a try-catch to keep it non-blocking.
     try {
       sendInquiryEmail(newInquiry).catch(err => {
         console.error('SMTP Email Notification skipped:', err.message);

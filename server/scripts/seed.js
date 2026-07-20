@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const User = require('../models/User');
 const Tour = require('../models/Tour');
+const Destination = require('../models/Destination');
 const Settings = require('../models/Settings');
 
 const connectDB = async () => {
@@ -579,20 +580,155 @@ const seedDatabase = async () => {
 
     // Upsert Packages
     console.log('Upserting Package A...');
-    await Tour.findOneAndUpdate(
+    const tourADoc = await Tour.findOneAndUpdate(
       { slug: packageA.slug },
       { $set: packageA },
       { upsert: true, new: true }
     );
 
     console.log('Upserting Package B...');
-    await Tour.findOneAndUpdate(
+    const tourBDoc = await Tour.findOneAndUpdate(
       { slug: packageB.slug },
       { $set: packageB },
       { upsert: true, new: true }
     );
 
     console.log('Tour packages seeded successfully!');
+
+    // 4. Seed Destinations (§7.3) — name, famous-for hook, significance and
+    // journey order/relatedTours only. Long descriptions, climate facts,
+    // ratings, and photos are completed afterwards from the dashboard (§3.9).
+    console.log('Seeding destinations...');
+
+    const destinations = [
+      {
+        slug: 'delhi',
+        name: { en: 'Delhi', zh: '德里' },
+        stateCountry: { en: 'Delhi, India', zh: '印度德里' },
+        famousFor: { en: "Gateway to the pilgrimage — India's capital, arrival & departure city", zh: '朝圣之门 — 印度首都，行程的起点与终点' },
+        significance: { en: 'Modern arrival and departure gateway for the pilgrimage', zh: '朝圣之旅的现代进出门户' },
+        order: 1,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'varanasi',
+        name: { en: 'Varanasi', zh: '瓦拉纳西' },
+        stateCountry: { en: 'Uttar Pradesh, India', zh: '印度北方邦' },
+        famousFor: { en: "One of the world's oldest living cities; sunrise boat ride and Ganga Aarti", zh: '世界最古老的城市之一；恒河日出乘船与恒河晚祷' },
+        significance: { en: "Sacred city on the Ganges neighbouring Sarnath, site of the Buddha's first sermon", zh: '毗邻鹿野苑（佛陀初转法轮之地）的恒河圣城' },
+        order: 2,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'sarnath',
+        name: { en: 'Sarnath', zh: '鹿野苑' },
+        stateCountry: { en: 'Uttar Pradesh, India', zh: '印度北方邦' },
+        famousFor: { en: "The Buddha's first sermon — Dhamek Stupa, deer park", zh: '佛陀初转法轮之地 — 答枚克佛塔、鹿园' },
+        significance: { en: 'Where the Buddha delivered his first sermon after enlightenment', zh: '佛陀成道后首次说法之地' },
+        order: 3,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'bodh-gaya',
+        name: { en: 'Bodh Gaya', zh: '菩提伽耶' },
+        stateCountry: { en: 'Bihar, India', zh: '印度比哈尔邦' },
+        famousFor: { en: "The Buddha's enlightenment — Mahabodhi Temple & Bodhi Tree", zh: '佛陀成道之地 — 摩诃菩提寺与菩提树' },
+        significance: { en: 'Site of the Buddha’s enlightenment under the Bodhi Tree', zh: '佛陀于菩提树下成道之地' },
+        order: 4,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'rajgir',
+        name: { en: 'Rajgir', zh: '王舍城' },
+        stateCountry: { en: 'Bihar, India', zh: '印度比哈尔邦' },
+        famousFor: { en: 'Vulture Peak, where the Buddha taught the Dharma', zh: '灵鹫山讲经之地' },
+        significance: { en: 'Vulture Peak, where the Buddha preached many key sutras', zh: '佛陀讲授多部重要经典的灵鹫山' },
+        order: 5,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'nalanda',
+        name: { en: 'Nalanda', zh: '那烂陀' },
+        stateCountry: { en: 'Bihar, India', zh: '印度比哈尔邦' },
+        famousFor: { en: 'Ruins of the ancient Buddhist university', zh: '古代佛教大学遗址' },
+        significance: { en: 'World’s first residential university, a centre of Buddhist learning', zh: '世界最早的住宿制大学，佛教学术中心' },
+        order: 6,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'patna',
+        name: { en: 'Patna', zh: '巴特那' },
+        stateCountry: { en: 'Bihar, India', zh: '印度比哈尔邦' },
+        famousFor: { en: 'Capital of Bihar, ancient Pataliputra', zh: '比哈尔邦首府，古称华氏城' },
+        significance: { en: 'Ancient Pataliputra, capital of the Mauryan empire under Emperor Ashoka', zh: '古称华氏城，孔雀王朝阿育王时代的都城' },
+        order: 7,
+        relatedTours: [tourADoc._id],
+      },
+      {
+        slug: 'vaishali',
+        name: { en: 'Vaishali', zh: '吠舍离' },
+        stateCountry: { en: 'Bihar, India', zh: '印度比哈尔邦' },
+        famousFor: { en: "Where the Buddha announced his approaching Nirvana — Ashokan Pillar", zh: '佛陀宣告涅槃之地 — 阿育王石柱' },
+        significance: { en: 'Where the Buddha announced his approaching Parinirvana', zh: '佛陀宣告即将涅槃之地' },
+        order: 8,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'kushinagar',
+        name: { en: 'Kushinagar', zh: '拘尸那伽' },
+        stateCountry: { en: 'Uttar Pradesh, India', zh: '印度北方邦' },
+        famousFor: { en: 'The Mahaparinirvana — Reclining Buddha Temple', zh: '大般涅槃圣地 — 卧佛寺' },
+        significance: { en: 'Where the Buddha attained Mahaparinirvana (final passing)', zh: '佛陀般涅槃（圆寂）之地' },
+        order: 9,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'lumbini',
+        name: { en: 'Lumbini', zh: '蓝毗尼' },
+        stateCountry: { en: 'Nepal', zh: '尼泊尔' },
+        famousFor: { en: 'Birthplace of Prince Siddhartha — Maya Devi Temple', zh: '佛陀诞生地 — 摩耶夫人庙' },
+        significance: { en: 'Birthplace of Siddhartha Gautama, the historical Buddha', zh: '悉达多太子（佛陀）诞生地' },
+        order: 10,
+        relatedTours: [tourADoc._id],
+      },
+      {
+        slug: 'shravasti',
+        name: { en: 'Shravasti', zh: '舍卫城' },
+        stateCountry: { en: 'Uttar Pradesh, India', zh: '印度北方邦' },
+        famousFor: { en: 'Jetavana Monastery, linked to the Amitabha Sutra', zh: '祇陀林，与阿弥陀经渊源深厚' },
+        significance: { en: 'Where the Buddha spent the most rainy-season retreats teaching the Dharma', zh: '佛陀讲经说法、结夏安居次数最多之地' },
+        order: 11,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+      {
+        slug: 'sankasya',
+        name: { en: 'Sankasya', zh: '桑迦施' },
+        stateCountry: { en: 'Uttar Pradesh, India', zh: '印度北方邦' },
+        famousFor: { en: "The Buddha's descent from Tavatimsa Heaven", zh: '忉利天降临之地' },
+        significance: { en: 'Where the Buddha descended to earth after teaching his mother in Tavatimsa Heaven', zh: '佛陀为母说法后自忉利天重返人间之地' },
+        order: 12,
+        relatedTours: [tourADoc._id],
+      },
+      {
+        slug: 'agra',
+        name: { en: 'Agra', zh: '阿格拉' },
+        stateCountry: { en: 'Uttar Pradesh, India', zh: '印度北方邦' },
+        famousFor: { en: "The Taj Mahal & Agra Fort — the journey's grand finale", zh: '泰姬陵与阿格拉堡 — 旅程的压轴之地' },
+        significance: { en: 'Mughal-era grand finale of the journey — a world-heritage highlight beyond the Buddhist sites', zh: '旅程的莫卧儿建筑压轴之地，佛教圣地之外的世界遗产亮点' },
+        order: 13,
+        relatedTours: [tourADoc._id, tourBDoc._id],
+      },
+    ];
+
+    for (const destination of destinations) {
+      await Destination.findOneAndUpdate(
+        { slug: destination.slug },
+        { $set: destination },
+        { upsert: true, new: true }
+      );
+    }
+
+    console.log('Destinations seeded successfully!');
   } catch (err) {
     console.error(`Database seeding failed: ${err.message}`);
   } finally {
