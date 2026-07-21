@@ -7,7 +7,7 @@ const {
   deleteDestination,
 } = require('../controllers/destinationController');
 const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
-const { validateDestination } = require('../middlewares/validators');
+const { validateDestination } = require('../middlewares/validators/destinationValidators');
 
 const router = express.Router();
 

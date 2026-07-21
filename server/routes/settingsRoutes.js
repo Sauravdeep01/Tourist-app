@@ -1,7 +1,7 @@
 const express = require('express');
 const { getSettings, updateSettings } = require('../controllers/settingsController');
 const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
-const { validateSettings } = require('../middlewares/validators');
+const { validateSettings } = require('../middlewares/validators/settingsValidators');
 
 const router = express.Router();
 

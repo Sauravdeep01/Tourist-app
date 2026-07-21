@@ -7,7 +7,7 @@ const {
   deleteInquiry,
 } = require('../controllers/inquiryController');
 const { requireAuth, requireRole, requireVerified } = require('../middlewares/authMiddleware');
-const { validateInquiry } = require('../middlewares/validators');
+const { validateInquiry } = require('../middlewares/validators/inquiryValidators');
 
 const router = express.Router();
 

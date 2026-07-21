@@ -6,7 +6,7 @@ const {
   deleteGalleryItem,
 } = require('../controllers/galleryController');
 const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
-const { validateGallery } = require('../middlewares/validators');
+const { validateGallery } = require('../middlewares/validators/galleryValidators');
 
 const router = express.Router();
 

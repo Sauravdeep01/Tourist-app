@@ -8,7 +8,7 @@ const {
   changePassword,
 } = require('../controllers/authController');
 const { requireAuth } = require('../middlewares/authMiddleware');
-const { validateSignup, validateLogin } = require('../middlewares/validators');
+const { validateSignup, validateLogin } = require('../middlewares/validators/authValidators');
 
 const router = express.Router();
 

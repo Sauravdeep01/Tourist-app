@@ -13,7 +13,7 @@ const {
   deleteFeedbackAdmin,
 } = require('../controllers/feedbackController');
 const { requireAuth, requireRole, requireVerified } = require('../middlewares/authMiddleware');
-const { validateFeedback, validateFeedbackReply } = require('../middlewares/validators');
+const { validateFeedback, validateFeedbackReply } = require('../middlewares/validators/feedbackValidators');
 
 const router = express.Router();
 

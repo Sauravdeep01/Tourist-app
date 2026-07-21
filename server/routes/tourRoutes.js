@@ -7,7 +7,7 @@ const {
   deleteTour,
 } = require('../controllers/tourController');
 const { requireAuth, requireRole } = require('../middlewares/authMiddleware');
-const { validateTour } = require('../middlewares/validators');
+const { validateTour } = require('../middlewares/validators/tourValidators');
 
 const router = express.Router();
 
