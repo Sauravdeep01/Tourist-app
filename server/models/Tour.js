@@ -65,11 +65,11 @@ const tourSchema = new mongoose.Schema(
     supplements: [priceItemSchema],
     priceFrom: {
       type: Number,
-      default: null, // Omitted means "Price on request"
+      default: null,
     },
     includes: [inclusionItemSchema],
     excludes: [inclusionItemSchema],
-    notes: [bilingualSchema], // Array of bilingual notes/disclaimers
+    notes: [bilingualSchema],
     coverImage: {
       type: String,
       default: '',

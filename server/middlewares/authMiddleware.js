@@ -12,20 +12,15 @@ const requireAuth = async (req, res, next) => {
   const token = authorization.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+
     // Fetch user and make sure they are active
-    const user = await User.findById(decoded.id).select('_id email role active emailVerified tokenVersion');
+    const user = await User.findById(id).select('_id email role active emailVerified');
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
     if (!user.active) {
       return res.status(401).json({ error: 'Account has been deactivated' });
-    }
-
-    // Check token revocation / version mismatch
-    if (decoded.tokenVersion !== undefined && decoded.tokenVersion !== (user.tokenVersion || 0)) {
-      return res.status(401).json({ error: 'Token has been revoked — please log in again' });
     }
 
     req.user = user;
@@ -35,10 +30,7 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-// Rejects accounts whose email is not yet OTP-verified (§3.7a). In practice
-// login already refuses to issue a token to an unverified account, so this
-// is defense-in-depth for any future auth path (e.g. a token minted before
-// verification completed).
+
 const requireVerified = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ error: 'Unauthorized' });

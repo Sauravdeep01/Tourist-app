@@ -14,8 +14,7 @@ const multerUpload = multer({
   },
 });
 
-// Wraps multer so upload errors (bad type, too large) come back in the same
-// { errors: [{ field, message }] } shape every other form on the site uses.
+
 const uploadImageFile = (req, res, next) => {
   multerUpload.single('image')(req, res, (err) => {
     if (!err) return next();

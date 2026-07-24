@@ -7,7 +7,6 @@ const createInquiry = async (req, res) => {
   try {
     const { name, email, phone, phoneCountryCode, wechatId, tourId, groupSize, travelDate, message } = req.body;
 
-
     // Determine tour title snapshot
     let tourTitle = 'General Inquiry';
     let confirmedTourId = null;
@@ -30,7 +29,7 @@ const createInquiry = async (req, res) => {
       wechatId: wechatId || '',
       country: req.body.country || 'China',
       tour: confirmedTourId,
-      user: req.user.id, 
+      user: req.user.id,
       tourTitle,
       groupSize: groupSize || 1,
       travelDate: travelDate || '',
@@ -39,6 +38,7 @@ const createInquiry = async (req, res) => {
     };
 
     const newInquiry = await Inquiry.create(inquiryData);
+
 
     try {
       sendInquiryEmail(newInquiry).catch(err => {
@@ -53,8 +53,7 @@ const createInquiry = async (req, res) => {
       id: newInquiry._id,
     });
   } catch (error) {
-    console.error('createInquiry error:', error);
-    res.status(500).json({ error: 'Server error occurred' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -66,8 +65,7 @@ const getMyInquiries = async (req, res) => {
 
     res.status(200).json(inquiries);
   } catch (error) {
-    console.error('getMyInquiries error:', error);
-    res.status(500).json({ error: 'Server error occurred' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -85,8 +83,7 @@ const getInquiries = async (req, res) => {
 
     res.status(200).json(inquiries);
   } catch (error) {
-    console.error('getInquiries error:', error);
-    res.status(500).json({ error: 'Server error occurred' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -108,8 +105,7 @@ const updateInquiry = async (req, res) => {
 
     res.status(200).json(inquiry);
   } catch (error) {
-    console.error('updateInquiry error:', error);
-    res.status(500).json({ error: 'Server error occurred' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -125,8 +121,7 @@ const deleteInquiry = async (req, res) => {
 
     res.status(200).json({ message: 'Inquiry deleted successfully' });
   } catch (error) {
-    console.error('deleteInquiry error:', error);
-    res.status(500).json({ error: 'Server error occurred' });
+    res.status(500).json({ error: error.message });
   }
 };
 
