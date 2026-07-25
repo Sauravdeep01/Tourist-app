@@ -233,29 +233,189 @@ const runTests = async () => {
     }
     console.log('✓ Global site settings retrieved successfully');
 
-    // 16. RBAC Gating: Owner trying to query Accounts (Admin-only)
-    console.log('\n[TEST 16] GET /api/accounts (Security test: Owner calling Admin route)');
-    const unauthorizedRes = await fetch(`${BASE_URL}/accounts`, {
+    // 16. RBAC Gating: Owner trying to query Owner management (Admin-only, §2.5.1)
+    console.log('\n[TEST 16] GET /api/owners (Security test: Owner calling Admin route)');
+    const unauthorizedRes = await fetch(`${BASE_URL}/owners`, {
       headers: { Authorization: `Bearer ${ownerToken}` },
     });
     console.log('Response status:', unauthorizedRes.status);
     if (unauthorizedRes.status !== 403) {
-      throw new Error('RBAC Failure: Owner was allowed to access accounts panel!');
+      throw new Error('RBAC Failure: Owner was allowed to access the Owner-management panel!');
     }
     console.log('✓ RBAC check passed: Owner was rejected with 403 Forbidden');
 
-    // 17. Admin querying Accounts
-    console.log('\n[TEST 17] GET /api/accounts (Admin calling Admin route)');
-    const authorizedRes = await fetch(`${BASE_URL}/accounts`, {
+    // 17. Admin querying Owners (includes computed tourCount, §5.2)
+    console.log('\n[TEST 17] GET /api/owners (Admin calling Admin route)');
+    const authorizedRes = await fetch(`${BASE_URL}/owners`, {
       headers: { Authorization: `Bearer ${adminToken}` },
     });
-    const accounts = await authorizedRes.json();
-    console.log('Response status:', authorizedRes.status, `Staff account count: ${accounts.length}`);
-    if (authorizedRes.status !== 200 || accounts.length === 0) {
-      throw new Error('Admin failed to query accounts list');
+    const owners = await authorizedRes.json();
+    console.log('Response status:', authorizedRes.status, `Owner account count: ${owners.length}`);
+    if (authorizedRes.status !== 200 || owners.length === 0 || owners[0].tourCount === undefined) {
+      throw new Error('Admin failed to query the Owner list (with tourCount)');
     }
-    // 18. Token Revocation & Logout Test
-    console.log('\n[TEST 18] POST /api/auth/logout & Revocation Check');
+    console.log('✓ Admin listed Owner accounts successfully');
+
+    // 18. Admin registers a second Owner (multi-tenant, §2.5.0)
+    const secondOwnerEmail = `owner2_${Date.now()}@example.com`;
+    console.log(`\n[TEST 18] POST /api/owners (Admin creates a second Owner: ${secondOwnerEmail})`);
+    const createOwnerRes = await fetch(`${BASE_URL}/owners`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ name: 'Second Owner', email: secondOwnerEmail, password: 'Password123' }),
+    });
+    const createOwnerData = await createOwnerRes.json();
+    console.log('Response status:', createOwnerRes.status);
+    if (createOwnerRes.status !== 201) {
+      throw new Error('Admin failed to create a second Owner account');
+    }
+    const secondOwnerId = createOwnerData._id;
+    console.log('✓ Second Owner created successfully');
+
+    // 19. Second Owner logs in and creates their own tour
+    console.log('\n[TEST 19] POST /api/auth/login + POST /api/tours (Second Owner creates their own tour)');
+    const secondOwnerLoginRes = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: secondOwnerEmail, password: 'Password123' }),
+    });
+    const secondOwnerLoginData = await secondOwnerLoginRes.json();
+    if (secondOwnerLoginRes.status !== 200 || !secondOwnerLoginData.token) {
+      throw new Error('Second Owner login failed');
+    }
+    const secondOwnerToken = secondOwnerLoginData.token;
+
+    const secondOwnerTourRes = await fetch(`${BASE_URL}/tours`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${secondOwnerToken}` },
+      body: JSON.stringify({
+        slug: `verify-second-owner-tour-${Date.now()}`,
+        title: { en: 'Second Owner Test Tour', zh: '第二业主测试团' },
+        days: 3,
+        nights: 2,
+      }),
+    });
+    const secondOwnerTour = await secondOwnerTourRes.json();
+    console.log('Response status:', secondOwnerTourRes.status);
+    if (secondOwnerTourRes.status !== 201 || String(secondOwnerTour.ownerId) !== String(secondOwnerId)) {
+      throw new Error('Second Owner failed to create their own tour with the correct ownerId');
+    }
+    const secondOwnerTourId = secondOwnerTour._id;
+    console.log('✓ Second Owner created a tour, ownerId stamped correctly from the token');
+
+    // 20. Ownership isolation: first Owner must NOT be able to edit the second Owner's tour
+    console.log('\n[TEST 20] PUT /api/tours/:id (Security test: first Owner editing second Owner\'s tour)');
+    const crossOwnerEditRes = await fetch(`${BASE_URL}/tours/${secondOwnerTourId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ownerToken}` },
+      body: JSON.stringify({ priceFrom: 999 }),
+    });
+    console.log('Response status:', crossOwnerEditRes.status);
+    if (crossOwnerEditRes.status !== 403) {
+      throw new Error('Ownership isolation failure: an Owner edited another Owner\'s tour!');
+    }
+    console.log('✓ Ownership isolation check passed: cross-Owner edit rejected with 403 Forbidden');
+
+    // 21. GET /api/tours/manage must not leak the second Owner's tour to the first Owner
+    console.log('\n[TEST 21] GET /api/tours/manage (first Owner should not see second Owner\'s tour)');
+    const manageToursRes = await fetch(`${BASE_URL}/tours/manage`, {
+      headers: { Authorization: `Bearer ${ownerToken}` },
+    });
+    const manageTours = await manageToursRes.json();
+    console.log('Response status:', manageToursRes.status, `Tours visible: ${manageTours.length}`);
+    if (manageToursRes.status !== 200 || manageTours.some((t) => t._id === secondOwnerTourId)) {
+      throw new Error('Data scoping failure: first Owner could see second Owner\'s tour in /tours/manage');
+    }
+    console.log('✓ /tours/manage correctly scoped to the signed-in Owner');
+
+    // 22. Admin bypasses ownership and can edit any Owner's tour
+    console.log('\n[TEST 22] PUT /api/tours/:id (Admin editing second Owner\'s tour)');
+    const adminEditRes = await fetch(`${BASE_URL}/tours/${secondOwnerTourId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ priceFrom: 888 }),
+    });
+    console.log('Response status:', adminEditRes.status);
+    if (adminEditRes.status !== 200) {
+      throw new Error('Admin failed to bypass ownership and edit another Owner\'s tour');
+    }
+    console.log('✓ Admin successfully bypassed ownership scoping');
+
+    // 23. Admin reassigns the earlier test inquiry to the second Owner (§2.5.2)
+    console.log(`\n[TEST 23] PATCH /api/inquiries/${testInquiryId}/assign (Admin reassigns inquiry)`);
+    const assignRes = await fetch(`${BASE_URL}/inquiries/${testInquiryId}/assign`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ ownerId: secondOwnerId }),
+    });
+    const assignData = await assignRes.json();
+    console.log('Response status:', assignRes.status);
+    if (assignRes.status !== 200 || String(assignData.ownerId?._id || assignData.ownerId) !== String(secondOwnerId)) {
+      throw new Error('Admin failed to reassign the inquiry to the second Owner');
+    }
+    console.log('✓ Inquiry reassigned to the second Owner successfully');
+
+    // 24. Analytics — Owner sees only their own totals
+    console.log('\n[TEST 24] GET /api/analytics (Owner totals)');
+    const ownerAnalyticsRes = await fetch(`${BASE_URL}/analytics`, {
+      headers: { Authorization: `Bearer ${ownerToken}` },
+    });
+    const ownerAnalytics = await ownerAnalyticsRes.json();
+    console.log('Response status:', ownerAnalyticsRes.status, ownerAnalytics.totals);
+    if (ownerAnalyticsRes.status !== 200 || !ownerAnalytics.totals) {
+      throw new Error('Owner failed to retrieve their own analytics');
+    }
+    console.log('✓ Owner analytics retrieved successfully');
+
+    // 25. Analytics — Admin sees platform-wide totals including Owner count
+    console.log('\n[TEST 25] GET /api/analytics (Admin platform-wide totals)');
+    const adminAnalyticsRes = await fetch(`${BASE_URL}/analytics`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    const adminAnalytics = await adminAnalyticsRes.json();
+    console.log('Response status:', adminAnalyticsRes.status, adminAnalytics.totals);
+    if (adminAnalyticsRes.status !== 200 || adminAnalytics.totals?.owners === undefined) {
+      throw new Error('Admin failed to retrieve platform-wide analytics');
+    }
+    console.log('✓ Admin platform-wide analytics retrieved successfully');
+
+    // 26. Audit log — Admin can review the trail left by the actions above (§8.2)
+    console.log('\n[TEST 26] GET /api/audit-logs (Admin reviews the audit trail)');
+    const auditLogsRes = await fetch(`${BASE_URL}/audit-logs`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    const auditLogsData = await auditLogsRes.json();
+    console.log('Response status:', auditLogsRes.status, `Log entries: ${auditLogsData.total}`);
+    if (auditLogsRes.status !== 200 || !Array.isArray(auditLogsData.logs) || auditLogsData.total === 0) {
+      throw new Error('Admin failed to retrieve the audit log, or no entries were recorded');
+    }
+    console.log('✓ Audit log recorded and retrieved successfully');
+
+    // 27. RBAC Gating: Owner trying to read the audit log (Admin-only, §8.2 AL-3)
+    console.log('\n[TEST 27] GET /api/audit-logs (Security test: Owner calling Admin route)');
+    const unauthorizedAuditRes = await fetch(`${BASE_URL}/audit-logs`, {
+      headers: { Authorization: `Bearer ${ownerToken}` },
+    });
+    console.log('Response status:', unauthorizedAuditRes.status);
+    if (unauthorizedAuditRes.status !== 403) {
+      throw new Error('RBAC Failure: Owner was allowed to read the audit log!');
+    }
+    console.log('✓ RBAC check passed: Owner was rejected with 403 Forbidden');
+
+    // 28. Cleanup: Admin deletes the second Owner (soft-hides their tours, §5.2 policy note)
+    console.log(`\n[TEST 28] DELETE /api/owners/${secondOwnerId} (Admin deletes the second Owner)`);
+    const deleteOwnerRes = await fetch(`${BASE_URL}/owners/${secondOwnerId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    console.log('Response status:', deleteOwnerRes.status);
+    if (deleteOwnerRes.status !== 200) {
+      throw new Error('Admin failed to delete the second Owner account');
+    }
+    console.log('✓ Second Owner deleted successfully (tours soft-hidden, not orphaned)');
+
+    // 29. Token Revocation & Logout Test
+    console.log('\n[TEST 29] POST /api/auth/logout & Revocation Check');
     const logoutRes = await fetch(`${BASE_URL}/auth/logout`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${userToken}` },

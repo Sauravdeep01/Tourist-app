@@ -8,18 +8,36 @@ const bilingualSchema = {
 
 const gallerySchema = new mongoose.Schema(
   {
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
     imageUrl: {
       type: String,
       required: true,
       trim: true,
     },
-    caption: bilingualSchema,
-    tourTag: {
+    imageTitle: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 80,
+    },
+    destinationName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: bilingualSchema,
+    altText: {
       type: String,
       trim: true,
       default: '',
     },
-    destinationTag: {
+    caption: bilingualSchema,
+    tourTag: {
       type: String,
       trim: true,
       default: '',

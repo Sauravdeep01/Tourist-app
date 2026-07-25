@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+// Audit trail entry for Admin re-assignments of an inquiry to a different Owner
+const assignedOwnerHistorySchema = new mongoose.Schema(
+  {
+    from: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    to: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    changedAt: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
 const inquirySchema = new mongoose.Schema(
   {
     name: {
@@ -38,14 +49,22 @@ const inquirySchema = new mongoose.Schema(
       ref: 'Tour',
       default: null,
     },
+    // The Owner who receives this inquiry — derived from the referenced tour's
+    // ownerId at submit time so it routes to the correct Owner's dashboard.
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true, 
+      required: true,
     },
     tourTitle: {
       type: String,
-      required: true, 
+      required: true,
     },
     groupSize: {
       type: Number,
@@ -65,6 +84,10 @@ const inquirySchema = new mongoose.Schema(
       type: String,
       enum: ['new', 'contacted', 'booked', 'closed'],
       default: 'new',
+    },
+    assignedOwnerHistory: {
+      type: [assignedOwnerHistorySchema],
+      default: [],
     },
     adminNote: {
       type: String,

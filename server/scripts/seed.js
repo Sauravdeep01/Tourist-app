@@ -104,11 +104,15 @@ const seedDatabase = async () => {
       }
     }
 
+    // The seed Owner stamps ownerId on every seeded tour/gallery item so the
+    // multi-tenant scoping (§2.5.0) works from the first run.
+    const seedOwner = await User.findOne({ email: ownerEmail.toLowerCase() });
 
     // 3. Seed Tour Packages (Bilingual)
     console.log('Seeding tour packages...');
 
     const packageA = {
+      ownerId: seedOwner._id,
       slug: '11-day-buddhist-pilgrimage-journey',
       title: {
         en: '11-Day Buddhist Pilgrimage Journey',
@@ -343,6 +347,7 @@ const seedDatabase = async () => {
     };
 
     const packageB = {
+      ownerId: seedOwner._id,
       slug: '13-day-buddhist-circuit-india',
       title: {
         en: '13-Day Buddhist Circuit, India',

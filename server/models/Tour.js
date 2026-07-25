@@ -41,6 +41,12 @@ const inclusionItemSchema = new mongoose.Schema({
 
 const tourSchema = new mongoose.Schema(
   {
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
     slug: {
       type: String,
       required: true,

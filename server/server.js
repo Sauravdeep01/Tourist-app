@@ -12,7 +12,9 @@ const destinationRoutes = require('./routes/destinationRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const inquiryRoutes = require('./routes/inquiryRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
-const accountRoutes = require('./routes/accountRoutes');
+const ownerRoutes = require('./routes/ownerRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+const auditLogRoutes = require('./routes/auditLogRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 
@@ -82,7 +84,9 @@ app.use('/api/destinations', destinationRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/settings', settingsRoutes);
-app.use('/api/accounts', accountRoutes);
+app.use('/api/owners', ownerRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/audit-logs', auditLogRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/feedback', feedbackRoutes);
 

@@ -1,6 +1,6 @@
 const Tour = require('../models/Tour');
 
-// List active tours (featured first, then newest)
+// List active tours (featured first, then newest) — Public
 const getActiveTours = async (req, res) => {
   try {
     const tours = await Tour.find({ active: true })
@@ -14,11 +14,26 @@ const getActiveTours = async (req, res) => {
   }
 };
 
+// Dashboard tour list — Owner sees only their own tours (incl. inactive);
+// Admin sees all, with the owning Owner populated (§2.5.0, §3.9).
+const getManageTours = async (req, res) => {
+  try {
+    const tours = await Tour.find({ ...(req.ownerFilter || {}) })
+      .populate('ownerId', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(tours);
+  } catch (error) {
+    console.error('getManageTours error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
+  }
+};
+
 // Get a single tour by slug
 const getTourBySlug = async (req, res) => {
   try {
     const tour = await Tour.findOne({ slug: req.params.slug, active: true });
-    
+
     if (!tour) {
       return res.status(404).json({ error: 'Tour package not found' });
     }
@@ -30,7 +45,7 @@ const getTourBySlug = async (req, res) => {
   }
 };
 
-// Create a new tour package (Admin only)
+// Create a new tour package (Owner — owned by them; Admin — unscoped)
 const createTour = async (req, res) => {
   try {
     const { slug } = req.body;
@@ -40,7 +55,8 @@ const createTour = async (req, res) => {
       return res.status(400).json({ error: 'A tour with this slug already exists' });
     }
 
-    const newTour = await Tour.create(req.body);
+    // ownerId always comes from the token, never the request body
+    const newTour = await Tour.create({ ...req.body, ownerId: req.user.id });
     res.status(201).json(newTour);
   } catch (error) {
     console.error('createTour error:', error);
@@ -48,12 +64,14 @@ const createTour = async (req, res) => {
   }
 };
 
-// Update an existing tour (Owner or Admin)
+// Update an existing tour (requireOwnership already confirmed the Owner owns
+// this tour, or that the caller is Admin, before this handler runs
 const updateTour = async (req, res) => {
   try {
     const { id } = req.params;
 
     const updateData = { ...req.body };
+    delete updateData.ownerId; // ownership never changes via this endpoint
 
     // Admin can edit all fields. Owner can edit pricing, itinerary, texts, and media
     // but is prohibited from modifying core administrative fields (slug, active, featured).
@@ -80,7 +98,7 @@ const updateTour = async (req, res) => {
   }
 };
 
-// Delete a tour package (Admin only)
+// Delete a tour package (requireOwnership already confirmed ownership/Admin)
 const deleteTour = async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,6 +117,7 @@ const deleteTour = async (req, res) => {
 
 module.exports = {
   getActiveTours,
+  getManageTours,
   getTourBySlug,
   createTour,
   updateTour,
