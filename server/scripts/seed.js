@@ -56,53 +56,38 @@ const seedDatabase = async () => {
       );
     }
 
-    // Seed Admin
-    const adminExists = await User.findOne({ email: adminEmail.toLowerCase() });
-    if (!adminExists) {
-      const salt = await bcrypt.genSalt(10);
-      const passwordHash = await bcrypt.hash(adminPassword, salt);
-      await User.create({
+    // Seed / Update Admin
+    const salt = await bcrypt.genSalt(10);
+    const adminPasswordHash = await bcrypt.hash(adminPassword, salt);
+    await User.findOneAndUpdate(
+      { email: adminEmail.toLowerCase() },
+      {
         name: 'Technical Admin',
         email: adminEmail.toLowerCase(),
-        passwordHash,
+        passwordHash: adminPasswordHash,
         role: 'admin',
         active: true,
-        emailVerified: true, // seeded accounts bypass the OTP flow
-      });
-      console.log(`Admin account created: ${adminEmail}`);
-    } else {
-      if (!adminExists.emailVerified) {
-        adminExists.emailVerified = true;
-        await adminExists.save();
-        console.log('Admin account already exists — marked as verified (v1.5 migration).');
-      } else {
-        console.log('Admin account already exists, skipping.');
-      }
-    }
+        emailVerified: true,
+      },
+      { upsert: true, new: true }
+    );
+    console.log(`Admin account updated/created: ${adminEmail}`);
 
-    // Seed Owner
-    const ownerExists = await User.findOne({ email: ownerEmail.toLowerCase() });
-    if (!ownerExists) {
-      const salt = await bcrypt.genSalt(10);
-      const passwordHash = await bcrypt.hash(ownerPassword, salt);
-      await User.create({
+    // Seed / Update Owner
+    const ownerPasswordHash = await bcrypt.hash(ownerPassword, salt);
+    await User.findOneAndUpdate(
+      { email: ownerEmail.toLowerCase() },
+      {
         name: 'Bodhipath Owner',
         email: ownerEmail.toLowerCase(),
-        passwordHash,
+        passwordHash: ownerPasswordHash,
         role: 'owner',
         active: true,
-        emailVerified: true, // seeded accounts bypass the OTP flow
-      });
-      console.log(`Owner account created: ${ownerEmail}`);
-    } else {
-      if (!ownerExists.emailVerified) {
-        ownerExists.emailVerified = true;
-        await ownerExists.save();
-        console.log('Owner account already exists — marked as verified (v1.5 migration).');
-      } else {
-        console.log('Owner account already exists, skipping.');
-      }
-    }
+        emailVerified: true,
+      },
+      { upsert: true, new: true }
+    );
+    console.log(`Owner account updated/created: ${ownerEmail}`);
 
     // The seed Owner stamps ownerId on every seeded tour/gallery item so the
     // multi-tenant scoping (§2.5.0) works from the first run.

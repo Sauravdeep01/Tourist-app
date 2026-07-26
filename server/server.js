@@ -47,6 +47,7 @@ app.use('/api', apiLimiter);
 // Apply strict rate limiting to authentication routes
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/signup', authLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
 
 // CORS middleware configurations
 const allowedOrigins = [

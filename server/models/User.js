@@ -54,6 +54,16 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    // Forgot-password flow: a hash of the emailed reset token (never the raw
+    // token) plus its expiry. Cleared once used or once a new one is issued.
+    resetPasswordTokenHash: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

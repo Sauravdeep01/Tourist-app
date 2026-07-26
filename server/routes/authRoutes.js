@@ -6,14 +6,23 @@ const {
   getMe,
   updateMe,
   changePassword,
+  forgotPassword,
+  resetPassword,
 } = require('../controllers/authController');
 const { requireAuth } = require('../middlewares/authMiddleware');
-const { validateSignup, validateLogin } = require('../middlewares/validators/authValidators');
+const {
+  validateSignup,
+  validateLogin,
+  validateForgotPassword,
+  validateResetPassword,
+} = require('../middlewares/validators/authValidators');
 
 const router = express.Router();
 
 router.post('/signup', validateSignup, signup);
 router.post('/login', validateLogin, login);
+router.post('/forgot-password', validateForgotPassword, forgotPassword);
+router.post('/reset-password', validateResetPassword, resetPassword);
 
 // Protected routes (any authenticated role)
 router.post('/logout', requireAuth, logout);

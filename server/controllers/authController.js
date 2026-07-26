@@ -1,7 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const User = require('../models/User');
 const { isValidCountryCode } = require('../utils/countryCodes');
+const { sendPasswordResetEmail } = require('../utils/email');
+
+const RESET_TOKEN_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const hashToken = (rawToken) => crypto.createHash('sha256').update(rawToken).digest('hex');
 
 // Helper to generate a 7-day JWT token
 const createToken = (id, email, role, tokenVersion = 0) => {
@@ -201,6 +206,66 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Request a password reset link (any role). Always responds with the same
+// generic message regardless of whether the email exists or the account is
+// active — this endpoint must never reveal account existence.
+const forgotPassword = async (req, res) => {
+  const genericResponse = {
+    message: 'If an account exists for this email, a reset link has been sent.',
+  };
+
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
+
+    if (user && user.active) {
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      user.resetPasswordTokenHash = hashToken(rawToken);
+      user.resetPasswordExpires = new Date(Date.now() + RESET_TOKEN_TTL_MS);
+      await user.save();
+
+      sendPasswordResetEmail(user, rawToken).catch((err) => {
+        console.error('Password reset email failed to send:', err.message);
+      });
+    }
+
+    res.status(200).json(genericResponse);
+  } catch (error) {
+    console.error('forgotPassword error:', error);
+    // Still return the generic response — never leak whether something went wrong for a specific email
+    res.status(200).json(genericResponse);
+  }
+};
+
+// Complete a password reset using the token emailed by forgotPassword.
+const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    const user = await User.findOne({
+      resetPasswordTokenHash: hashToken(token),
+      resetPasswordExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'This reset link is invalid or has expired. Please request a new one.' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.passwordHash = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordTokenHash = null;
+    user.resetPasswordExpires = null;
+    // Invalidate any existing sessions — a leaked old token should not survive a reset
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful. You can now log in with your new password.' });
+  } catch (error) {
+    console.error('resetPassword error:', error);
+    res.status(500).json({ error: 'Server error occurred' });
+  }
+};
+
 // Logout endpoint (invalidates current user tokens by incrementing tokenVersion)
 const logout = async (req, res) => {
   try {
@@ -223,4 +288,6 @@ module.exports = {
   getMe,
   updateMe,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };

@@ -62,4 +62,36 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
-module.exports = { validateSignup, validateLogin };
+const validateForgotPassword = (req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
+  const errors = [];
+  const { email } = req.body;
+
+  if (!isNonEmptyString(email) || !EMAIL_RE.test(email.trim())) {
+    errors.push({ field: 'email', message: 'Please enter a valid email address' });
+  }
+
+  if (errors.length) return respondWithErrors(res, errors);
+  next();
+};
+
+const validateResetPassword = (req, res, next) => {
+  const errors = [];
+  const { token, newPassword } = req.body;
+
+  if (!isNonEmptyString(token)) {
+    errors.push({ field: 'token', message: 'Reset token is required' });
+  }
+  if (!isNonEmptyString(newPassword)) {
+    errors.push({ field: 'newPassword', message: 'Password is required' });
+  } else if (newPassword.length < 8 || !/[A-Za-z]/.test(newPassword) || !/\d/.test(newPassword)) {
+    errors.push({ field: 'newPassword', message: 'Password must be at least 8 characters with a letter and a number' });
+  }
+
+  if (errors.length) return respondWithErrors(res, errors);
+  next();
+};
+
+module.exports = { validateSignup, validateLogin, validateForgotPassword, validateResetPassword };
