@@ -27,7 +27,7 @@ export default function LoginPage() {
 
   // Already authenticated? Don't show the login form.
   if (user) {
-    const dest = nextPath || (user.role === 'user' ? '/account' : '/admin/dashboard');
+    const dest = nextPath || (user.role === 'user' ? '/account' : user.role === 'owner' ? '/owner/dashboard' : '/admin/dashboard');
     return <Navigate to={dest} replace />;
   }
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
         password: form.password,
       });
       login(data.token, { name: data.name, email: data.email, role: data.role });
-      const dest = nextPath || (data.role === 'user' ? '/account' : '/admin/dashboard');
+      const dest = nextPath || (data.role === 'user' ? '/account' : data.role === 'owner' ? '/owner/dashboard' : '/admin/dashboard');
       navigate(dest, { replace: true });
     } catch (err) {
       const data = err.response?.data;

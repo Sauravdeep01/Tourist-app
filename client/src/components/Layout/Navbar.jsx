@@ -96,7 +96,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center space-x-3">
                 <Link
-                  to={user.role === 'user' ? '/account' : '/admin/dashboard'}
+                  to={user.role === 'user' ? '/account' : user.role === 'owner' ? '/owner/dashboard' : '/admin/dashboard'}
                   className="flex items-center space-x-1.5 text-sm font-medium text-maroon-700 hover:text-maroon-800"
                 >
                   <User className="h-4 w-4" />
@@ -179,7 +179,7 @@ export default function Navbar() {
                   <span>{user.name} ({user.role})</span>
                 </div>
                 <Link
-                  to={user.role === 'user' ? '/account' : '/admin/dashboard'}
+                  to={user.role === 'user' ? '/account' : user.role === 'owner' ? '/owner/dashboard' : '/admin/dashboard'}
                   onClick={() => setMobileMenuOpen(false)}
                   className="block py-2 px-3 rounded-lg text-base font-medium text-neutral-700 hover:bg-neutral-50"
                 >

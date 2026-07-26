@@ -7,6 +7,8 @@ import LoginPage from './Pages/LoginPage';
 import SignupPage from './Pages/SignupPage';
 import ForgotPasswordPage from './Pages/ForgotPasswordPage';
 import ResetPasswordPage from './Pages/ResetPasswordPage';
+import AdminDashboardPage from './Pages/AdminDashboardPage';
+import OwnerDashboardPage from './Pages/OwnerDashboardPage';
 import './i18n'; // Import i18n resources configuration
 
 // Simple placeholder page component to prevent router crashes when navigating
@@ -39,14 +41,21 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Full-bleed auth pages — no Navbar/Footer, so the creative
-              split-screen layout owns the whole viewport. */}
+          {/* Full-bleed auth pages */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Everything else keeps the standard Navbar/Footer chrome */}
+          {/* Technical Admin Control Panel */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+
+          {/* Owner Portal Control Panel */}
+          <Route path="/owner" element={<OwnerDashboardPage />} />
+          <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+
+          {/* Public routes keeping standard Navbar/Footer chrome */}
           <Route element={<SiteLayout />}>
             <Route path="/" element={<HomePage />} />
 
@@ -56,10 +65,8 @@ export default function App() {
             <Route path="/about" element={<PlaceholderPage title="About Us (关于我们)" />} />
             <Route path="/contact" element={<PlaceholderPage title="Contact & Booking (联系与报价)" />} />
 
-            {/* Authenticated User Profiles */}
+            {/* Authenticated User Profile */}
             <Route path="/account" element={<PlaceholderPage title="Tourist Profile & Inquiries (个人中心)" />} />
-            <Route path="/admin" element={<PlaceholderPage title="Staff Login (员工通道)" />} />
-            <Route path="/admin/dashboard" element={<PlaceholderPage title="Staff Control Panel (管理后台)" />} />
           </Route>
         </Routes>
       </Router>

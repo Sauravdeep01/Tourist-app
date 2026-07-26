@@ -144,10 +144,50 @@ const resources = {
           requestNew: '重新申请',
         },
       },
+      dashboard: {
+        title: '管理后台',
+        welcome: '欢迎回来, {{name}}',
+        overview: '概览',
+        tours: '路线管理',
+        destinations: '圣地管理',
+        inquiries: '咨询与报价',
+        owners: '账号管理',
+        auditLogs: '审计日志',
+        settings: '网站设置',
+        stats: {
+          totalTours: '总路线数',
+          totalDestinations: '总圣地数',
+          totalInquiries: '收到咨询',
+          totalOwners: '运营账号',
+        },
+        actions: {
+          createTour: '新建路线',
+          createDestination: '新建圣地',
+          createOwner: '新建账号',
+          saveSettings: '保存设置',
+          search: '搜索…',
+          refresh: '刷新',
+          cancel: '取消',
+          confirm: '确认',
+          edit: '编辑',
+          delete: '删除',
+          viewDetails: '查看详情',
+        },
+        status: {
+          active: '已上架',
+          draft: '草稿',
+          new: '新咨询',
+          processing: '处理中',
+          quoted: '已报价',
+          confirmed: '已确认',
+          cancelled: '已取消',
+        }
+      },
     }
   },
   en: {
     translation: {
+      // ... same for en
       navbar: {
         home: 'Home',
         tours: 'Tours',
@@ -287,6 +327,45 @@ const resources = {
           invalidMessage: 'This reset link is no longer valid. Please request a new one.',
           requestNew: 'Request a new link',
         },
+      },
+      dashboard: {
+        title: 'Control Panel',
+        welcome: 'Welcome back, {{name}}',
+        overview: 'Overview',
+        tours: 'Manage Tours',
+        destinations: 'Destinations',
+        inquiries: 'Inquiries & Quotes',
+        owners: 'Manage Accounts',
+        auditLogs: 'Audit Logs',
+        settings: 'Site Settings',
+        stats: {
+          totalTours: 'Total Tours',
+          totalDestinations: 'Destinations',
+          totalInquiries: 'Total Inquiries',
+          totalOwners: 'Staff Accounts',
+        },
+        actions: {
+          createTour: 'Add Tour',
+          createDestination: 'Add Destination',
+          createOwner: 'Add Account',
+          saveSettings: 'Save Settings',
+          search: 'Search…',
+          refresh: 'Refresh',
+          cancel: 'Cancel',
+          confirm: 'Confirm',
+          edit: 'Edit',
+          delete: 'Delete',
+          viewDetails: 'View Details',
+        },
+        status: {
+          active: 'Active',
+          draft: 'Draft',
+          new: 'New',
+          processing: 'Processing',
+          quoted: 'Quoted',
+          confirmed: 'Confirmed',
+          cancelled: 'Cancelled',
+        }
       },
     }
   }
