@@ -36,7 +36,7 @@ export default function SignupPage() {
   const nextPath = searchParams.get('next');
 
   if (user) {
-    const dest = nextPath || (user.role === 'user' ? '/account' : '/admin/dashboard');
+    const dest = nextPath || '/';
     return <Navigate to={dest} replace />;
   }
 

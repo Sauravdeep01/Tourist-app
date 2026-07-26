@@ -12,6 +12,8 @@ import OwnerDashboardPage from './Pages/OwnerDashboardPage';
 import GalleryPage from './Pages/GalleryPage';
 import DestinationsPage from './Pages/DestinationsPage';
 import DestinationDetailPage from './Pages/DestinationDetailPage';
+import ProfilePage from './Pages/ProfilePage';
+import AboutPage from './Pages/AboutPage';
 import './i18n'; // Import i18n resources configuration
 
 // Simple placeholder page component to prevent router crashes when navigating
@@ -68,11 +70,12 @@ export default function App() {
             <Route path="/destinations" element={<DestinationsPage />} />
             <Route path="/destinations/:slug" element={<DestinationDetailPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/about" element={<PlaceholderPage title="About Us (关于我们)" />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<PlaceholderPage title="Contact & Booking (联系与报价)" />} />
 
             {/* Authenticated User Profile */}
-            <Route path="/account" element={<PlaceholderPage title="Tourist Profile & Inquiries (个人中心)" />} />
+            <Route path="/account" element={<ProfilePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Routes>
       </Router>
