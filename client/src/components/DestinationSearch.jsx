@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, MapPin, ChevronRight, X } from 'lucide-react';
+import { Search, MapPin, ChevronRight, Navigation, X } from 'lucide-react';
 import api from '../utils/api';
 
-// Interactive live destination search bar with instant dropdown
+// Interactive search bar with embedded Explore button matching user reference design
 export default function DestinationSearch() {
   const { i18n } = useTranslation();
   const lang = i18n.language;
@@ -29,7 +29,7 @@ export default function DestinationSearch() {
     fetchDestinations();
   }, []);
 
-  // Filter destinations by name or country in both languages
+  // Filter destinations by name or country
   const filtered = destinations.filter((item) => {
     if (!query.trim()) return false;
     const q = query.toLowerCase().trim();
@@ -41,8 +41,24 @@ export default function DestinationSearch() {
     return nameEn.includes(q) || nameZh.includes(q) || placeEn.includes(q) || placeZh.includes(q);
   });
 
+  // Handle explore button click or enter key submit
+  const handleExplore = () => {
+    if (selectedIndex >= 0 && filtered[selectedIndex]) {
+      navigate(`/destinations/${filtered[selectedIndex].slug}`);
+    } else {
+      navigate('/destinations');
+    }
+    setIsOpen(false);
+  };
+
   // Handle keyboard navigation
   const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleExplore();
+      return;
+    }
+
     if (!isOpen || filtered.length === 0) return;
 
     if (e.key === 'ArrowDown') {
@@ -51,11 +67,6 @@ export default function DestinationSearch() {
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filtered.length - 1));
-    } else if (e.key === 'Enter' && selectedIndex >= 0) {
-      e.preventDefault();
-      navigate(`/destinations/${filtered[selectedIndex].slug}`);
-      setIsOpen(false);
-      setQuery('');
     } else if (e.key === 'Escape') {
       setIsOpen(false);
     }
@@ -73,10 +84,11 @@ export default function DestinationSearch() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-xl mx-auto mt-8">
-      {/* Search Input Box */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-400" />
+    <div ref={containerRef} className="relative w-full max-w-2xl mx-auto mt-8">
+      {/* Search Input Box with embedded Explore button */}
+      <div className="relative bg-[#131a2a]/90 backdrop-blur-md rounded-2xl border border-slate-700/80 p-2 sm:p-2.5 flex items-center shadow-2xl transition-all focus-within:ring-2 focus-within:ring-saffron-500/50">
+        <Search className="h-5 w-5 text-slate-400 ml-3 shrink-0" />
+        
         <input
           type="text"
           value={query}
@@ -89,10 +101,10 @@ export default function DestinationSearch() {
           onKeyDown={handleKeyDown}
           placeholder={
             lang === 'zh'
-              ? '搜索圣地目的地... (如: 菩提伽耶 / Gaya)'
-              : 'Search a destination... (e.g. Bodh Gaya / Sarnath)'
+              ? '搜索圣地目的地、朝圣路线或参学体验...'
+              : 'Search destinations, yatras, or experiences...'
           }
-          className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-white/95 text-neutral-900 placeholder:text-neutral-500 font-medium text-sm sm:text-base border border-white/40 shadow-xl focus:outline-none focus:ring-2 focus:ring-saffron-500 transition-all"
+          className="w-full bg-transparent pl-3 pr-4 py-2 text-sm sm:text-base text-white placeholder:text-slate-400 font-medium focus:outline-none"
         />
 
         {query && (
@@ -101,18 +113,27 @@ export default function DestinationSearch() {
               setQuery('');
               setIsOpen(false);
             }}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-600 rounded-full"
+            className="p-1.5 text-slate-400 hover:text-white rounded-full mr-2"
           >
             <X className="h-4 w-4" />
           </button>
         )}
+
+        {/* Embedded Explore Button */}
+        <button
+          onClick={handleExplore}
+          className="bg-saffron-500 hover:bg-saffron-600 active:scale-95 text-neutral-950 font-bold px-6 py-2.5 sm:py-3 rounded-xl transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer text-sm sm:text-base"
+        >
+          <span>{lang === 'zh' ? '探索' : 'Explore'}</span>
+          <Navigation className="h-4 w-4 rotate-45 fill-current" />
+        </button>
       </div>
 
       {/* Instant Dropdown Menu */}
       {isOpen && query.trim().length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-[#131a2a] rounded-2xl shadow-2xl border border-slate-700 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
           {filtered.length > 0 ? (
-            <div className="max-h-72 overflow-y-auto divide-y divide-neutral-100 text-left">
+            <div className="max-h-72 overflow-y-auto divide-y divide-slate-800 text-left">
               {filtered.map((item, index) => (
                 <div
                   key={item._id}
@@ -121,8 +142,8 @@ export default function DestinationSearch() {
                     setIsOpen(false);
                     setQuery('');
                   }}
-                  className={`p-3 flex items-center space-x-3 cursor-pointer transition-colors ${
-                    index === selectedIndex ? 'bg-saffron-50' : 'hover:bg-neutral-50'
+                  className={`p-3.5 flex items-center space-x-3 cursor-pointer transition-colors ${
+                    index === selectedIndex ? 'bg-saffron-500/20 text-saffron-300' : 'hover:bg-slate-800/80 text-white'
                   }`}
                 >
                   <img
@@ -131,28 +152,28 @@ export default function DestinationSearch() {
                       'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=200&q=80'
                     }
                     alt=""
-                    className="h-12 w-16 object-cover rounded-lg shrink-0"
+                    className="h-12 w-16 object-cover rounded-lg shrink-0 border border-slate-700"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-neutral-900 text-xs sm:text-sm truncate">
+                    <h4 className="font-bold text-white text-xs sm:text-sm truncate">
                       {item.name?.en} {item.name?.zh && `· ${item.name.zh}`}
                     </h4>
-                    <p className="text-[11px] text-neutral-500 truncate flex items-center gap-1 mt-0.5">
-                      <MapPin className="h-3 w-3 text-saffron-600" />
+                    <p className="text-[11px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
+                      <MapPin className="h-3 w-3 text-saffron-400" />
                       <span>{item.stateCountry?.[lang] || item.stateCountry?.en}</span>
                     </p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-neutral-400" />
+                  <ChevronRight className="h-4 w-4 text-slate-500" />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-xs text-neutral-500 space-y-2">
+            <div className="p-4 text-center text-xs text-slate-400 space-y-2">
               <p>{lang === 'zh' ? '未找到相关圣地' : 'No destination found'}</p>
               <Link
                 to="/destinations"
                 onClick={() => setIsOpen(false)}
-                className="inline-block text-saffron-700 font-bold hover:underline"
+                className="inline-block text-saffron-400 font-bold hover:underline"
               >
                 {lang === 'zh' ? '浏览全部圣地 →' : 'Browse All Destinations →'}
               </Link>

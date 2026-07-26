@@ -12,26 +12,44 @@ import {
   Bus, 
   MapPin, 
   ArrowRight, 
-  Sparkles, 
   Loader2,
   Compass
 } from 'lucide-react';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Fetch featured tours from the backend API
+  // Dynamic Cloudinary images for the homepage hero background slideshow
+  const heroSlides = [
+    {
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785073805/bodhipath_homepage/fkd5wvjzkc60riw9ep5n.jpg'
+    },
+    {
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785073806/bodhipath_homepage/dgflnzl2jtalykwy5bml.jpg'
+    }
+  ];
+
+  // Auto cross-fade slides smoothly every 3.5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
+
+  // Fetch featured tours from backend
   useEffect(() => {
     const fetchTours = async () => {
       try {
         setLoading(true);
         const response = await api.get('/api/tours');
-        // Backend returns active tours, featured first (per SRS 3.2)
         setTours(response.data);
       } catch (err) {
         console.error('Error fetching tours:', err);
@@ -44,7 +62,7 @@ export default function HomePage() {
     fetchTours();
   }, [i18n.language]);
 
-  // Sacred Sites data with curated high-quality representational images
+  // Sacred Sites data
   const sacredSites = [
     { slug: 'bodh-gaya', nameKey: 'sacredSites.bodhgaya', image: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=400&auto=format&fit=crop' },
     { slug: 'sarnath', nameKey: 'sacredSites.sarnath', image: 'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=400&auto=format&fit=crop' },
@@ -58,31 +76,31 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-maroon-900 via-maroon-800 to-saffron-700 text-white py-24 sm:py-32">
-        {/* Decorative background wheel */}
-        <div className="absolute right-[-10%] top-[-10%] opacity-10 pointer-events-none animate-spin-slow">
-          <svg className="w-[500px] h-[500px]" viewBox="0 0 100 100" fill="currentColor">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="3" />
-            <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-              <line 
-                key={deg}
-                x1="50" 
-                y1="50" 
-                x2={50 + 30 * Math.sin((deg * Math.PI) / 180)} 
-                y2={50 - 30 * Math.cos((deg * Math.PI) / 180)} 
-                stroke="currentColor" 
-                strokeWidth="2" 
-              />
-            ))}
-          </svg>
-        </div>
+      {/* 1. DYNAMIC HERO SECTION WITH DESTINATION BACKGROUND SLIDESHOW */}
+      <section className="relative overflow-hidden bg-[#0b0f17] text-white min-h-[620px] lg:min-h-[720px] flex items-center justify-center py-20 sm:py-28">
+        {/* Dynamic Background Slideshow */}
+        {heroSlides.map((slide, idx) => (
+          <div
+            key={idx}
+            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+              idx === currentSlide ? 'opacity-100 scale-105' : 'opacity-0 scale-100 pointer-events-none'
+            }`}
+          >
+            <img
+              src={slide.image}
+              alt=""
+              className="w-full h-full object-cover brightness-75"
+            />
+            {/* Gradient Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f17] via-black/45 to-black/50" />
+          </div>
+        ))}
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Hero Content Overlay */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-20">
           <div className="text-center max-w-3xl mx-auto">
             {/* Dharma Wheel Icon Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-saffron-500/20 text-saffron-300 border border-saffron-500/30 text-xs font-semibold uppercase tracking-wider mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-saffron-500/20 text-saffron-300 border border-saffron-500/30 text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-md shadow-lg">
               <svg className="h-4 w-4 text-saffron-400 animate-spin-slow" viewBox="0 0 100 100" fill="currentColor">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" />
                 <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="6" />
@@ -102,12 +120,12 @@ export default function HomePage() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight font-sans drop-shadow-md">
+            <h1 className="text-4xl sm:text-6xl font-serif font-extrabold tracking-tight text-white mb-6 leading-tight drop-shadow-lg">
               {t('hero.title')}
             </h1>
 
             {/* Pitch */}
-            <p className="text-lg sm:text-xl text-neutral-200 mb-10 leading-relaxed max-w-2xl mx-auto font-medium">
+            <p className="text-base sm:text-xl text-slate-200 mb-10 leading-relaxed max-w-2xl mx-auto font-medium drop-shadow-md">
               {t('hero.pitch')}
             </p>
 
@@ -115,7 +133,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/tours"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-saffron-500 hover:bg-saffron-600 text-neutral-950 font-bold rounded-xl transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer text-base"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-saffron-500 hover:bg-saffron-600 text-neutral-950 font-bold rounded-xl transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer text-base"
               >
                 {t('hero.exploreBtn')}
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -124,14 +142,14 @@ export default function HomePage() {
               {user ? (
                 <Link
                   to="/contact"
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
                 >
                   {t('hero.planBtn')}
                 </Link>
               ) : (
                 <Link
                   to="/login?next=/contact"
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
                 >
                   {t('hero.planBtn')}
                 </Link>
