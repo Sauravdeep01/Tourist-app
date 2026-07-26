@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../context/AuthContext';
 import api from '../utils/api';
 import TourCard from '../components/TourCard';
+import DestinationSearch from '../components/DestinationSearch';
 import { 
   Users, 
   Hotel, 
@@ -45,14 +46,14 @@ export default function HomePage() {
 
   // Sacred Sites data with curated high-quality representational images
   const sacredSites = [
-    { nameKey: 'sacredSites.bodhgaya', image: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.sarnath', image: 'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.lumbini', image: 'https://images.unsplash.com/photo-1596120206416-291885f81e3a?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.kushinagar', image: 'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.nalanda', image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.rajgir', image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.shravasti', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop' },
-    { nameKey: 'sacredSites.agra', image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=400&auto=format&fit=crop' }
+    { slug: 'bodh-gaya', nameKey: 'sacredSites.bodhgaya', image: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'sarnath', nameKey: 'sacredSites.sarnath', image: 'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'lumbini', nameKey: 'sacredSites.lumbini', image: 'https://images.unsplash.com/photo-1596120206416-291885f81e3a?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'kushinagar', nameKey: 'sacredSites.kushinagar', image: 'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'nalanda', nameKey: 'sacredSites.nalanda', image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'rajgir', nameKey: 'sacredSites.rajgir', image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'shravasti', nameKey: 'sacredSites.shravasti', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop' },
+    { slug: 'agra', nameKey: 'sacredSites.agra', image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=400&auto=format&fit=crop' }
   ];
 
   return (
@@ -136,18 +137,21 @@ export default function HomePage() {
                 </Link>
               )}
             </div>
+
+            {/* Hero Live Destination Search Box */}
+            <DestinationSearch />
           </div>
         </div>
       </section>
 
       {/* 2. FEATURED TOURS */}
-      <section className="py-20 bg-[#faf9f6]">
+      <section className="py-20 bg-[#0b0f17] text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
               {t('featured.title')}
             </h2>
-            <p className="text-neutral-600 leading-relaxed">
+            <p className="text-slate-400 leading-relaxed font-sans">
               {t('featured.subtitle')}
             </p>
           </div>
@@ -155,8 +159,8 @@ export default function HomePage() {
           {/* Loading state */}
           {loading && (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="h-10 w-10 text-maroon-700 animate-spin mb-4" />
-              <p className="text-sm text-neutral-500 font-medium">
+              <Loader2 className="h-10 w-10 text-saffron-400 animate-spin mb-4" />
+              <p className="text-sm text-slate-400 font-medium">
                 {i18n.language === 'zh' ? '正在为您加载路线...' : 'Loading pilgrimage tours...'}
               </p>
             </div>
@@ -164,7 +168,7 @@ export default function HomePage() {
 
           {/* Error state */}
           {error && !loading && (
-            <div className="bg-red-50 text-red-700 border border-red-200 rounded-xl p-6 text-center max-w-md mx-auto">
+            <div className="bg-red-950/80 text-red-300 border border-red-800 rounded-xl p-6 text-center max-w-md mx-auto">
               <p className="font-semibold">{error}</p>
             </div>
           )}
@@ -181,72 +185,73 @@ export default function HomePage() {
       </section>
 
       {/* 3. WHY TRAVEL WITH US */}
-      <section className="py-20 bg-white border-y border-neutral-100">
+      <section className="py-20 bg-[#131b2e] border-y border-slate-800 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
               {t('whyUs.title')}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Card 1: Chinese Speaking Guide */}
-            <div className="flex flex-col items-center text-center p-6 bg-stone-50/50 hover:bg-stone-50 rounded-2xl border border-neutral-100 hover-lift transition-all">
-              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-maroon-50 text-maroon-700 mb-5 shadow-xs">
+            <div className="flex flex-col items-center text-center p-6 bg-[#161f30] rounded-2xl border border-slate-800 hover:border-saffron-400/50 transition-all">
+              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-saffron-500/10 text-saffron-400 mb-5 border border-saffron-500/20">
                 <Users className="h-7 w-7" />
               </div>
-              <h3 className="text-lg font-bold text-neutral-900 mb-2">{t('whyUs.guideTitle')}</h3>
-              <p className="text-sm text-neutral-600 leading-relaxed">{t('whyUs.guideDesc')}</p>
+              <h3 className="text-lg font-bold text-white mb-2">{t('whyUs.guideTitle')}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed font-sans">{t('whyUs.guideDesc')}</p>
             </div>
 
             {/* Card 2: Quality Hotels */}
-            <div className="flex flex-col items-center text-center p-6 bg-stone-50/50 hover:bg-stone-50 rounded-2xl border border-neutral-100 hover-lift transition-all">
-              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-saffron-50 text-saffron-700 mb-5 shadow-xs">
+            <div className="flex flex-col items-center text-center p-6 bg-[#161f30] rounded-2xl border border-slate-800 hover:border-saffron-400/50 transition-all">
+              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-saffron-500/10 text-saffron-400 mb-5 border border-saffron-500/20">
                 <Hotel className="h-7 w-7" />
               </div>
-              <h3 className="text-lg font-bold text-neutral-900 mb-2">{t('whyUs.hotelTitle')}</h3>
-              <p className="text-sm text-neutral-600 leading-relaxed">{t('whyUs.hotelDesc')}</p>
+              <h3 className="text-lg font-bold text-white mb-2">{t('whyUs.hotelTitle')}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed font-sans">{t('whyUs.hotelDesc')}</p>
             </div>
 
             {/* Card 3: All Meals Included */}
-            <div className="flex flex-col items-center text-center p-6 bg-stone-50/50 hover:bg-stone-50 rounded-2xl border border-neutral-100 hover-lift transition-all">
-              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-maroon-50 text-maroon-700 mb-5 shadow-xs">
+            <div className="flex flex-col items-center text-center p-6 bg-[#161f30] rounded-2xl border border-slate-800 hover:border-saffron-400/50 transition-all">
+              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-saffron-500/10 text-saffron-400 mb-5 border border-saffron-500/20">
                 <UtensilsCrossed className="h-7 w-7" />
               </div>
-              <h3 className="text-lg font-bold text-neutral-900 mb-2">{t('whyUs.mealTitle')}</h3>
-              <p className="text-sm text-neutral-600 leading-relaxed">{t('whyUs.mealDesc')}</p>
+              <h3 className="text-lg font-bold text-white mb-2">{t('whyUs.mealTitle')}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed font-sans">{t('whyUs.mealDesc')}</p>
             </div>
 
             {/* Card 4: Comfortable Transport */}
-            <div className="flex flex-col items-center text-center p-6 bg-stone-50/50 hover:bg-stone-50 rounded-2xl border border-neutral-100 hover-lift transition-all">
-              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-saffron-50 text-saffron-700 mb-5 shadow-xs">
+            <div className="flex flex-col items-center text-center p-6 bg-[#161f30] rounded-2xl border border-slate-800 hover:border-saffron-400/50 transition-all">
+              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-saffron-500/10 text-saffron-400 mb-5 border border-saffron-500/20">
                 <Bus className="h-7 w-7" />
               </div>
-              <h3 className="text-lg font-bold text-neutral-900 mb-2">{t('whyUs.transportTitle')}</h3>
-              <p className="text-sm text-neutral-600 leading-relaxed">{t('whyUs.transportDesc')}</p>
+              <h3 className="text-lg font-bold text-white mb-2">{t('whyUs.transportTitle')}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed font-sans">{t('whyUs.transportDesc')}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* 4. SACRED SITES STRIP */}
-      <section className="py-20 bg-[#faf9f6]">
+      <section className="py-20 bg-[#0b0f17] text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
               {t('sacredSites.title')}
             </h2>
-            <p className="text-neutral-600 leading-relaxed">
+            <p className="text-slate-400 leading-relaxed font-sans">
               {t('sacredSites.subtitle')}
             </p>
           </div>
 
           {/* 8 Site Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {sacredSites.map((site, index) => (
-              <div 
-                key={index} 
-                className="group relative h-48 rounded-2xl overflow-hidden shadow-xs hover-lift transition-all cursor-pointer"
+            {sacredSites.map((site) => (
+              <Link 
+                key={site.slug} 
+                to={`/destinations/${site.slug}`}
+                className="group relative h-48 rounded-2xl overflow-hidden shadow-xs hover-lift transition-all cursor-pointer block border border-slate-800"
               >
                 {/* Background image */}
                 <img 
@@ -265,16 +270,16 @@ export default function HomePage() {
                     {t(site.nameKey)}
                   </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
       {/* 5. CALL-TO-ACTION BAND */}
-      <section className="py-16 sm:py-24 bg-white">
+      <section className="py-16 sm:py-24 bg-[#131b2e]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-maroon-800 to-maroon-950 p-8 sm:p-16 text-center text-white shadow-xl">
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#161f30] to-[#0d1320] p-8 sm:p-16 text-center text-white shadow-2xl border border-slate-800">
             {/* Background design */}
             <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#ff9f00_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
             
@@ -283,11 +288,10 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 text-white">
                 {t('cta.title')}
               </h2>
-              <p className="text-neutral-300 mb-8 leading-relaxed text-sm sm:text-base">
+              <p className="text-slate-300 mb-8 leading-relaxed text-sm sm:text-base font-sans">
                 {t('cta.desc')}
               </p>
 
-              {/* Inquiry routing with gating (FE-9) */}
               {user ? (
                 <Link
                   to="/contact"

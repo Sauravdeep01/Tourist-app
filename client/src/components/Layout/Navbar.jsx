@@ -25,42 +25,40 @@ export default function Navbar() {
   const navItems = [
     { name: t('navbar.home'), path: '/' },
     { name: t('navbar.tours'), path: '/tours' },
+    { name: t('navbar.destinations'), path: '/destinations' },
     { name: t('navbar.gallery'), path: '/gallery' },
     { name: t('navbar.about'), path: '/about' },
     { name: t('navbar.contact'), path: '/contact' },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full glass-nav shadow-xs">
+    <header className="sticky top-0 z-50 w-full bg-[#0b0f17]/90 backdrop-blur-md border-b border-slate-800/80 shadow-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             {/* Dharma Wheel SVG logo */}
-            <svg 
-              className="h-8 w-8 text-saffron-500 transition-transform duration-700 ease-out group-hover:rotate-180" 
-              viewBox="0 0 100 100" 
+            <svg
+              className="h-8 w-8 text-saffron-500 transition-transform duration-700 ease-out group-hover:rotate-180"
+              viewBox="0 0 100 100"
               fill="currentColor"
             >
-              {/* Outer wheel circle */}
               <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" />
-              {/* Inner hub */}
               <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="6" />
               <circle cx="50" cy="50" r="4" fill="currentColor" />
-              {/* Spokes (8 spokes representing Noble Eightfold Path) */}
               {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-                <line 
+                <line
                   key={deg}
-                  x1="50" 
-                  y1="50" 
-                  x2={50 + 30 * Math.sin((deg * Math.PI) / 180)} 
-                  y2={50 - 30 * Math.cos((deg * Math.PI) / 180)} 
-                  stroke="currentColor" 
-                  strokeWidth="6" 
+                  x1="50"
+                  y1="50"
+                  x2={50 + 30 * Math.sin((deg * Math.PI) / 180)}
+                  y2={50 - 30 * Math.cos((deg * Math.PI) / 180)}
+                  stroke="currentColor"
+                  strokeWidth="6"
                 />
               ))}
             </svg>
-            <span className="font-semibold text-lg sm:text-xl tracking-wide bg-gradient-to-r from-maroon-700 to-saffron-600 bg-clip-text text-transparent">
+            <span className="font-semibold text-lg sm:text-xl tracking-wide text-white">
               Bodhipath Tour & Travels
             </span>
           </Link>
@@ -72,8 +70,10 @@ export default function Navbar() {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-colors duration-200 hover:text-saffron-500 ${
-                    isActive ? 'text-maroon-700 border-b-2 border-maroon-700 pb-1' : 'text-neutral-600'
+                  `text-sm font-medium transition-colors duration-200 ${
+                    isActive
+                      ? 'text-saffron-400 border-b-2 border-saffron-400 pb-1 font-semibold'
+                      : 'text-slate-300 hover:text-saffron-400'
                   }`
                 }
               >
@@ -87,9 +87,9 @@ export default function Navbar() {
             {/* Language Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 text-sm font-medium transition-all cursor-pointer"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white"
             >
-              <Globe className="h-4 w-4 text-neutral-500" />
+              <Globe className="h-4 w-4 text-saffron-400" />
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
@@ -97,15 +97,21 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center space-x-3">
                 <Link
-                  to={user.role === 'user' ? '/account' : user.role === 'owner' ? '/owner/dashboard' : '/admin/dashboard'}
-                  className="flex items-center space-x-1.5 text-sm font-medium text-maroon-700 hover:text-maroon-800"
+                  to={
+                    user.role === 'user'
+                      ? '/account'
+                      : user.role === 'owner'
+                      ? '/owner/dashboard'
+                      : '/admin/dashboard'
+                  }
+                  className="flex items-center space-x-1.5 text-sm font-medium text-saffron-400 hover:text-saffron-300"
                 >
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-neutral-600 hover:text-red-600 hover:bg-red-50 text-sm font-medium transition-all cursor-pointer"
+                  className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-red-400 hover:bg-slate-800 transition-all cursor-pointer"
                   title={t('navbar.logout')}
                 >
                   <LogOut className="h-4 w-4" />
@@ -115,13 +121,13 @@ export default function Navbar() {
               <div className="flex items-center space-x-2">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-neutral-600 hover:text-maroon-700 px-3 py-1.5 transition-colors"
+                  className="text-sm font-medium text-slate-300 hover:text-saffron-400 px-3 py-1.5 transition-colors"
                 >
                   {t('navbar.login')}
                 </Link>
                 <Link
                   to="/signup"
-                  className="text-sm font-medium text-white bg-maroon-700 hover:bg-maroon-800 px-4 py-2 rounded-lg transition-colors shadow-xs"
+                  className="text-sm font-bold bg-saffron-500 hover:bg-saffron-600 text-neutral-950 px-4 py-2 rounded-lg transition-all shadow-xs"
                 >
                   {t('navbar.signup')}
                 </Link>
@@ -131,18 +137,17 @@ export default function Navbar() {
 
           {/* Mobile Hamburger Menu Toggle */}
           <div className="flex md:hidden items-center space-x-2">
-            {/* Language Toggle for Mobile screen */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 px-2.5 py-1 rounded-md border border-neutral-200 bg-white text-neutral-700 text-xs font-medium cursor-pointer"
+              className="flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer border border-slate-700 bg-slate-800 text-white"
             >
-              <Globe className="h-3.5 w-3.5" />
+              <Globe className="h-3.5 w-3.5 text-saffron-400" />
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1 rounded-lg text-neutral-600 hover:bg-neutral-100 focus:outline-none cursor-pointer"
+              className="p-1 rounded-lg focus:outline-none cursor-pointer text-white hover:bg-slate-800"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -152,7 +157,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-neutral-100 animate-in slide-in-from-top duration-200">
+        <div className="md:hidden border-b border-slate-800 bg-[#0b0f17] text-white animate-in slide-in-from-top duration-200">
           <div className="space-y-1 px-4 py-3">
             {navItems.map((item) => (
               <NavLink
@@ -161,7 +166,9 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   `block py-2 px-3 rounded-lg text-base font-medium transition-colors ${
-                    isActive ? 'bg-maroon-50 text-maroon-700' : 'text-neutral-700 hover:bg-neutral-50 hover:text-maroon-700'
+                    isActive
+                      ? 'bg-slate-800 text-saffron-400'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-saffron-400'
                   }`
                 }
               >
@@ -169,26 +176,32 @@ export default function Navbar() {
               </NavLink>
             ))}
 
-            {/* Separator */}
-            <div className="h-px bg-neutral-100 my-2" />
+            <div className="h-px my-2 bg-slate-800" />
 
-            {/* Auth Section in Mobile Menu */}
             {user ? (
               <div className="space-y-1 py-1">
-                <div className="px-3 py-1.5 flex items-center space-x-2 text-sm text-neutral-500">
+                <div className="px-3 py-1.5 flex items-center space-x-2 text-sm text-slate-400">
                   <User className="h-4 w-4" />
-                  <span>{user.name} ({user.role})</span>
+                  <span>
+                    {user.name} ({user.role})
+                  </span>
                 </div>
                 <Link
-                  to={user.role === 'user' ? '/account' : user.role === 'owner' ? '/owner/dashboard' : '/admin/dashboard'}
+                  to={
+                    user.role === 'user'
+                      ? '/account'
+                      : user.role === 'owner'
+                      ? '/owner/dashboard'
+                      : '/admin/dashboard'
+                  }
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2 px-3 rounded-lg text-base font-medium text-neutral-700 hover:bg-neutral-50"
+                  className="block py-2 px-3 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800"
                 >
                   {t('navbar.myAccount')}
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left flex items-center space-x-2 py-2 px-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50 cursor-pointer"
+                  className="w-full text-left flex items-center space-x-2 py-2 px-3 rounded-lg text-base font-medium text-red-400 hover:bg-red-950/40 cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>{t('navbar.logout')}</span>
@@ -199,14 +212,14 @@ export default function Navbar() {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex justify-center items-center py-2 border border-neutral-200 rounded-lg text-base font-medium text-neutral-700 hover:bg-neutral-50"
+                  className="flex justify-center items-center py-2 rounded-lg text-base font-medium border border-slate-700 text-white hover:bg-slate-800"
                 >
                   {t('navbar.login')}
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex justify-center items-center py-2 bg-maroon-700 text-white rounded-lg text-base font-medium hover:bg-maroon-800"
+                  className="flex justify-center items-center py-2 rounded-lg text-base font-bold bg-saffron-500 text-neutral-950 hover:bg-saffron-600 shadow-xs"
                 >
                   {t('navbar.signup')}
                 </Link>

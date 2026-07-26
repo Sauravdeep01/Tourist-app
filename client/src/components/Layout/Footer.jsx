@@ -11,7 +11,7 @@ export default function Footer() {
   const { user } = useContext(AuthContext);
 
   return (
-    <footer className="bg-neutral-900 text-neutral-400 border-t border-neutral-800">
+    <footer className="bg-[#070a10] text-slate-400 border-t border-slate-800">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Column 1: Brand Info */}
