@@ -10,7 +10,7 @@ const uploadImage = async (req, res) => {
     }
 
     const folder = ALLOWED_FOLDERS.includes(req.body.folder) ? req.body.folder : 'misc';
-    const result = await uploadBufferToCloudinary(req.file.buffer, `appl-travel/${folder}`);
+    const result = await uploadBufferToCloudinary(req.file.buffer, `bodhipath-tours/${folder}`);
 
     res.status(201).json({ url: result.secure_url, publicId: result.public_id });
   } catch (error) {

@@ -67,7 +67,7 @@ const resources = {
         whatsapp: 'WhatsApp',
         wechat: '微信 ID',
         email: '邮箱',
-        copyright: '© 2026 APPL Travel. 保留所有权利。',
+        copyright: '© 2026 Bodhipath Tour & Travels. 保留所有权利。',
       }
     }
   },
@@ -136,7 +136,7 @@ const resources = {
         whatsapp: 'WhatsApp',
         wechat: 'WeChat ID',
         email: 'Email',
-        copyright: '© 2026 APPL Travel. All rights reserved.',
+        copyright: '© 2026 Bodhipath Tour & Travels. All rights reserved.',
       }
     }
   }

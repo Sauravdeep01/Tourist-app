@@ -29,11 +29,11 @@ const seedDatabase = async () => {
     const defaultSettings = {
       phone: '+91-120-4135777',
       whatsapp: '+911204135777',
-      wechatId: 'APPL_Travel',
-      email: 'tours@astirpassage.com',
+      wechatId: 'BodhipathTours',
+      email: 'tours@bodhipathtours.com',
       address: {
-        en: 'Astir Passage Pvt. Ltd., Patna, Bihar, India',
-        zh: '印度比哈尔邦巴特那 Astir Passage 私人有限公司',
+        en: 'Bodhipath Tour & Travels, Patna, Bihar, India',
+        zh: '印度比哈尔邦巴特那 Bodhipath Tour & Travels',
       },
     };
 
@@ -86,7 +86,7 @@ const seedDatabase = async () => {
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(ownerPassword, salt);
       await User.create({
-        name: 'APPL Owner',
+        name: 'Bodhipath Owner',
         email: ownerEmail.toLowerCase(),
         passwordHash,
         role: 'owner',

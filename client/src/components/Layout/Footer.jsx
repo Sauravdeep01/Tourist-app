@@ -37,7 +37,7 @@ export default function Footer() {
                   />
                 ))}
               </svg>
-              <span className="font-semibold text-lg tracking-wide text-saffron-500">APPL Travel</span>
+              <span className="font-semibold text-lg tracking-wide text-saffron-500">Bodhipath Tour & Travels</span>
             </div>
             <p className="text-sm italic font-serif mb-4">
               "{t('footer.tagline')}"

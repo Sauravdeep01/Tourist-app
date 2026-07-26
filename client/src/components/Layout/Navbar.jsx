@@ -60,7 +60,7 @@ export default function Navbar() {
               ))}
             </svg>
             <span className="font-semibold text-lg sm:text-xl tracking-wide bg-gradient-to-r from-maroon-700 to-saffron-600 bg-clip-text text-transparent">
-              APPL Travel
+              Bodhipath Tour & Travels
             </span>
           </Link>
 

@@ -29,7 +29,7 @@ export default function TourCard({ tour }) {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-maroon-900 to-saffron-700 flex items-center justify-center text-white">
-            <span className="font-serif text-lg tracking-wider">APPL Travel</span>
+            <span className="font-serif text-lg tracking-wider">Bodhipath Tour & Travels</span>
           </div>
         )}
         
