@@ -9,6 +9,7 @@ const User = require('../models/User');
 const Tour = require('../models/Tour');
 const Destination = require('../models/Destination');
 const Settings = require('../models/Settings');
+const Gallery = require('../models/Gallery');
 
 const connectDB = async () => {
   try {
@@ -719,6 +720,110 @@ const seedDatabase = async () => {
     }
 
     console.log('Destinations seeded successfully!');
+
+    // 5. Seed Gallery Items (Past Tour Group Memories Categorized by Destination)
+    console.log('Seeding past tour memory gallery photos...');
+    await Gallery.deleteMany({});
+    const samplePhotos = [
+      {
+        ownerId: seedOwner._id,
+        imageUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+        imageTitle: 'Autumn 2025 Group Meditation at Bodhi Tree',
+        destinationName: 'Bodh Gaya',
+        description: {
+          en: 'Moments from our October 2025 Chinese pilgrimage delegation during evening prayer and lamp lighting around the Mahabodhi Stupa.',
+          zh: '2025年10月华语朝圣团于摩诃菩提金塔围绕供灯祈福与菩提树下共修的珍贵瞬间。',
+        },
+        caption: {
+          en: 'Pilgrims meditating together beneath the sacred Bodhi Tree in Bodh Gaya.',
+          zh: '朝圣团团员于菩提伽耶圣菩提树下共修禅坐与供灯。',
+        },
+        active: true,
+        order: 1,
+      },
+      {
+        ownerId: seedOwner._id,
+        imageUrl: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80',
+        imageTitle: 'Guided Dharma Talk at Sarnath Deer Park',
+        destinationName: 'Sarnath',
+        description: {
+          en: 'Group photo and historical lecture by our professional Chinese guide at Deer Park, Sarnath.',
+          zh: '朝圣团于鹿野苑答摩克大佛塔前听资深中文导游讲解初转法轮历史并合影留念。',
+        },
+        caption: {
+          en: 'Our senior Chinese guide explaining the First Sermon history at Dhamek Stupa.',
+          zh: '资深中文导游于答摩克佛塔前为朝圣团讲解初转法轮历史。',
+        },
+        active: true,
+        order: 2,
+      },
+      {
+        ownerId: seedOwner._id,
+        imageUrl: 'https://images.unsplash.com/photo-1609949279531-cf48d64bed89?auto=format&fit=crop&w=1200&q=80',
+        imageTitle: 'Lumbini Garden Pilgrim Gathering',
+        destinationName: 'Lumbini',
+        description: {
+          en: 'Pilgrims reflecting quietly by the holy Pushkarini pond near the Ashoka Pillar in Nepal.',
+          zh: '朝圣团员于阿育王石柱与圣池畔虔诚绕塔合影与祈福。',
+        },
+        caption: {
+          en: 'Spring 2025 pilgrimage group at Maya Devi Birth Temple garden, Nepal.',
+          zh: '2025春季朝圣团于尼泊尔蓝毗尼摩耶夫人祠花园留念。',
+        },
+        active: true,
+        order: 3,
+      },
+      {
+        ownerId: seedOwner._id,
+        imageUrl: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80',
+        imageTitle: 'Kushinagar Parinirvana Chanting Service',
+        destinationName: 'Kushinagar',
+        description: {
+          en: 'Group chanting and robe offering ceremony inside the Parinirvana Temple.',
+          zh: '朝圣团于拘尸那伽涅槃寺卧佛像前举行供衣祈福法会与诵经。',
+        },
+        caption: {
+          en: 'Venerable monks and group offering robes at the Reclining Buddha Shrine.',
+          zh: '法师与朝圣团员于大般涅槃卧佛前供养袈裟与礼佛。',
+        },
+        active: true,
+        order: 4,
+      },
+      {
+        ownerId: seedOwner._id,
+        imageUrl: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
+        imageTitle: 'Group Memory at Taj Mahal, Agra',
+        destinationName: 'Agra',
+        description: {
+          en: 'Celebrating the completion of the pilgrimage with a relaxed cultural excursion to Taj Mahal.',
+          zh: '圆满完成佛教圣地朝圣后，朝圣团顺道游览阿格拉泰姬陵并圆满合影。',
+        },
+        caption: {
+          en: 'Celebratory group photo of our delegation at the Taj Mahal.',
+          zh: '朝圣团于阿格拉泰姬陵圆满合影。',
+        },
+        active: true,
+        order: 5,
+      },
+      {
+        ownerId: seedOwner._id,
+        imageUrl: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80',
+        imageTitle: 'Nalanda University Monastic Ruins Study',
+        destinationName: 'Nalanda',
+        description: {
+          en: 'Pilgrims learning about Master Xuanzang historic studies at the Nalanda monastic complex.',
+          zh: '团员跟随导游参观古那烂陀寺大僧院遗址，追思玄奘大师西天取经历程。',
+        },
+        caption: {
+          en: 'Walking through the ancient brick monastic cells of Nalanda.',
+          zh: '朝圣团参学玄奘大师曾留学的古那烂陀大学遗址。',
+        },
+        active: true,
+        order: 6,
+      },
+    ];
+    await Gallery.insertMany(samplePhotos);
+    console.log('Past tour group memory photos seeded successfully!');
   } catch (err) {
     console.error(`Database seeding failed: ${err.message}`);
   } finally {

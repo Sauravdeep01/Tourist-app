@@ -25,6 +25,7 @@ export default function Navbar() {
   const navItems = [
     { name: t('navbar.home'), path: '/' },
     { name: t('navbar.tours'), path: '/tours' },
+    { name: t('navbar.gallery'), path: '/gallery' },
     { name: t('navbar.about'), path: '/about' },
     { name: t('navbar.contact'), path: '/contact' },
   ];

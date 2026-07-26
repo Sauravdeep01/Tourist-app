@@ -29,20 +29,9 @@ const getManageGallery = async (req, res) => {
   }
 };
 
-// Add a memory photo from a past tour (Owner or Admin)
+// Add a photo to gallery (Owner or Admin)
 const createGalleryItem = async (req, res) => {
   try {
-    const { destinationName } = req.body;
-
-    const destinationExists = await Destination.findOne({
-      $or: [{ 'name.en': destinationName }, { 'name.zh': destinationName }],
-    });
-    if (!destinationExists) {
-      return res.status(400).json({
-        errors: [{ field: 'destinationName', message: 'Please select a destination for this image' }],
-      });
-    }
-
     // ownerId always comes from the token, never the request body
     const newItem = await Gallery.create({ ...req.body, ownerId: req.user.id });
     res.status(201).json(newItem);

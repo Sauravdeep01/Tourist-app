@@ -11,6 +11,7 @@ import InquiriesTab from '../components/Admin/InquiriesTab';
 import OwnersTab from '../components/Admin/OwnersTab';
 import AuditLogsTab from '../components/Admin/AuditLogsTab';
 import SettingsTab from '../components/Admin/SettingsTab';
+import GalleryTab from '../components/Admin/GalleryTab';
 import api from '../utils/api';
 
 // Admin & Owner Control Panel page
@@ -153,6 +154,10 @@ export default function AdminDashboardPage() {
               reloadData={fetchDashboardData}
               user={user}
             />
+          )}
+
+          {activeTab === 'gallery' && (
+            <GalleryTab user={user} />
           )}
 
           {activeTab === 'inquiries' && (

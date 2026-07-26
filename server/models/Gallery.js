@@ -21,13 +21,12 @@ const gallerySchema = new mongoose.Schema(
     },
     imageTitle: {
       type: String,
-      required: true,
+      default: 'Gallery Photo',
       trim: true,
-      maxlength: 80,
     },
     destinationName: {
       type: String,
-      required: true,
+      default: 'General',
       trim: true,
     },
     description: bilingualSchema,

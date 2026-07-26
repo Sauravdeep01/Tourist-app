@@ -5,7 +5,7 @@ const validateGallery = (req, res, next) => {
     req.body = sanitizeValue(req.body);
   }
   const errors = [];
-  const { imageUrl, imageTitle, destinationName, caption, description } = req.body;
+  const { imageUrl } = req.body;
   const isCreate = req.method === 'POST';
 
   if (isCreate && !hasValue(imageUrl)) {
@@ -14,31 +14,9 @@ const validateGallery = (req, res, next) => {
     errors.push({ field: 'imageUrl', message: 'Please provide a valid image URL' });
   }
 
-  if (isCreate && !isNonEmptyString(imageTitle)) {
-    errors.push({ field: 'imageTitle', message: 'Image title is required (max 80 characters)' });
-  } else if (hasValue(imageTitle) && String(imageTitle).length > 80) {
-    errors.push({ field: 'imageTitle', message: 'Image title is required (max 80 characters)' });
-  }
-
-  if (isCreate && !isNonEmptyString(destinationName)) {
-    errors.push({ field: 'destinationName', message: 'Please select a destination for this image' });
-  }
-
-  if (hasValue(caption)) {
-    const captionEn = caption?.en || '';
-    const captionZh = caption?.zh || '';
-    if (captionEn.length > 120 || captionZh.length > 120) {
-      errors.push({ field: 'caption', message: 'Caption is too long (max 120 characters)' });
-    }
-  }
-
-  if (hasValue(description)) {
-    const descriptionEn = description?.en || '';
-    const descriptionZh = description?.zh || '';
-    if (descriptionEn.length > 120 || descriptionZh.length > 120) {
-      errors.push({ field: 'description', message: 'Description is too long (max 120 characters)' });
-    }
-  }
+  // Set default values if not provided
+  if (!req.body.imageTitle) req.body.imageTitle = 'Gallery Photo';
+  if (!req.body.destinationName) req.body.destinationName = 'General';
 
   if (errors.length) return respondWithErrors(res, errors);
   next();

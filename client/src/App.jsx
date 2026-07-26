@@ -9,6 +9,7 @@ import ForgotPasswordPage from './Pages/ForgotPasswordPage';
 import ResetPasswordPage from './Pages/ResetPasswordPage';
 import AdminDashboardPage from './Pages/AdminDashboardPage';
 import OwnerDashboardPage from './Pages/OwnerDashboardPage';
+import GalleryPage from './Pages/GalleryPage';
 import './i18n'; // Import i18n resources configuration
 
 // Simple placeholder page component to prevent router crashes when navigating
@@ -62,6 +63,7 @@ export default function App() {
             {/* Tour & Public Routes */}
             <Route path="/tours" element={<PlaceholderPage title="Tour Listing (路线列表)" />} />
             <Route path="/tours/:slug" element={<PlaceholderPage title="Tour Detail (路线详情)" />} />
+            <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/about" element={<PlaceholderPage title="About Us (关于我们)" />} />
             <Route path="/contact" element={<PlaceholderPage title="Contact & Booking (联系与报价)" />} />
 

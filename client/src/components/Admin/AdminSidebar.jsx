@@ -12,7 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
-  UserCheck
+  Image as ImageIcon,
 } from 'lucide-react';
 
 // Sidebar component for dashboard navigation
@@ -31,6 +31,7 @@ export default function AdminSidebar({
     { id: 'overview', label: t('dashboard.overview'), icon: LayoutDashboard, role: 'all' },
     { id: 'tours', label: t('dashboard.tours'), icon: Compass, role: 'all' },
     { id: 'destinations', label: t('dashboard.destinations'), icon: MapPin, role: 'all' },
+    { id: 'gallery', label: 'Manage Gallery', icon: ImageIcon, role: 'all' },
     { id: 'inquiries', label: t('dashboard.inquiries'), icon: MessageSquare, role: 'all' },
     { id: 'owners', label: t('dashboard.owners'), icon: Users, role: 'admin' },
     { id: 'auditLogs', label: t('dashboard.auditLogs'), icon: ShieldAlert, role: 'admin' },

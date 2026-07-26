@@ -7,6 +7,7 @@ const resources = {
       navbar: {
         home: '首页',
         tours: '佛旅路线',
+        gallery: '光影图库',
         about: '关于我们',
         contact: '联系我们',
         login: '登录',
@@ -191,6 +192,7 @@ const resources = {
       navbar: {
         home: 'Home',
         tours: 'Tours',
+        gallery: 'Gallery',
         about: 'About',
         contact: 'Contact',
         login: 'Login',
