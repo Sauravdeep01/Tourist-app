@@ -14,6 +14,9 @@ import DestinationsPage from './Pages/DestinationsPage';
 import DestinationDetailPage from './Pages/DestinationDetailPage';
 import ProfilePage from './Pages/ProfilePage';
 import AboutPage from './Pages/AboutPage';
+import ContactPage from './Pages/ContactPage';
+import ToursPage from './Pages/ToursPage';
+import TourDetailPage from './Pages/TourDetailPage';
 import './i18n'; // Import i18n resources configuration
 
 // Simple placeholder page component to prevent router crashes when navigating
@@ -65,13 +68,13 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
 
             {/* Tour & Public Routes */}
-            <Route path="/tours" element={<PlaceholderPage title="Tour Listing (路线列表)" />} />
-            <Route path="/tours/:slug" element={<PlaceholderPage title="Tour Detail (路线详情)" />} />
+            <Route path="/tours" element={<ToursPage />} />
+            <Route path="/tours/:slug" element={<TourDetailPage />} />
             <Route path="/destinations" element={<DestinationsPage />} />
             <Route path="/destinations/:slug" element={<DestinationDetailPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<PlaceholderPage title="Contact & Booking (联系与报价)" />} />
+            <Route path="/contact" element={<ContactPage />} />
 
             {/* Authenticated User Profile */}
             <Route path="/account" element={<ProfilePage />} />
