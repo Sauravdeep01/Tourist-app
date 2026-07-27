@@ -16,13 +16,11 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
   // Initial form state
   const emptyForm = {
     nameEn: '',
-    nameZh: '',
     slug: '',
     state: 'Bihar',
     country: 'India',
     summaryEn: '',
-    summaryZh: '',
-    primaryImage: '',
+    coverImage: '',
     active: true,
   };
 
@@ -40,13 +38,11 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
     setEditingDest(dest);
     setFormData({
       nameEn: dest.name?.en || '',
-      nameZh: dest.name?.zh || '',
       slug: dest.slug || '',
       state: dest.state || 'Bihar',
       country: dest.country || 'India',
       summaryEn: dest.summary?.en || '',
-      summaryZh: dest.summary?.zh || '',
-      primaryImage: dest.primaryImage || '',
+      coverImage: dest.coverImage || '',
       active: dest.active ?? true,
     });
     setIsModalOpen(true);
@@ -58,12 +54,12 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
     setSubmitting(true);
 
     const payload = {
-      name: { en: formData.nameEn, zh: formData.nameZh },
+      name: { en: formData.nameEn, zh: '' },
       slug: formData.slug || formData.nameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       state: formData.state,
       country: formData.country,
-      summary: { en: formData.summaryEn, zh: formData.summaryZh },
-      primaryImage: formData.primaryImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa',
+      summary: { en: formData.summaryEn, zh: '' },
+      coverImage: formData.coverImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa',
       active: formData.active,
     };
 
@@ -142,7 +138,7 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
               <div>
                 <div className="relative h-36 bg-neutral-100 overflow-hidden">
                   <img
-                    src={dest.primaryImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa'}
+                    src={dest.coverImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa'}
                     alt=""
                     className="w-full h-full object-cover"
                   />
@@ -224,20 +220,8 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
                   required
                   value={formData.nameEn}
                   onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-saffron-500 outline-none"
                   placeholder="e.g. Bodh Gaya"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-neutral-700 mb-1">Name (Chinese / 中文)</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.nameZh}
-                  onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
-                  placeholder="例：菩提伽耶"
                 />
               </div>
 
@@ -248,7 +232,7 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
                     type="text"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
+                    className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-saffron-500 outline-none"
                   />
                 </div>
                 <div>
@@ -257,7 +241,7 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
                     type="text"
                     value={formData.country}
                     onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
+                    className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-saffron-500 outline-none"
                   />
                 </div>
               </div>
@@ -266,9 +250,9 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
                 <label className="block font-semibold text-neutral-700 mb-1">Image URL</label>
                 <input
                   type="text"
-                  value={formData.primaryImage}
-                  onChange={(e) => setFormData({ ...formData, primaryImage: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
+                  value={formData.coverImage}
+                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-saffron-500 outline-none"
                 />
               </div>
 
@@ -278,17 +262,7 @@ export default function DestinationsTab({ destinations, reloadData, user }) {
                   rows="2"
                   value={formData.summaryEn}
                   onChange={(e) => setFormData({ ...formData, summaryEn: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-neutral-700 mb-1">Summary (Chinese / 中文)</label>
-                <textarea
-                  rows="2"
-                  value={formData.summaryZh}
-                  onChange={(e) => setFormData({ ...formData, summaryZh: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-saffron-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-saffron-500 outline-none"
                 />
               </div>
 

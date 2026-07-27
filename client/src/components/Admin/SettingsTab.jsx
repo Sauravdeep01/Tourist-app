@@ -102,7 +102,7 @@ export default function SettingsTab() {
               type="text"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none font-mono"
+              className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none font-mono"
             />
           </div>
 
@@ -114,7 +114,7 @@ export default function SettingsTab() {
               type="text"
               value={formData.whatsapp}
               onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-              className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none font-mono"
+              className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none font-mono"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function SettingsTab() {
               type="text"
               value={formData.wechatId}
               onChange={(e) => setFormData({ ...formData, wechatId: e.target.value })}
-              className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none font-mono"
+              className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none font-mono"
             />
           </div>
 
@@ -138,7 +138,7 @@ export default function SettingsTab() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+              className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
             />
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function SettingsTab() {
               rows="2"
               value={formData.addressEn}
               onChange={(e) => setFormData({ ...formData, addressEn: e.target.value })}
-              className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+              className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
             />
           </div>
 
@@ -164,7 +164,7 @@ export default function SettingsTab() {
               rows="2"
               value={formData.addressZh}
               onChange={(e) => setFormData({ ...formData, addressZh: e.target.value })}
-              className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+              className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
             />
           </div>
         </div>

@@ -227,7 +227,7 @@ export default function InquiriesTab({ inquiries, reloadData, owners, user }) {
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-amber-500 outline-none font-medium"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 focus:ring-2 focus:ring-amber-500 outline-none font-medium"
                 >
                   <option value="new">{t('dashboard.status.new')}</option>
                   <option value="processing">{t('dashboard.status.processing')}</option>
@@ -244,7 +244,7 @@ export default function InquiriesTab({ inquiries, reloadData, owners, user }) {
                   <select
                     value={assignedOwnerId}
                     onChange={(e) => setAssignedOwnerId(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-amber-500 outline-none font-medium"
+                    className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 focus:ring-2 focus:ring-amber-500 outline-none font-medium"
                   >
                     <option value="">Unassigned (Admin Default)</option>
                     {owners.map((owner) => (
@@ -262,7 +262,7 @@ export default function InquiriesTab({ inquiries, reloadData, owners, user }) {
                   rows="3"
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-amber-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-amber-500 outline-none"
                   placeholder="Notes on quotes, group preferences..."
                 />
               </div>

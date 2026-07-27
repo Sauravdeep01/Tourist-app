@@ -16,10 +16,9 @@ const validateDestination = (req, res, next) => {
 
   if (req.method === 'POST' || hasValue(name)) {
     const nameEn = name?.en;
-    const nameZh = name?.zh;
-    if (!isNonEmptyString(nameEn) || !isNonEmptyString(nameZh)) {
-      errors.push({ field: 'name', message: 'Name is required in both languages' });
-    } else if (nameEn.length > 60 || nameZh.length > 60) {
+    if (!isNonEmptyString(nameEn)) {
+      errors.push({ field: 'name', message: 'Name is required' });
+    } else if (nameEn.length > 60) {
       errors.push({ field: 'name', message: 'Name must be 60 characters or fewer' });
     }
   }

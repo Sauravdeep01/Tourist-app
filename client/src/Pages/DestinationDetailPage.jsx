@@ -13,9 +13,7 @@ import {
   Loader2,
   Sparkles,
   MessageCircle,
-  Send,
-  X,
-  Maximize2
+  Send
 } from 'lucide-react';
 import api from '../utils/api';
 
@@ -28,7 +26,6 @@ export default function DestinationDetailPage() {
   const [destination, setDestination] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeLightbox, setActiveLightbox] = useState(null);
 
   // Fetch single destination by slug
   useEffect(() => {
@@ -74,8 +71,6 @@ export default function DestinationDetailPage() {
   const coverPhoto =
     destination.coverImage ||
     'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1600&q=80';
-
-  const allPhotos = [destination.coverImage, ...(destination.images || [])].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-[#faf9f6] text-neutral-900 pb-16">
@@ -243,29 +238,6 @@ export default function DestinationDetailPage() {
           </div>
         </div>
 
-        {/* 5. SRS Photo Gallery ("Glimpses of <name> 圣地掠影") */}
-        {allPhotos.length > 0 && (
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h3 className="text-xl font-serif font-bold text-neutral-900 border-b border-neutral-100 pb-3">
-              {lang === 'zh' ? `圣地掠影 · ${destination.name?.zh || destination.name?.en}` : `Glimpses of ${destination.name?.en}`}
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {allPhotos.map((img, i) => (
-                <div
-                  key={i}
-                  onClick={() => setActiveLightbox(img)}
-                  className="group relative h-40 bg-neutral-100 rounded-xl overflow-hidden cursor-pointer shadow-xs hover:shadow-lg transition-all"
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Maximize2 className="h-5 w-5 text-white" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* 6. SRS "Tours visiting this destination" */}
         {Array.isArray(destination.relatedTours) && destination.relatedTours.length > 0 && (
           <div className="space-y-4">
@@ -328,27 +300,6 @@ export default function DestinationDetailPage() {
           </div>
         </div>
       </div>
-
-      {/* Lightbox Modal */}
-      {activeLightbox && (
-        <div
-          onClick={() => setActiveLightbox(null)}
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-5xl max-h-[90vh] bg-black rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center"
-          >
-            <button
-              onClick={() => setActiveLightbox(null)}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/60 text-white hover:bg-neutral-800 transition-colors"
-            >
-              <X className="h-6 w-6" />
-            </button>
-            <img src={activeLightbox} alt="" className="max-h-[85vh] w-auto object-contain rounded-xl" />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

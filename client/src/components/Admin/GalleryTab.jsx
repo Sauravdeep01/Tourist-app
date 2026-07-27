@@ -131,7 +131,7 @@ export default function GalleryTab() {
                   required
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                   placeholder="Paste image URL (https://...)"
                 />
               </div>

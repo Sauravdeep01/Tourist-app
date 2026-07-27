@@ -15,6 +15,7 @@ coverage/
 npm-debug.log*
 yarn-error.log*
 *.log
+public
 
 # Key/cert files
 *.pem
@@ -29,3 +30,4 @@ Thumbs.db
 .idea/
 
 SRS_Buddhist_Pilgrimage_Website.pdf
+server/scripts/upload_homepage_images.js

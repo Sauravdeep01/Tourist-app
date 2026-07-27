@@ -20,13 +20,13 @@ export default function ToursTab({ tours, reloadData, user }) {
     slug: '',
     days: 10,
     nights: 9,
-    summaryEn: '',
-    summaryZh: '',
+    overviewEn: '',
+    overviewZh: '',
     priceOnRequest: true,
-    startingPriceUsd: 1500,
+    priceFrom: 1500,
     active: true,
     featured: false,
-    primaryImage: '',
+    coverImage: '',
   };
 
   const [formData, setFormData] = useState(emptyForm);
@@ -45,15 +45,15 @@ export default function ToursTab({ tours, reloadData, user }) {
       titleEn: tour.title?.en || '',
       titleZh: tour.title?.zh || '',
       slug: tour.slug || '',
-      days: tour.duration?.days || 10,
-      nights: tour.duration?.nights || 9,
-      summaryEn: tour.summary?.en || '',
-      summaryZh: tour.summary?.zh || '',
-      priceOnRequest: tour.priceOnRequest ?? true,
-      startingPriceUsd: tour.startingPriceUsd || 1500,
+      days: tour.days || 10,
+      nights: tour.nights || 9,
+      overviewEn: tour.overview?.en || '',
+      overviewZh: tour.overview?.zh || '',
+      priceOnRequest: tour.priceFrom === null || tour.priceFrom === undefined,
+      priceFrom: tour.priceFrom || 1500,
       active: tour.active ?? true,
       featured: tour.featured ?? false,
-      primaryImage: tour.primaryImage || '',
+      coverImage: tour.coverImage || '',
     });
     setIsModalOpen(true);
   };
@@ -66,13 +66,13 @@ export default function ToursTab({ tours, reloadData, user }) {
     const payload = {
       title: { en: formData.titleEn, zh: formData.titleZh },
       slug: formData.slug || formData.titleEn.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      duration: { days: Number(formData.days), nights: Number(formData.nights) },
-      summary: { en: formData.summaryEn, zh: formData.summaryZh },
-      priceOnRequest: formData.priceOnRequest,
-      startingPriceUsd: Number(formData.startingPriceUsd),
+      days: Number(formData.days),
+      nights: Number(formData.nights),
+      overview: { en: formData.overviewEn, zh: formData.overviewZh },
+      priceFrom: formData.priceOnRequest ? null : Number(formData.priceFrom),
       active: formData.active,
       featured: formData.featured,
-      primaryImage: formData.primaryImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa',
+      coverImage: formData.coverImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa',
     };
 
     try {
@@ -159,7 +159,7 @@ export default function ToursTab({ tours, reloadData, user }) {
                     <td className="py-3.5 px-4">
                       <div className="flex items-center space-x-3">
                         <img
-                          src={tour.primaryImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa'}
+                          src={tour.coverImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa'}
                           alt=""
                           className="h-10 w-12 rounded-lg object-cover bg-neutral-100"
                         />
@@ -172,15 +172,15 @@ export default function ToursTab({ tours, reloadData, user }) {
                       </div>
                     </td>
                     <td className="py-3.5 px-4 font-medium text-neutral-600">
-                      {tour.duration?.days}D / {tour.duration?.nights}N
+                      {tour.days}D / {tour.nights}N
                     </td>
                     <td className="py-3.5 px-4 font-medium">
-                      {tour.priceOnRequest ? (
+                      {tour.priceFrom === null || tour.priceFrom === undefined ? (
                         <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-semibold text-[11px]">
                           Price on Request
                         </span>
                       ) : (
-                        <span className="text-neutral-900 font-bold">${tour.startingPriceUsd}</span>
+                        <span className="text-neutral-900 font-bold">${tour.priceFrom}</span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
@@ -244,7 +244,7 @@ export default function ToursTab({ tours, reloadData, user }) {
                   required
                   value={formData.titleEn}
                   onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                   placeholder="e.g. Footsteps of Buddha - 10 Days Pilgrimage"
                 />
               </div>
@@ -256,7 +256,7 @@ export default function ToursTab({ tours, reloadData, user }) {
                   required
                   value={formData.titleZh}
                   onChange={(e) => setFormData({ ...formData, titleZh: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                   placeholder="例：佛陀成道八大圣迹朝圣10日游"
                 />
               </div>
@@ -269,7 +269,7 @@ export default function ToursTab({ tours, reloadData, user }) {
                     min="1"
                     value={formData.days}
                     onChange={(e) => setFormData({ ...formData, days: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                    className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                   />
                 </div>
                 <div>
@@ -279,28 +279,28 @@ export default function ToursTab({ tours, reloadData, user }) {
                     min="0"
                     value={formData.nights}
                     onChange={(e) => setFormData({ ...formData, nights: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                    className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-neutral-700 mb-1">Summary (English)</label>
+                <label className="block font-semibold text-neutral-700 mb-1">Overview (English)</label>
                 <textarea
                   rows="2"
-                  value={formData.summaryEn}
-                  onChange={(e) => setFormData({ ...formData, summaryEn: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  value={formData.overviewEn}
+                  onChange={(e) => setFormData({ ...formData, overviewEn: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-neutral-700 mb-1">Summary (Chinese / 中文)</label>
+                <label className="block font-semibold text-neutral-700 mb-1">Overview (Chinese / 中文)</label>
                 <textarea
                   rows="2"
-                  value={formData.summaryZh}
-                  onChange={(e) => setFormData({ ...formData, summaryZh: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  value={formData.overviewZh}
+                  onChange={(e) => setFormData({ ...formData, overviewZh: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                 />
               </div>
 
@@ -308,9 +308,9 @@ export default function ToursTab({ tours, reloadData, user }) {
                 <label className="block font-semibold text-neutral-700 mb-1">Image URL</label>
                 <input
                   type="text"
-                  value={formData.primaryImage}
-                  onChange={(e) => setFormData({ ...formData, primaryImage: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  value={formData.coverImage}
+                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
                   placeholder="https://images.unsplash.com/..."
                 />
               </div>
@@ -335,6 +335,19 @@ export default function ToursTab({ tours, reloadData, user }) {
                   <span>Price on Request</span>
                 </label>
               </div>
+
+              {!formData.priceOnRequest && (
+                <div>
+                  <label className="block font-semibold text-neutral-700 mb-1">Starting Price (USD)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={formData.priceFrom}
+                    onChange={(e) => setFormData({ ...formData, priceFrom: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-maroon-500 outline-none"
+                  />
+                </div>
+              )}
 
               <div className="flex justify-end space-x-3 pt-4 border-t border-neutral-100">
                 <button

@@ -219,7 +219,7 @@ export default function OwnersTab({ owners, reloadData }) {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-emerald-500 outline-none"
                   placeholder="e.g. Tour Operator Name"
                 />
               </div>
@@ -231,7 +231,7 @@ export default function OwnersTab({ owners, reloadData }) {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-emerald-500 outline-none"
                   placeholder="operator@bodhipathtours.com"
                 />
               </div>
@@ -243,7 +243,7 @@ export default function OwnersTab({ owners, reloadData }) {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-emerald-500 outline-none"
                   placeholder="At least 8 chars with letters & numbers"
                 />
               </div>
@@ -295,7 +295,7 @@ export default function OwnersTab({ owners, reloadData }) {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:ring-2 focus:ring-emerald-500 outline-none"
                   placeholder="Minimum 8 characters"
                 />
               </div>

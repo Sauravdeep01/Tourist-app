@@ -33,14 +33,23 @@ export default function HomePage() {
     },
     {
       image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785073806/bodhipath_homepage/dgflnzl2jtalykwy5bml.jpg'
+    },
+    {
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785180317/bodhipath_homepage/iux0yylfugxgpitkn3l2.jpg'
+    },
+    {
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785180099/bodhipath_homepage/drdbhqgqrjs8ptwk701q.jpg'
+    },
+    {
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785183708/636bac4c9c7e80680e077f24jpeg_kjlbew.jpg'
     }
   ];
 
-  // Auto cross-fade slides smoothly every 3.5 seconds
+  // Auto cross-fade slides smoothly every 6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 3500);
+    }, 4000);
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
@@ -82,7 +91,7 @@ export default function HomePage() {
         {heroSlides.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-all duration-2000 ease-in-out ${
               idx === currentSlide ? 'opacity-100 scale-105' : 'opacity-0 scale-100 pointer-events-none'
             }`}
           >
@@ -99,26 +108,6 @@ export default function HomePage() {
         {/* Hero Content Overlay */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-20">
           <div className="text-center max-w-3xl mx-auto">
-            {/* Dharma Wheel Icon Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-saffron-500/20 text-saffron-300 border border-saffron-500/30 text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-md shadow-lg">
-              <svg className="h-4 w-4 text-saffron-400 animate-spin-slow" viewBox="0 0 100 100" fill="currentColor">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" />
-                <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="6" />
-                {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-                  <line 
-                    key={deg}
-                    x1="50" 
-                    y1="50" 
-                    x2={50 + 30 * Math.sin((deg * Math.PI) / 180)} 
-                    y2={50 - 30 * Math.cos((deg * Math.PI) / 180)} 
-                    stroke="currentColor" 
-                    strokeWidth="6" 
-                  />
-                ))}
-              </svg>
-              <span>{i18n.language === 'zh' ? '正觉朝圣之旅' : 'Noble Pilgrimage'}</span>
-            </div>
-
             {/* Headline */}
             <h1 className="text-4xl sm:text-6xl font-serif font-extrabold tracking-tight text-white mb-6 leading-tight drop-shadow-lg">
               {t('hero.title')}
@@ -263,33 +252,44 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 8 Site Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {/* 8 Site Grid - Increased card size */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {sacredSites.map((site) => (
               <Link 
                 key={site.slug} 
                 to={`/destinations/${site.slug}`}
-                className="group relative h-48 rounded-2xl overflow-hidden shadow-xs hover-lift transition-all cursor-pointer block border border-slate-800"
+                className="group relative h-64 sm:h-72 rounded-3xl overflow-hidden shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer block border border-slate-800 hover:border-saffron-400/50"
               >
                 {/* Background image */}
                 <img 
                   src={site.image} 
                   alt={t(site.nameKey)} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"
                 />
                 {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 
                 {/* Site label */}
-                <div className="absolute bottom-4 left-4 right-4 flex items-start gap-1.5 text-white">
-                  <MapPin className="h-4.5 w-4.5 text-saffron-400 shrink-0 mt-0.5" />
-                  <span className="text-sm font-bold leading-tight group-hover:text-saffron-300 transition-colors">
+                <div className="absolute bottom-5 left-5 right-5 flex items-start gap-2 text-white">
+                  <MapPin className="h-5 w-5 text-saffron-400 shrink-0 mt-0.5" />
+                  <span className="text-base sm:text-lg font-serif font-bold leading-tight group-hover:text-saffron-300 transition-colors">
                     {t(site.nameKey)}
                   </span>
                 </div>
               </Link>
             ))}
+          </div>
+
+          {/* View All Destinations CTA Button */}
+          <div className="mt-12 text-center">
+            <Link
+              to="/destinations"
+              className="inline-flex items-center justify-center space-x-2 bg-saffron-500 hover:bg-saffron-600 active:scale-95 text-neutral-950 font-bold text-base px-8 py-4 rounded-2xl transition-all shadow-xl hover:scale-105 cursor-pointer"
+            >
+              <span>{i18n.language === 'zh' ? '查看所有朝圣目的地' : 'View All Destinations'}</span>
+              <ArrowRight className="h-5 w-5 ml-1" />
+            </Link>
           </div>
         </div>
       </section>

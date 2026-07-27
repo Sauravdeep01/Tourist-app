@@ -110,7 +110,7 @@ export default function ContactPage() {
         en: 'Main Temple Road, Near Mahabodhi Temple, Bodh Gaya, Bihar 804231, India',
         zh: '印度比哈尔邦菩提伽耶摩诃菩提寺主路 804231'
       },
-      phone: '+91 98765 43210',
+      phone: '+91 9852551971',
       hours: { en: 'Open Daily: 7:00 AM – 9:00 PM (IST)', zh: '全天开放：07:00 – 21:00 (印度时间)' }
     },
     {
