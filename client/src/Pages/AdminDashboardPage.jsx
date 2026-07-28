@@ -12,6 +12,7 @@ import OwnersTab from '../components/Admin/OwnersTab';
 import AuditLogsTab from '../components/Admin/AuditLogsTab';
 import SettingsTab from '../components/Admin/SettingsTab';
 import GalleryTab from '../components/Admin/GalleryTab';
+import FeedbackTab from '../components/Admin/FeedbackTab';
 import api from '../utils/api';
 
 // Admin & Owner Control Panel page
@@ -95,6 +96,8 @@ export default function AdminDashboardPage() {
         return t('dashboard.destinations');
       case 'inquiries':
         return t('dashboard.inquiries');
+      case 'feedback':
+        return t('dashboard.feedback');
       case 'owners':
         return t('dashboard.owners');
       case 'auditLogs':
@@ -167,6 +170,10 @@ export default function AdminDashboardPage() {
               owners={owners}
               user={user}
             />
+          )}
+
+          {activeTab === 'feedback' && (
+            <FeedbackTab />
           )}
 
           {activeTab === 'owners' && user.role === 'admin' && (

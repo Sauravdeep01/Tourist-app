@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import api from '../utils/api';
 import TourCard from '../components/TourCard';
 import DestinationSearch from '../components/DestinationSearch';
+import FeedbackSection from '../components/FeedbackSection';
 import { 
   Users, 
   Hotel, 
@@ -294,8 +295,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. CALL-TO-ACTION BAND */}
-      <section className="py-16 sm:py-24 bg-[#131b2e]">
+      {/* 5. PILGRIM TESTIMONIALS / FEEDBACK */}
+      <FeedbackSection />
+
+      {/* 6. CALL-TO-ACTION BAND */}
+      <section className="py-16 sm:py-24 bg-[#0b0f17]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#161f30] to-[#0d1320] p-8 sm:p-16 text-center text-white shadow-2xl border border-slate-800">
             {/* Background design */}

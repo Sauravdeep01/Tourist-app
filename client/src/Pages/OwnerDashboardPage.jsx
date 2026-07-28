@@ -9,6 +9,7 @@ import ToursTab from '../components/Admin/ToursTab';
 import DestinationsTab from '../components/Admin/DestinationsTab';
 import InquiriesTab from '../components/Admin/InquiriesTab';
 import GalleryTab from '../components/Admin/GalleryTab';
+import FeedbackTab from '../components/Admin/FeedbackTab';
 import api from '../utils/api';
 
 // Dedicated Owner Portal control page
@@ -81,6 +82,8 @@ export default function OwnerDashboardPage() {
         return 'Manage Gallery';
       case 'inquiries':
         return t('dashboard.inquiries');
+      case 'feedback':
+        return t('dashboard.feedback');
       default:
         return 'Owner Portal';
     }
@@ -147,6 +150,10 @@ export default function OwnerDashboardPage() {
               owners={[]}
               user={user}
             />
+          )}
+
+          {activeTab === 'feedback' && (
+            <FeedbackTab />
           )}
         </main>
       </div>
