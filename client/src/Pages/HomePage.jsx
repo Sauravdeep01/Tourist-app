@@ -17,6 +17,19 @@ import {
   Compass
 } from 'lucide-react';
 
+// Curation only — no image/name/location data lives here. Each slug is
+// resolved against the live /api/destinations records in the effect below.
+const FEATURED_DESTINATION_SLUGS = [
+  'bodh-gaya',
+  'sarnath',
+  'lumbini',
+  'kushinagar',
+  'nalanda',
+  'rajgir',
+  'shravasti',
+  'agra',
+];
+
 export default function HomePage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -26,6 +39,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [sacredSites, setSacredSites] = useState([]);
+  const [sacredSitesLoading, setSacredSitesLoading] = useState(true);
 
   // Dynamic Cloudinary images for the homepage hero background slideshow
   const heroSlides = [
@@ -72,17 +87,28 @@ export default function HomePage() {
     fetchTours();
   }, [i18n.language]);
 
-  // Sacred Sites data
-  const sacredSites = [
-    { slug: 'bodh-gaya', nameKey: 'sacredSites.bodhgaya', image: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'sarnath', nameKey: 'sacredSites.sarnath', image: 'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'lumbini', nameKey: 'sacredSites.lumbini', image: 'https://images.unsplash.com/photo-1596120206416-291885f81e3a?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'kushinagar', nameKey: 'sacredSites.kushinagar', image: 'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'nalanda', nameKey: 'sacredSites.nalanda', image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'rajgir', nameKey: 'sacredSites.rajgir', image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'shravasti', nameKey: 'sacredSites.shravasti', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop' },
-    { slug: 'agra', nameKey: 'sacredSites.agra', image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=400&auto=format&fit=crop' }
-  ];
+  // Sacred Sites strip: curated slugs only — every other field (image, name,
+  // location) is fetched live from the same /api/destinations source the
+  // Destinations page uses, so editing a destination's coverImage there
+  // (e.g. via the admin panel) updates the homepage automatically.
+  useEffect(() => {
+    const fetchSacredSites = async () => {
+      try {
+        setSacredSitesLoading(true);
+        const { data } = await api.get('/api/destinations');
+        const bySlug = new Map((Array.isArray(data) ? data : []).map((dest) => [dest.slug, dest]));
+        setSacredSites(
+          FEATURED_DESTINATION_SLUGS.map((slug) => bySlug.get(slug)).filter(Boolean)
+        );
+      } catch (err) {
+        console.error('Error fetching sacred sites:', err);
+      } finally {
+        setSacredSitesLoading(false);
+      }
+    };
+
+    fetchSacredSites();
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -254,33 +280,43 @@ export default function HomePage() {
           </div>
 
           {/* 8 Site Grid - Increased card size */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {sacredSites.map((site) => (
-              <Link 
-                key={site.slug} 
-                to={`/destinations/${site.slug}`}
-                className="group relative h-64 sm:h-72 rounded-3xl overflow-hidden shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer block border border-slate-800 hover:border-saffron-400/50"
-              >
-                {/* Background image */}
-                <img 
-                  src={site.image} 
-                  alt={t(site.nameKey)} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
-                />
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                
-                {/* Site label */}
-                <div className="absolute bottom-5 left-5 right-5 flex items-start gap-2 text-white">
-                  <MapPin className="h-5 w-5 text-saffron-400 shrink-0 mt-0.5" />
-                  <span className="text-base sm:text-lg font-serif font-bold leading-tight group-hover:text-saffron-300 transition-colors">
-                    {t(site.nameKey)}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {sacredSitesLoading ? (
+            <div className="flex items-center justify-center py-12 text-slate-400 space-x-2 text-xs">
+              <Loader2 className="h-5 w-5 animate-spin text-saffron-400" />
+              <span>{i18n.language === 'zh' ? '正在加载圣地...' : 'Loading sacred sites...'}</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {sacredSites.map((dest) => {
+                const displayName = dest.name?.[lang] || dest.name?.en;
+                return (
+                  <Link
+                    key={dest._id || dest.slug}
+                    to={`/destinations/${dest.slug}`}
+                    className="group relative h-64 sm:h-72 rounded-3xl overflow-hidden shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer block border border-slate-800 hover:border-saffron-400/50"
+                  >
+                    {/* Background image — sourced live from the destination's coverImage */}
+                    <img
+                      src={dest.coverImage}
+                      alt={displayName}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+
+                    {/* Site label */}
+                    <div className="absolute bottom-5 left-5 right-5 flex items-start gap-2 text-white">
+                      <MapPin className="h-5 w-5 text-saffron-400 shrink-0 mt-0.5" />
+                      <span className="text-base sm:text-lg font-serif font-bold leading-tight group-hover:text-saffron-300 transition-colors">
+                        {displayName}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
           {/* View All Destinations CTA Button */}
           <div className="mt-12 text-center">
