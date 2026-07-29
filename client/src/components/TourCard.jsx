@@ -8,10 +8,8 @@ export default function TourCard({ tour }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  // Render prices according to C-7 / FE-7 rules
   const hasPrice = tour.priceFrom !== null && tour.priceFrom !== undefined;
   
-  // Format price string: e.g. "From US$ 1,285" or "US$ 1,285 起" or "Price on request" / "价格面议"
   const priceLabel = hasPrice
     ? (lang === 'zh' ? `US$ ${tour.priceFrom} ${t('featured.priceFrom')}` : `${t('featured.priceFrom')} US$ ${tour.priceFrom}`)
     : t('featured.priceOnRequest');

@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Labeled input with a leading icon and red-outline error state (FE-10).
+ * Labeled input with a leading icon and red-outline error state.
  * `error` is the already-language-resolved message string, or falsy.
  */
 export default function FormField({

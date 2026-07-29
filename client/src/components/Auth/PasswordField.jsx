@@ -3,7 +3,7 @@ import { Lock, Eye, EyeOff } from 'lucide-react';
 
 /**
  * Password input with a show/hide toggle. Same red-outline error state as
- * FormField (FE-10), kept as a sibling component since it needs the extra
+ * FormField, kept as a sibling component since it needs the extra
  * toggle button inside the field.
  */
 export default function PasswordField({ id, label, error, hint, showLabel, hideLabel, className = '', ...inputProps }) {

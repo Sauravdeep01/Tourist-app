@@ -2,7 +2,7 @@ import React from 'react';
 import { AlertCircle } from 'lucide-react';
 
 /**
- * Bilingual error summary rendered above the form heading (FE-10). Accepts
+ * Bilingual error summary rendered above the form heading. Accepts
  * either locally-validated errors ({field, en, zh}) or server errors already
  * normalized to the same shape via authValidation.js helpers.
  */

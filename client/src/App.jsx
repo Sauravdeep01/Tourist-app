@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import ScrollToTop from './components/ScrollToTop';
 import Layout from './components/Layout/Layout';
 import HomePage from './Pages/HomePage';
 import LoginPage from './Pages/LoginPage';
@@ -48,6 +49,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           {/* Full-bleed auth pages */}
           <Route path="/login" element={<LoginPage />} />

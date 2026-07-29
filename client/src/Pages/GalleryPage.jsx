@@ -37,6 +37,9 @@ export default function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-[#faf9f6] py-12 px-4 sm:px-6 lg:px-8">
+      {/* Scrim so the transparent white-text navbar stays legible over this light page */}
+      <div className="fixed top-0 inset-x-0 h-28 bg-gradient-to-b from-black/45 to-transparent z-40 pointer-events-none" />
+
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto space-y-2">

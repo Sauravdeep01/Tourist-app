@@ -85,8 +85,8 @@ export default function DestinationDetailPage() {
         {/* Crisp dark vignette overlay strictly for text legibility (No white fade) */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/40" />
 
-        {/* Back navigation button */}
-        <div className="absolute top-6 left-4 sm:left-8 z-20">
+        {/* Back navigation button (offset below the fixed transparent navbar) */}
+        <div className="absolute top-24 left-4 sm:left-8 z-20">
           <Link
             to="/destinations"
             className="inline-flex items-center space-x-2 text-xs font-semibold text-white bg-black/50 hover:bg-black/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 transition-all shadow-lg cursor-pointer"

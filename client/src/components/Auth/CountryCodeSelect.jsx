@@ -3,7 +3,7 @@ import { ChevronDown, Search } from 'lucide-react';
 import { COUNTRY_CODES } from '../../utils/countryCodes';
 
 /**
- * Searchable international dialing-code dropdown (FE-11). Kept dependency-free
+ * Searchable international dialing-code dropdown. Kept dependency-free
  * (no headless-ui) — a button that opens a small filterable popover list.
  */
 export default function CountryCodeSelect({ value, onChange, error, searchPlaceholder }) {

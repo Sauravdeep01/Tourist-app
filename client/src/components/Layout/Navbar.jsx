@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
@@ -8,7 +8,17 @@ export default function Navbar() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+
+  // Track scroll position so the bar can pick up a very subtle dark tint
+  // for readability, while staying full-width with no blur/glass/shadow.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'zh' ? 'en' : 'zh';
@@ -32,11 +42,15 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0b0f17]/90 backdrop-blur-md border-b border-slate-800/80 shadow-md">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header
+      className={`fixed top-0 inset-x-0 z-50 w-full transition-colors duration-350 ease-in-out ${
+        scrolled ? 'bg-[rgba(10,15,25,0.75)]' : 'bg-transparent'
+      }`}
+    >
+      <div className="relative mx-auto max-w-8xl px-4 sm:px-6 lg:px-20">
+        <div className="flex h-17 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="/" className="flex items-center space-x-2 group shrink-0">
             {/* Dharma Wheel SVG logo */}
             <svg
               className="h-8 w-8 text-saffron-500 transition-transform duration-700 ease-out group-hover:rotate-180"
@@ -63,17 +77,17 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex space-x-8">
+          {/* Desktop Nav Links — true-centered regardless of logo/button width */}
+          <nav className="hidden md:flex items-center gap-9 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-colors duration-200 ${
+                  `relative pb-1 text-[15px] font-medium tracking-wide transition-colors duration-300 ${
                     isActive
-                      ? 'text-saffron-400 border-b-2 border-saffron-400 pb-1 font-semibold'
-                      : 'text-slate-300 hover:text-saffron-400'
+                      ? 'text-saffron-400 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-saffron-400'
+                      : 'text-white hover:text-saffron-400'
                   }`
                 }
               >
@@ -83,13 +97,13 @@ export default function Navbar() {
           </nav>
 
           {/* Right Controls (Language & Auth) */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3 shrink-0">
             {/* Language Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer border border-white/30 bg-transparent hover:border-saffron-400 text-white hover:text-saffron-300"
             >
-              <Globe className="h-4 w-4 text-saffron-400" />
+              <Globe className="h-4 w-4" />
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
@@ -104,30 +118,30 @@ export default function Navbar() {
                       ? '/owner/dashboard'
                       : '/admin/dashboard'
                   }
-                  className="flex items-center space-x-1.5 text-sm font-medium text-saffron-400 hover:text-saffron-300"
+                  className="flex items-center space-x-1.5 rounded-full border border-white/40 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:border-saffron-400 hover:text-saffron-300"
                 >
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-red-400 hover:bg-slate-800 transition-all cursor-pointer"
+                  className="flex items-center rounded-full border border-white/30 p-2 text-white/80 transition-all duration-300 hover:border-red-400 hover:text-red-400 cursor-pointer"
                   title={t('navbar.logout')}
                 >
                   <LogOut className="h-4 w-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-slate-300 hover:text-saffron-400 px-3 py-1.5 transition-colors"
+                  className="text-sm font-medium text-white hover:text-saffron-400 transition-colors duration-300"
                 >
                   {t('navbar.login')}
                 </Link>
                 <Link
                   to="/signup"
-                  className="text-sm font-bold bg-saffron-500 hover:bg-saffron-600 text-neutral-950 px-4 py-2 rounded-lg transition-all shadow-xs"
+                  className="text-sm font-semibold text-white rounded-full border border-white/40 px-4 py-2 transition-all duration-300 hover:border-saffron-400 hover:text-saffron-300"
                 >
                   {t('navbar.signup')}
                 </Link>
@@ -139,15 +153,15 @@ export default function Navbar() {
           <div className="flex md:hidden items-center space-x-2">
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-medium cursor-pointer border border-slate-700 bg-slate-800 text-white"
+              className="flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer border border-white/30 bg-transparent text-white"
             >
-              <Globe className="h-3.5 w-3.5 text-saffron-400" />
+              <Globe className="h-3.5 w-3.5" />
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1 rounded-lg focus:outline-none cursor-pointer text-white hover:bg-slate-800"
+              className="p-1.5 rounded-full focus:outline-none cursor-pointer text-white border border-white/30"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -155,9 +169,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu — solid for legibility since it overlays page content */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-800 bg-[#0b0f17] text-white animate-in slide-in-from-top duration-200">
+        <div className="md:hidden bg-[#0b0f17] text-white animate-in slide-in-from-top duration-200">
           <div className="space-y-1 px-4 py-3">
             {navItems.map((item) => (
               <NavLink
@@ -167,8 +181,8 @@ export default function Navbar() {
                 className={({ isActive }) =>
                   `block py-2 px-3 rounded-lg text-base font-medium transition-colors ${
                     isActive
-                      ? 'bg-slate-800 text-saffron-400'
-                      : 'text-slate-300 hover:bg-slate-800 hover:text-saffron-400'
+                      ? 'text-saffron-400'
+                      : 'text-slate-200 hover:text-saffron-400'
                   }`
                 }
               >
@@ -176,7 +190,7 @@ export default function Navbar() {
               </NavLink>
             ))}
 
-            <div className="h-px my-2 bg-slate-800" />
+            <div className="h-px my-2 bg-white/10" />
 
             {user ? (
               <div className="space-y-1 py-1">

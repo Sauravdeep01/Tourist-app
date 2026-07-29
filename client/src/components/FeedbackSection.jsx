@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../context/AuthContext';
 import api from '../utils/api';
 import StarRating from './StarRating';
+import Toast from './Toast';
+import ConfirmDialog from './ConfirmDialog';
 import {
   Quote,
   Loader2,
-  CheckCircle2,
   AlertCircle,
   Send,
-  Pencil,
+  MoreVertical,
   Trash2,
   User,
   ShieldCheck,
@@ -20,7 +21,7 @@ import {
 const FEATURED_LIMIT = 6;
 
 // Home page testimonials section — public rating summary, latest reviews, and the
-// logged-in tourist's own submit/edit/delete controls, all in one self-contained block.
+// logged-in tourist's own submit/delete controls, all in one self-contained block.
 export default function FeedbackSection() {
   const { i18n } = useTranslation();
   const lang = i18n.language;
@@ -32,13 +33,31 @@ export default function FeedbackSection() {
 
   const [myFeedback, setMyFeedback] = useState(null);
   const [loadingMine, setLoadingMine] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [formRating, setFormRating] = useState(5);
   const [formComment, setFormComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [formError, setFormError] = useState('');
-  const [formSuccess, setFormSuccess] = useState('');
+
+  const [toast, setToast] = useState(null); // { message, type }
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  const showToast = (message, type = 'success') => setToast({ message, type });
+
+  // Close the own-review dropdown menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -66,8 +85,6 @@ export default function FeedbackSection() {
     try {
       const { data } = await api.get('/api/feedback/mine');
       setMyFeedback(data);
-      setFormRating(data.rating);
-      setFormComment(data.comment);
     } catch (err) {
       if (err.response?.status !== 404) {
         console.error('Failed to load your feedback:', err);
@@ -92,23 +109,13 @@ export default function FeedbackSection() {
   const startNewReview = () => {
     setFormRating(5);
     setFormComment('');
-    setIsEditing(true);
+    setShowForm(true);
     setFormError('');
-    setFormSuccess('');
-  };
-
-  const startEditReview = () => {
-    setFormRating(myFeedback.rating);
-    setFormComment(myFeedback.comment);
-    setIsEditing(true);
-    setFormError('');
-    setFormSuccess('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
-    setFormSuccess('');
 
     if (!formComment.trim()) {
       setFormError(lang === 'zh' ? '请填写您的评价内容' : 'Please share a few words about your experience.');
@@ -117,17 +124,10 @@ export default function FeedbackSection() {
 
     try {
       setSubmitting(true);
-      let data;
-      if (myFeedback) {
-        ({ data } = await api.patch('/api/feedback/mine', { rating: formRating, comment: formComment.trim() }));
-      } else {
-        ({ data } = await api.post('/api/feedback', { rating: formRating, comment: formComment.trim() }));
-      }
+      const { data } = await api.post('/api/feedback', { rating: formRating, comment: formComment.trim() });
       setMyFeedback(data);
-      setIsEditing(false);
-      setFormSuccess(
-        lang === 'zh' ? '感谢您的分享！您的评价已提交。' : 'Thank you for sharing! Your feedback has been saved.'
-      );
+      setShowForm(false);
+      showToast(lang === 'zh' ? '感谢您提交的评价！' : 'Thanks for submitting your feedback!');
       fetchStats();
       fetchFeed();
     } catch (err) {
@@ -142,20 +142,26 @@ export default function FeedbackSection() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm(lang === 'zh' ? '确定要删除您的评价吗？' : 'Delete your feedback? This cannot be undone.')) {
-      return;
-    }
+  const requestDelete = () => {
+    setMenuOpen(false);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
       setDeleting(true);
       await api.delete('/api/feedback/mine');
       setMyFeedback(null);
-      setIsEditing(false);
-      setFormSuccess(lang === 'zh' ? '您的评价已删除。' : 'Your feedback has been removed.');
+      setConfirmOpen(false);
+      showToast(lang === 'zh' ? '评价已成功删除。' : 'Feedback deleted successfully.');
       fetchStats();
       fetchFeed();
     } catch (err) {
-      setFormError(err.response?.data?.error || (lang === 'zh' ? '删除失败，请重试。' : 'Failed to delete. Please try again.'));
+      setConfirmOpen(false);
+      showToast(
+        err.response?.data?.error || (lang === 'zh' ? '删除失败，请重试。' : 'Failed to delete. Please try again.'),
+        'error'
+      );
     } finally {
       setDeleting(false);
     }
@@ -178,7 +184,7 @@ export default function FeedbackSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Rating summary + submit/manage own review */}
+          {/* Rating summary + submit own review */}
           <div className="lg:col-span-1 space-y-6">
             {/* Stats card */}
             <div className="bg-[#161f30] rounded-2xl border border-slate-800 p-6 space-y-4">
@@ -218,7 +224,7 @@ export default function FeedbackSection() {
               </div>
             </div>
 
-            {/* Submit / manage own review */}
+            {/* Submit / status of own review */}
             {!user ? (
               <div className="bg-[#161f30] rounded-2xl border border-slate-800 p-6 text-center space-y-3">
                 <User className="h-8 w-8 text-saffron-400 mx-auto" />
@@ -251,55 +257,21 @@ export default function FeedbackSection() {
                     : 'Staff accounts manage reviews from the dashboard.'}
                 </span>
               </div>
-            ) : (
+            ) : loadingMine ? (
+              <div className="bg-[#161f30] rounded-2xl border border-slate-800 p-6">
+                <div className="py-4 flex items-center justify-center text-slate-400 space-x-2 text-xs">
+                  <Loader2 className="h-4 w-4 animate-spin text-saffron-400" />
+                  <span>{lang === 'zh' ? '加载中...' : 'Loading...'}</span>
+                </div>
+              </div>
+            ) : myFeedback && !showForm ? null : (
               <div className="bg-[#161f30] rounded-2xl border border-slate-800 p-6 space-y-4">
-                {formSuccess && !isEditing && (
-                  <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span>{formSuccess}</span>
-                  </div>
-                )}
-
-                {loadingMine ? (
-                  <div className="py-4 flex items-center justify-center text-slate-400 space-x-2 text-xs">
-                    <Loader2 className="h-4 w-4 animate-spin text-saffron-400" />
-                    <span>{lang === 'zh' ? '加载中...' : 'Loading...'}</span>
-                  </div>
-                ) : !isEditing && myFeedback ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <StarRating value={myFeedback.rating} size="sm" />
-                      <span className="text-[10px] text-slate-500">
-                        {new Date(myFeedback.updatedAt || myFeedback.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-300 leading-relaxed line-clamp-4 whitespace-pre-line">
-                      {myFeedback.comment}
-                    </p>
-                    <div className="flex gap-2 pt-2 border-t border-slate-800">
-                      <button
-                        onClick={startEditReview}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-semibold transition-colors cursor-pointer"
-                      >
-                        <Pencil className="h-3 w-3" />
-                        <span>{lang === 'zh' ? '编辑' : 'Edit'}</span>
-                      </button>
-                      <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900/60 border border-red-800 text-red-300 text-[11px] font-semibold transition-colors disabled:opacity-50 cursor-pointer"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                        <span>{lang === 'zh' ? '删除' : 'Delete'}</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : !isEditing ? (
+                {!showForm ? (
                   <button
                     onClick={startNewReview}
                     className="w-full inline-flex items-center justify-center gap-2 bg-saffron-500 hover:bg-saffron-600 text-neutral-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md cursor-pointer"
                   >
-                    <Pencil className="h-3.5 w-3.5" />
+                    <Send className="h-3.5 w-3.5" />
                     <span>{lang === 'zh' ? '撰写评价' : 'Write a Review'}</span>
                   </button>
                 ) : (
@@ -340,7 +312,7 @@ export default function FeedbackSection() {
                       <button
                         type="button"
                         onClick={() => {
-                          setIsEditing(false);
+                          setShowForm(false);
                           setFormError('');
                         }}
                         className="inline-flex items-center justify-center gap-1.5 bg-[#192235] hover:bg-slate-800 border border-slate-700 text-slate-300 font-semibold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
@@ -368,45 +340,101 @@ export default function FeedbackSection() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {feedbacks.map((fb) => (
-                  <div
-                    key={fb._id}
-                    className="bg-[#161f30] rounded-2xl border border-slate-800 p-5 space-y-2.5 hover:border-saffron-400/50 transition-all"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-8 w-8 rounded-full bg-saffron-500/20 border border-saffron-500/30 flex items-center justify-center text-saffron-400 font-bold text-xs shrink-0">
-                          {fb.user?.name?.charAt(0)?.toUpperCase() || 'P'}
+                {feedbacks.map((fb) => {
+                  const isOwn = myFeedback && fb._id === myFeedback._id;
+                  return (
+                    <div
+                      key={fb._id}
+                      className="relative bg-[#161f30] rounded-2xl border border-slate-800 p-5 space-y-2.5 hover:border-saffron-400/50 transition-all"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="h-8 w-8 rounded-full bg-saffron-500/20 border border-saffron-500/30 flex items-center justify-center text-saffron-400 font-bold text-xs shrink-0">
+                            {fb.user?.name?.charAt(0)?.toUpperCase() || 'P'}
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-white">
+                              {fb.user?.name || (lang === 'zh' ? '朝圣者' : 'Pilgrim')}
+                              {isOwn && (
+                                <span className="ml-1.5 text-[9px] font-bold text-saffron-400 bg-saffron-500/10 border border-saffron-500/30 rounded px-1.5 py-0.5 align-middle">
+                                  {lang === 'zh' ? '您' : 'You'}
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-[10px] text-slate-500">{new Date(fb.createdAt).toLocaleDateString()}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-xs font-semibold text-white">
-                            {fb.user?.name || (lang === 'zh' ? '朝圣者' : 'Pilgrim')}
-                          </p>
-                          <p className="text-[10px] text-slate-500">{new Date(fb.createdAt).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-                      <StarRating value={fb.rating} size="sm" />
-                    </div>
-                    <p className="text-xs text-slate-300 leading-relaxed line-clamp-3 whitespace-pre-line">
-                      <Quote className="h-3 w-3 text-slate-600 inline mr-1 -translate-y-0.5" />
-                      {fb.comment}
-                    </p>
 
-                    {fb.reply?.text && (
-                      <div className="pl-3 border-l-2 border-saffron-500/50 bg-saffron-500/5 rounded-r-lg p-2">
-                        <p className="text-[9px] font-bold text-saffron-400 uppercase tracking-wide mb-0.5">
-                          {lang === 'zh' ? '官方回复' : 'Our Reply'}
-                        </p>
-                        <p className="text-[11px] text-slate-300 leading-relaxed line-clamp-2">{fb.reply.text}</p>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <StarRating value={fb.rating} size="sm" />
+
+                          {isOwn && (
+                            <div className="relative" ref={menuRef}>
+                              <button
+                                type="button"
+                                onClick={() => setMenuOpen((o) => !o)}
+                                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                                aria-label={lang === 'zh' ? '更多操作' : 'More options'}
+                                aria-haspopup="true"
+                                aria-expanded={menuOpen}
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </button>
+
+                              {menuOpen && (
+                                <div className="absolute right-0 top-full mt-1 w-36 bg-[#1c2740] border border-slate-700 rounded-xl shadow-2xl py-1 z-20 animate-in fade-in zoom-in-95 duration-100">
+                                  <button
+                                    type="button"
+                                    onClick={requestDelete}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-red-300 hover:bg-red-950/50 transition-colors cursor-pointer"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                    <span>{lang === 'zh' ? '删除' : 'Delete'}</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                ))}
+                      <p className="text-xs text-slate-300 leading-relaxed line-clamp-3 whitespace-pre-line">
+                        <Quote className="h-3 w-3 text-slate-600 inline mr-1 -translate-y-0.5" />
+                        {fb.comment}
+                      </p>
+
+                      {fb.reply?.text && (
+                        <div className="pl-3 border-l-2 border-saffron-500/50 bg-saffron-500/5 rounded-r-lg p-2">
+                          <p className="text-[9px] font-bold text-saffron-400 uppercase tracking-wide mb-0.5">
+                            {lang === 'zh' ? '官方回复' : 'Our Reply'}
+                          </p>
+                          <p className="text-[11px] text-slate-300 leading-relaxed line-clamp-2">{fb.reply.text}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={lang === 'zh' ? '删除评价' : 'Delete feedback'}
+        message={
+          lang === 'zh'
+            ? '确定要删除您的评价吗？此操作无法撤销。'
+            : 'Are you sure you want to delete your feedback? This action cannot be undone.'
+        }
+        confirmLabel={lang === 'zh' ? '删除' : 'Delete'}
+        cancelLabel={lang === 'zh' ? '取消' : 'Cancel'}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setConfirmOpen(false)}
+        loading={deleting}
+      />
+
+      <Toast message={toast?.message} type={toast?.type} onClose={() => setToast(null)} />
     </section>
   );
 }
