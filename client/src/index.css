@@ -62,3 +62,12 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 12px 20px -8px rgba(123, 41, 57, 0.15);
 }
+
+/* Slow up-down float for the WhatsApp button */
+@keyframes float-updown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float-updown {
+  animation: float-updown 2.8s ease-in-out infinite;
+}
