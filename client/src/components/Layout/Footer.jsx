@@ -1,14 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AuthContext } from '../../context/AuthContext';
 import { CONTACT_DETAILS } from '../../utils/constants';
 import { L } from '../../utils/lang';
-import { Phone, Mail, MessageSquare, Compass, Shield, Heart } from 'lucide-react';
+import { Phone, Mail, MessageSquare, Compass, Heart } from 'lucide-react';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
-  const { user } = useContext(AuthContext);
 
   return (
     <footer className="bg-[#070a10] text-slate-400 border-t border-slate-800">
@@ -81,39 +79,24 @@ export default function Footer() {
             <h3 className="text-white text-sm font-semibold tracking-wider uppercase mb-4">
               {t('navbar.contact')}
             </h3>
-            {user ? (
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center space-x-2">
-                  <Phone className="h-4 w-4 text-saffron-500 shrink-0" />
-                  <span>{t('footer.phone')}: <a href={`tel:${CONTACT_DETAILS.phone}`} className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <MessageSquare className="h-4 w-4 text-saffron-500 shrink-0" />
-                  <span>{t('footer.whatsapp')}: <a href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <MessageSquare className="h-4 w-4 text-saffron-500 shrink-0" />
-                  <span>{t('footer.wechat')}: <span className="font-mono text-white">{CONTACT_DETAILS.wechatId}</span></span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4 text-saffron-500 shrink-0" />
-                  <span>{t('footer.email')}: <a href={`mailto:${CONTACT_DETAILS.email}`} className="hover:underline hover:text-white">{CONTACT_DETAILS.email}</a></span>
-                </li>
-              </ul>
-            ) : (
-              <div className="bg-neutral-800/50 p-4 rounded-lg border border-neutral-700/50 text-sm">
-                <Shield className="h-5 w-5 text-saffron-500 mb-2" />
-                <p className="mb-3 text-xs leading-relaxed">
-                  {i18n.language === 'zh' ? '为了保障安全及防止垃圾信息，我们的联系电话、微信及 WhatsApp 仅对注册用户开放。' : 'To maintain security and prevent spam, our direct contact channels (Phone, WeChat, WhatsApp) are visible only to registered accounts.'}
-                </p>
-                <Link
-                  to="/signup"
-                  className="inline-flex items-center justify-center w-full px-4 py-2 bg-saffron-600 hover:bg-saffron-700 text-neutral-900 font-medium text-xs rounded-md transition-colors"
-                >
-                  {t('cta.signupPrompt')}
-                </Link>
-              </div>
-            )}
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center space-x-2">
+                <Phone className="h-4 w-4 text-saffron-500 shrink-0" />
+                <span>{t('footer.phone')}: <a href={`tel:${CONTACT_DETAILS.phone}`} className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <MessageSquare className="h-4 w-4 text-saffron-500 shrink-0" />
+                <span>{t('footer.whatsapp')}: <a href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <MessageSquare className="h-4 w-4 text-saffron-500 shrink-0" />
+                <span>{t('footer.wechat')}: <span className="font-mono text-white">{CONTACT_DETAILS.wechatId}</span></span>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Mail className="h-4 w-4 text-saffron-500 shrink-0" />
+                <span>{t('footer.email')}: <a href={`mailto:${CONTACT_DETAILS.email}`} className="hover:underline hover:text-white">{CONTACT_DETAILS.email}</a></span>
+              </li>
+            </ul>
           </div>
         </div>
 

@@ -71,3 +71,39 @@ body {
 .animate-float-updown {
   animation: float-updown 2.8s ease-in-out infinite;
 }
+
+/* Gallery: staggered card entrance */
+@keyframes fade-up-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up-in {
+  animation: fade-up-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Gallery: lightbox backdrop + image transitions */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-modal-backdrop {
+  animation: modal-backdrop-in 0.25s ease-out both;
+}
+
+@keyframes modal-image-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-modal-image {
+  animation: modal-image-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Gallery page: gentle fade-in on load */
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-page-fade-in {
+  animation: page-fade-in 0.6s ease-out both;
+}
+
