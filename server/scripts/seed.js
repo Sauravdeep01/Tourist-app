@@ -31,7 +31,7 @@ const seedDatabase = async () => {
       phone: '+91 9852551971',
       whatsapp: '919852551971',
       wechatId: 'BodhipathTours',
-      email: 'tours@bodhipathtours.com',
+      email: 'bodhipath.travel@gmail.com',
       address: {
         en: 'Bodhipath Tour & Travels, Patna, Bihar, India',
         zh: '印度比哈尔邦巴特那 Bodhipath Tour & Travels',
@@ -569,18 +569,20 @@ const seedDatabase = async () => {
       ]
     };
 
-    // Upsert Packages
-    console.log('Upserting Package A...');
+    // Create packages only if they don't already exist — $setOnInsert means a
+    // re-run never clobbers coverImage/pricing/etc. that were since edited
+    // from the dashboard (matches the Destinations seeding behavior below).
+    console.log('Seeding Package A (skipped if it already exists)...');
     const tourADoc = await Tour.findOneAndUpdate(
       { slug: packageA.slug },
-      { $set: packageA },
+      { $setOnInsert: packageA },
       { upsert: true, new: true }
     );
 
-    console.log('Upserting Package B...');
+    console.log('Seeding Package B (skipped if it already exists)...');
     const tourBDoc = await Tour.findOneAndUpdate(
       { slug: packageB.slug },
-      { $set: packageB },
+      { $setOnInsert: packageB },
       { upsert: true, new: true }
     );
 
@@ -722,8 +724,9 @@ const seedDatabase = async () => {
     console.log('Destinations seeded successfully!');
 
     // 5. Seed Gallery Items (Past Tour Group Memories Categorized by Destination)
+    // Only seed sample photos on first run — never wipe real uploaded photos.
     console.log('Seeding past tour memory gallery photos...');
-    await Gallery.deleteMany({});
+    const existingGalleryCount = await Gallery.countDocuments();
     const samplePhotos = [
       {
         ownerId: seedOwner._id,
@@ -822,8 +825,12 @@ const seedDatabase = async () => {
         order: 6,
       },
     ];
-    await Gallery.insertMany(samplePhotos);
-    console.log('Past tour group memory photos seeded successfully!');
+    if (existingGalleryCount === 0) {
+      await Gallery.insertMany(samplePhotos);
+      console.log('Past tour group memory photos seeded successfully!');
+    } else {
+      console.log(`Skipping gallery seed — ${existingGalleryCount} photo(s) already exist.`);
+    }
   } catch (err) {
     console.error(`Database seeding failed: ${err.message}`);
   } finally {

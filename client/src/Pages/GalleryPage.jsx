@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Maximize2, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../utils/api';
 
@@ -150,31 +151,36 @@ export default function GalleryPage() {
         )}
       </div>
 
-      {/* Lightbox Modal */}
-      {activePhoto && (
+      {/* Lightbox Modal — portaled to <body> so it always paints above the
+          fixed Navbar (both are z-50 in their own trees; a same-level tie
+          is one browser quirk away from swallowing clicks on the close
+          button). Portaling removes the ambiguity entirely. */}
+      {activePhoto && createPortal(
         <div
           onClick={closeLightbox}
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-modal-backdrop"
+          className="fixed inset-0 z-100 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-modal-backdrop"
         >
           {/* Close button */}
           <button
+            type="button"
             onClick={closeLightbox}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 p-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-colors cursor-pointer"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 p-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-colors cursor-pointer pointer-events-auto"
             aria-label="Close"
           >
             <X className="h-6 w-6" />
           </button>
 
           {/* Image counter */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 sm:top-6 z-20 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 text-white text-xs font-medium tracking-wide">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 sm:top-6 z-10 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 text-white text-xs font-medium tracking-wide">
             {activeIndex + 1} / {total}
           </div>
 
           {/* Previous arrow */}
           {total > 1 && (
             <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); goPrev(); }}
-              className="absolute left-2 sm:left-6 z-20 p-2.5 sm:p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 cursor-pointer"
+              className="absolute left-2 sm:left-6 z-10 p-2.5 sm:p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 cursor-pointer"
               aria-label="Previous photo"
             >
               <ChevronLeft className="h-6 w-6 sm:h-7 sm:w-7" />
@@ -184,8 +190,9 @@ export default function GalleryPage() {
           {/* Next arrow */}
           {total > 1 && (
             <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); goNext(); }}
-              className="absolute right-2 sm:right-6 z-20 p-2.5 sm:p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 cursor-pointer"
+              className="absolute right-2 sm:right-6 z-10 p-2.5 sm:p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 cursor-pointer"
               aria-label="Next photo"
             >
               <ChevronRight className="h-6 w-6 sm:h-7 sm:w-7" />
@@ -196,7 +203,7 @@ export default function GalleryPage() {
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="relative max-w-5xl max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center"
+            className="relative z-0 max-w-5xl max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center"
           >
             <img
               key={activeIndex}
@@ -205,7 +212,8 @@ export default function GalleryPage() {
               className="animate-modal-image max-h-[85vh] w-auto object-contain rounded-2xl select-none"
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
