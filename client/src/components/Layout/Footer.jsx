@@ -82,11 +82,11 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-saffron-500 shrink-0" />
-                <span>{t('footer.phone')}: <a href={`tel:${CONTACT_DETAILS.phone}`} className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
+                <span>{t('footer.phone')}: <a href={`tel:${CONTACT_DETAILS.phone.replace(/\s+/g, '')}`} className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
               </li>
               <li className="flex items-center space-x-2">
                 <MessageSquare className="h-4 w-4 text-saffron-500 shrink-0" />
-                <span>{t('footer.whatsapp')}: <a href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-white">{CONTACT_DETAILS.phone}</a></span>
+                <span>{t('footer.whatsapp')}: <a href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-white">{CONTACT_DETAILS.whatsappDisplay}</a></span>
               </li>
               <li className="flex items-center space-x-2">
                 <MessageSquare className="h-4 w-4 text-saffron-500 shrink-0" />

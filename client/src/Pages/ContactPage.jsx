@@ -17,6 +17,10 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Copy,
+  Check,
+  QrCode,
+  X,
 } from 'lucide-react';
 import Stepper from '../components/ContactForm/Stepper';
 import StepPersonal from '../components/ContactForm/StepPersonal';
@@ -24,6 +28,7 @@ import StepTravel from '../components/ContactForm/StepTravel';
 import StepReview from '../components/ContactForm/StepReview';
 import SuccessScreen from '../components/ContactForm/SuccessScreen';
 import { EMAIL_RE, WECHAT_RE, PHONE_RE, STEPS } from '../components/ContactForm/formConstants';
+import wechatQr from '../assets/wechat_qr.jpg';
 
 // Fields that belong to each step — used to scope validation + "touch on
 // attempted advance" so errors only surface for the fields the user can
@@ -115,9 +120,36 @@ export default function ContactPage() {
 
   const [tours, setTours] = useState([]);
 
-  // FAQ Accordion
+  // FAQ Accordion & WeChat state
   const [faqSearch, setFaqSearch] = useState('');
   const [openFaq, setOpenFaq] = useState(null);
+  const [copiedWechat, setCopiedWechat] = useState(false);
+  const [showWechatModal, setShowWechatModal] = useState(false);
+
+  const copyWechatId = () => {
+    navigator.clipboard.writeText(CONTACT_DETAILS.wechatId);
+    setCopiedWechat(true);
+    setTimeout(() => setCopiedWechat(false), 2000);
+  };
+
+  // Close modal on Escape key press & handle scroll lock
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowWechatModal(false);
+      }
+    };
+    if (showWechatModal) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showWechatModal]);
 
   const errors = useMemo(() => validateAll(form, lang), [form, lang]);
 
@@ -481,40 +513,130 @@ export default function ContactPage() {
 
         {/* CTA band — alternative contact methods */}
         <div className="max-w-2xl mx-auto mt-10">
-          <div className="rounded-3xl border border-slate-800 bg-white/3 backdrop-blur-md p-6 sm:p-8 text-center">
-            <h3 className="text-base sm:text-lg font-serif font-bold text-white mb-1">
-              {lang === 'zh' ? '需要协助规划您的朝圣之旅吗？' : 'Need help planning your pilgrimage?'}
-            </h3>
-            <p className="text-xs text-slate-400 mb-5">
-              {lang === 'zh' ? '我们的顾问随时为您解答。' : 'Our specialists are ready to help — reach out directly.'}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="rounded-3xl border border-slate-800 bg-white/3 backdrop-blur-md p-6 sm:p-8 text-center space-y-5">
+            <div>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-white mb-1">
+                {lang === 'zh' ? '需要协助规划您的朝圣之旅吗？' : 'Need help planning your pilgrimage?'}
+              </h3>
+              <p className="text-xs text-slate-400">
+                {lang === 'zh'
+                  ? '我们的高级朝圣顾问随时为您解答，可通过微信、WhatsApp、电话或邮件与我们联系。'
+                  : 'Our specialists are ready to help — reach out via WeChat, WhatsApp, Call, or Email.'}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowWechatModal(true)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-600/30 transition-all cursor-pointer shadow-lg hover:shadow-emerald-950/40"
+              >
+                <QrCode className="h-4 w-4 text-emerald-400" />
+                {lang === 'zh' ? '微信扫码联系' : 'Scan WeChat QR'}
+              </button>
               <a
                 href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600/15 border border-emerald-600/30 text-emerald-300 text-xs font-bold hover:bg-emerald-600/25 transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold hover:border-emerald-500/50 hover:text-emerald-300 transition-colors cursor-pointer"
               >
                 <MessageCircle className="h-4 w-4" />
                 {lang === 'zh' ? 'WhatsApp 咨询' : 'WhatsApp Us'}
               </a>
-              <a
-                href={`mailto:${CONTACT_DETAILS.email}`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold hover:border-saffron-400/50 transition-colors cursor-pointer"
-              >
+              <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold cursor-default select-none">
                 <Mail className="h-4 w-4" />
                 {lang === 'zh' ? '邮件联系' : 'Email Us'}
-              </a>
-              <a
-                href={`tel:${CONTACT_DETAILS.phone.replace(/\s+/g, '')}`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold hover:border-saffron-400/50 transition-colors cursor-pointer"
-              >
+              </div>
+              <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold cursor-default select-none">
                 <Phone className="h-4 w-4" />
                 {lang === 'zh' ? '电话咨询' : 'Call Us'}
-              </a>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* WeChat QR Code Lightbox Modal */}
+        <AnimatePresence>
+          {showWechatModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setShowWechatModal(false)}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 15 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative bg-[#141b29] border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl max-w-lg w-full text-center flex flex-col items-center overflow-hidden"
+              >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowWechatModal(false)}
+                  className="absolute top-4 right-4 h-9 w-9 rounded-full bg-white/5 hover:bg-white/15 border border-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer z-10"
+                  aria-label="Close modal"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+
+                {/* Modal Title & Header */}
+                <div className="space-y-1 mb-5 pr-6 pl-6">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold mb-1">
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    <span>{lang === 'zh' ? '微信官方客服' : 'WeChat Contact'}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-white">
+                    {lang === 'zh' ? '微信扫码添加好友' : 'Scan to Connect on WeChat'}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    {lang === 'zh'
+                      ? '打开微信“扫一扫”，即可直接添加朝圣专员为好友。'
+                      : 'Open the WeChat app and scan the QR code below to connect with us.'}
+                  </p>
+                </div>
+
+                {/* High-Resolution Uploaded WeChat QR Code Image */}
+                <div className="relative group rounded-2xl border border-emerald-500/30 bg-white p-2.5 shadow-2xl mb-5 w-full max-w-[420px] sm:max-w-[460px]">
+                  <img
+                    src={wechatQr}
+                    alt="WeChat QR Code"
+                    className="w-full h-auto max-h-[60vh] object-contain rounded-xl"
+                  />
+                </div>
+
+                {/* WeChat ID and Copy Button */}
+                <div className="flex items-center justify-center gap-3 w-full bg-[#192235] px-4 py-3 rounded-xl border border-slate-800">
+                  <span className="text-xs text-slate-400">{lang === 'zh' ? '微信号：' : 'WeChat ID:'}</span>
+                  <code className="text-xs font-mono font-bold text-emerald-300 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-800/50">
+                    {CONTACT_DETAILS.wechatId}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={copyWechatId}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition-colors cursor-pointer"
+                  >
+                    {copiedWechat ? (
+                      <>
+                        <Check className="h-3.5 w-3.5 text-emerald-400" />
+                        <span className="text-emerald-400">{lang === 'zh' ? '已复制' : 'Copied'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5 text-slate-400" />
+                        <span>{lang === 'zh' ? '复制' : 'Copy'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* FAQ Search Accordion */}
         <div className="max-w-4xl mx-auto mt-10 bg-[#161f30] p-8 sm:p-12 rounded-3xl border border-slate-800 shadow-2xl space-y-6">

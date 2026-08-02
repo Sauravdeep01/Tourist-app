@@ -3,9 +3,10 @@
  * Edits here propagate automatically to the Footer, Contact page, and WhatsApp buttons.
  */
 export const CONTACT_DETAILS = {
-  phone: '+91 9852551971',
+  phone: '+91 9905118727',
   whatsapp: '919852551971',
-  wechatId: 'BodhipathTours',
+  whatsappDisplay: '+91 9852551971',
+  wechatId: 'sknalanda',
   email: 'bodhipath.travel@gmail.com',
   address: {
     en: 'Bodhipath Tour & Travels, Patna, Bihar, India',
