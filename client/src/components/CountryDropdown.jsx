@@ -3,7 +3,7 @@ import { ChevronDown, Search } from 'lucide-react';
 import { ALL_COUNTRIES, COUNTRY_CODES } from '../utils/countryCodes';
 
 // Custom Country Select with real flag image symbols
-export function CountrySelect({ value, onChange }) {
+export function CountrySelect({ value, onChange, id = 'country', error, touched }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const containerRef = useRef(null);
@@ -24,12 +24,17 @@ export function CountrySelect({ value, onChange }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const showError = touched && !!error;
+
   return (
     <div ref={containerRef} className="relative w-full">
       <button
+        id={id}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between pl-3.5 pr-3 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white focus:outline-none focus:ring-2 focus:ring-saffron-400 cursor-pointer"
+        className={`w-full flex items-center justify-between pl-3.5 pr-3 py-2.5 rounded-xl border bg-[#192235] text-sm text-white focus:outline-none focus:ring-2 focus:ring-saffron-400 cursor-pointer ${
+          showError ? 'border-red-400/70 ring-1 ring-red-400/30' : 'border-slate-700'
+        }`}
       >
         <div className="flex items-center space-x-2.5 min-w-0">
           <img
