@@ -196,7 +196,7 @@ export default function OverviewTab({ stats, inquiries, tours, destinations, own
           </div>
 
           {/* System Info Banner */}
-          <div className="bg-gradient-to-br from-maroon-900 to-saffron-900 text-white rounded-2xl p-5 shadow-sm">
+          <div className="bg-linear-to-br from-maroon-900 to-saffron-900 text-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center space-x-2 text-saffron-300 text-xs font-semibold uppercase tracking-wider mb-2">
               <ShieldCheck className="h-4 w-4" />
               <span>Bodhipath Platform</span>

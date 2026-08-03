@@ -4,28 +4,28 @@ import SectionHeader from './SectionHeader';
 
 function Row({ label, value }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2 text-xs">
-      <span className="text-slate-400 shrink-0">{label}</span>
-      <span className="text-white font-semibold text-right break-words">{value}</span>
+    <div className="flex items-start justify-between gap-4 py-2 text-xs font-sans">
+      <span className="text-body shrink-0">{label}</span>
+      <span className="text-heading font-semibold text-right wrap-break-word">{value}</span>
     </div>
   );
 }
 
 function SummaryCard({ title, onEdit, editLabel, children }) {
   return (
-    <div className="rounded-2xl border border-slate-700 bg-white/3 p-4 sm:p-5">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-1">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-saffron-400">{title}</h4>
+    <div className="rounded-2xl border border-card-border bg-white p-4 sm:p-5 font-sans">
+      <div className="flex items-center justify-between border-b border-card-border pb-2.5 mb-1">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-maroon-700">{title}</h4>
         <button
           type="button"
           onClick={onEdit}
-          className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-saffron-400 transition-colors cursor-pointer"
+          className="flex items-center gap-1 text-[11px] font-semibold text-body hover:text-maroon-700 transition-colors cursor-pointer"
         >
           <Pencil className="h-3 w-3" />
           {editLabel}
         </button>
       </div>
-      <div className="divide-y divide-slate-800/60">{children}</div>
+      <div className="divide-y divide-card-border">{children}</div>
     </div>
   );
 }

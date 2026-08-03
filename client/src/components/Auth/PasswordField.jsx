@@ -1,45 +1,40 @@
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 
-/**
- * Password input with a show/hide toggle. Same red-outline error state as
- * FormField, kept as a sibling component since it needs the extra
- * toggle button inside the field.
- */
 export default function PasswordField({ id, label, error, hint, showLabel, hideLabel, className = '', ...inputProps }) {
   const [visible, setVisible] = useState(false);
 
   return (
     <div className={className}>
-      <label htmlFor={id} className="block text-sm font-medium text-neutral-700 mb-1.5">
+      <label htmlFor={id} className="block text-xs font-semibold text-body mb-1.5 font-sans">
         {label}
       </label>
-      <div className="relative">
-        <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-neutral-400" />
+      <div className="relative font-sans">
+        <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
         <input
           id={id}
           type={visible ? 'text' : 'password'}
-          className={`w-full rounded-xl border bg-white py-2.5 pl-10 pr-11 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors focus:outline-none focus:ring-2 ${
+          className={`w-full rounded-2xl border bg-ivory py-2.5 pl-10 pr-11 text-sm text-heading placeholder:text-muted transition-colors focus:outline-none focus:ring-2 ${
             error
-              ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
-              : 'border-neutral-200 focus:border-maroon-400 focus:ring-maroon-100'
+              ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+              : 'border-card-border focus:border-maroon-700 focus:ring-maroon-700/20'
           }`}
           {...inputProps}
         />
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-maroon-700 transition-colors cursor-pointer"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-maroon-700 transition-colors cursor-pointer"
           aria-label={visible ? hideLabel : showLabel}
           tabIndex={-1}
         >
-          {visible ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
+          {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
       {error ? (
-        <p className="mt-1.5 text-xs text-red-600">{error}</p>
+        <p className="mt-1.5 text-xs text-red-500 font-sans">{error}</p>
       ) : hint ? (
-        <p className="mt-1.5 text-xs text-neutral-400">{hint}</p>
+        <p className="mt-1.5 text-xs text-muted font-sans">{hint}</p>
       ) : null}
     </div>
   );

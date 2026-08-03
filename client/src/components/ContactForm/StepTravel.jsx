@@ -11,7 +11,7 @@ export default function StepTravel({ form, setForm, tours, lang }) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       <div>
         <SectionHeader
           icon={Compass}
@@ -19,7 +19,7 @@ export default function StepTravel({ form, setForm, tours, lang }) {
           description={lang === 'zh' ? '选择您期望的朝圣路线。' : 'Choose your preferred journey.'}
         />
 
-        <p className="text-[11px] font-semibold text-slate-400 mb-2 pl-1">
+        <p className="text-[11px] font-bold text-[#4B4B4B] uppercase tracking-wider mb-2 pl-1 font-sans">
           {lang === 'zh' ? '意向朝圣路线' : 'Intended Tour'}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -48,7 +48,7 @@ export default function StepTravel({ form, setForm, tours, lang }) {
       </div>
 
       <div>
-        <p className="text-[11px] font-semibold text-slate-400 mb-2 pl-1">
+        <p className="text-[11px] font-bold text-[#4B4B4B] uppercase tracking-wider mb-2 pl-1 font-sans">
           {lang === 'zh' ? '参团人数' : 'Group Size'}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -64,24 +64,24 @@ export default function StepTravel({ form, setForm, tours, lang }) {
           ))}
         </div>
 
-        <div className="mt-4 flex items-center justify-between p-3.5 rounded-2xl border border-slate-700 bg-white/3">
-          <span className="text-xs font-semibold text-slate-300">
+        <div className="mt-4 flex items-center justify-between p-3.5 rounded-[14px] border-2 border-[#D7DDE5] bg-[#F6F7F9] shadow-[inset_0_1px_3px_rgba(16,24,40,0.04)] font-sans">
+          <span className="text-xs font-semibold text-[#4B4B4B]">
             {lang === 'zh' ? '确切出行人数' : 'Number of Travelers'}
           </span>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => adjustGroupSize(-1)}
-              className="h-8 w-8 rounded-full flex items-center justify-center border border-slate-700 text-slate-300 hover:border-saffron-400 hover:text-saffron-400 transition-colors cursor-pointer"
+              className="h-8 w-8 rounded-full flex items-center justify-center border border-[#D7DDE5] bg-white text-maroon-700 hover:border-saffron-500 transition-colors cursor-pointer"
               aria-label={lang === 'zh' ? '减少人数' : 'Decrease travelers'}
             >
               <Minus className="h-3.5 w-3.5" />
             </button>
-            <span className="w-8 text-center text-sm font-bold text-white tabular-nums">{form.groupSize}</span>
+            <span className="w-8 text-center text-sm font-bold text-heading tabular-nums">{form.groupSize}</span>
             <button
               type="button"
               onClick={() => adjustGroupSize(1)}
-              className="h-8 w-8 rounded-full flex items-center justify-center border border-slate-700 text-slate-300 hover:border-saffron-400 hover:text-saffron-400 transition-colors cursor-pointer"
+              className="h-8 w-8 rounded-full flex items-center justify-center border border-[#D7DDE5] bg-white text-maroon-700 hover:border-saffron-500 transition-colors cursor-pointer"
               aria-label={lang === 'zh' ? '增加人数' : 'Increase travelers'}
             >
               <Plus className="h-3.5 w-3.5" />
@@ -91,7 +91,7 @@ export default function StepTravel({ form, setForm, tours, lang }) {
       </div>
 
       <div>
-        <p className="text-[11px] font-semibold text-slate-400 mb-2 pl-1">
+        <p className="text-[11px] font-bold text-[#4B4B4B] uppercase tracking-wider mb-2 pl-1 font-sans">
           {lang === 'zh' ? '预计出发月份' : 'Travel Month'}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

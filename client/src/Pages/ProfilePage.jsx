@@ -216,20 +216,20 @@ export default function ProfilePage() {
 
   if (!user && !loadingProfile) {
     return (
-      <div className="min-h-[70vh] bg-[#0b0f17] flex flex-col items-center justify-center p-6 text-center text-white">
-        <div className="bg-[#161f30] p-8 rounded-3xl border border-slate-800 shadow-2xl max-w-md w-full space-y-4">
-          <User className="h-12 w-12 text-saffron-400 mx-auto" />
-          <h2 className="text-2xl font-serif font-bold">
+      <div className="min-h-[70vh] bg-ivory flex flex-col items-center justify-center p-6 text-center text-heading font-sans">
+        <div className="bg-white p-8 rounded-3xl border border-card-border shadow-xl max-w-md w-full space-y-4">
+          <User className="h-12 w-12 text-maroon-700 mx-auto" />
+          <h2 className="text-2xl font-serif font-bold text-heading">
             {lang === 'zh' ? '需要登录' : 'Authentication Required'}
           </h2>
-          <p className="text-sm text-slate-400 leading-relaxed font-sans">
+          <p className="text-sm text-body leading-relaxed font-sans">
             {lang === 'zh'
               ? '请登录以管理您的个人资料和朝圣账户。'
               : 'Please log in to manage your profile and pilgrimage account.'}
           </p>
           <Link
             to="/login?next=/profile"
-            className="inline-flex items-center justify-center w-full bg-saffron-500 hover:bg-saffron-600 text-neutral-950 font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md cursor-pointer"
+            className="inline-flex items-center justify-center w-full bg-maroon-700 hover:bg-maroon-800 text-white font-bold text-sm px-6 py-3.5 rounded-2xl border border-[#9F2845] transition-all shadow-md cursor-pointer"
           >
             {lang === 'zh' ? '立即登录' : 'Log In Now'}
           </Link>
@@ -239,107 +239,106 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-white py-12 px-4 sm:px-6 lg:px-8 relative font-sans">
+    <div className="min-h-screen bg-ivory text-heading py-20 px-4 sm:px-6 lg:px-8 relative font-sans">
       {/* Background Subtle Starry Texture */}
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(#7A1F35_1px,transparent_1px)] bg-size-[32px_32px] opacity-5 pointer-events-none" />
 
       <div className="max-w-5xl mx-auto space-y-8 relative z-10">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#161f30] p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-card-border shadow-md">
           <div className="flex items-center space-x-4">
-            <div className="h-16 w-16 rounded-2xl bg-saffron-500/20 border border-saffron-500/30 flex items-center justify-center text-saffron-400 font-bold text-2xl shadow-md">
+            <div className="h-16 w-16 rounded-2xl bg-maroon-700 border border-[#9F2845] flex items-center justify-center text-white font-bold font-serif text-2xl shadow-md">
               {profileData.name ? profileData.name.charAt(0).toUpperCase() : 'U'}
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white">
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-heading">
                 {profileData.name || user?.name || (lang === 'zh' ? '用户资料' : 'User Profile')}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-400 flex items-center gap-1.5 mt-0.5">
-                <Mail className="h-3.5 w-3.5 text-saffron-400" />
+              <p className="text-xs sm:text-sm text-body flex items-center gap-1.5 mt-0.5">
+                <Mail className="h-3.5 w-3.5 text-saffron-500" />
                 <span>{profileData.email || user?.email}</span>
               </p>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 bg-saffron-500/10 text-saffron-300 border border-saffron-500/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
-            <ShieldCheck className="h-4 w-4 text-saffron-400" />
+          <div className="inline-flex items-center gap-1.5 bg-maroon-700/10 text-maroon-700 border border-maroon-700/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+            <ShieldCheck className="h-4 w-4 text-maroon-700" />
             <span>{profileData.role === 'admin' ? 'ADMIN' : profileData.role === 'owner' ? 'OWNER' : 'TOURIST'}</span>
           </div>
         </div>
 
         {loadingProfile ? (
-          <div className="py-20 flex items-center justify-center text-slate-400 space-x-2 text-xs">
-            <Loader2 className="h-6 w-6 animate-spin text-saffron-400" />
+          <div className="py-20 flex items-center justify-center text-body space-x-2 text-xs font-sans">
+            <Loader2 className="h-6 w-6 animate-spin text-saffron-500" />
             <span>Loading user account details...</span>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 font-sans">
             {/* 1. Manage Profile Form */}
-            <div className="bg-[#161f30] p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6 flex flex-col justify-between">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-card-border shadow-md space-y-6 flex flex-col justify-between">
               <div>
-                <div className="flex items-center space-x-2 border-b border-slate-800 pb-4 mb-6">
-                  <User className="h-5 w-5 text-saffron-400" />
-                  <h2 className="text-lg font-serif font-bold text-white">
+                <div className="flex items-center space-x-2 border-b border-card-border pb-4 mb-6">
+                  <User className="h-5 w-5 text-saffron-500" />
+                  <h2 className="text-lg font-serif font-bold text-heading">
                     {lang === 'zh' ? '管理个人信息' : 'Manage Personal Information'}
                   </h2>
                 </div>
 
                 {profileSuccess && (
-                  <div className="mb-4 p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <div className="mb-4 p-3.5 rounded-2xl bg-jade-500/10 border border-jade-500/30 text-jade-500 text-xs flex items-center gap-2 font-sans">
+                    <CheckCircle2 className="h-4 w-4 text-jade-500 shrink-0" />
                     <span>{profileSuccess}</span>
                   </div>
                 )}
 
                 {profileError && (
-                  <div className="mb-4 p-3.5 rounded-xl bg-red-950/80 border border-red-800 text-red-300 text-xs flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />
+                  <div className="mb-4 p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 font-sans">
+                    <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
                     <span>{profileError}</span>
                   </div>
                 )}
 
-                <form id="profile-form" onSubmit={handleProfileSubmit} className="space-y-4">
+                <form id="profile-form" onSubmit={handleProfileSubmit} className="space-y-4 font-sans">
                   {/* Name Input */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '全名 / 姓名' : 'Full Name'} *
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                       <input
                         type="text"
                         required
                         value={profileData.name}
                         onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                         placeholder="e.g. Lin Ming"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-card-border bg-ivory text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30 transition-all font-sans"
                       />
                     </div>
                   </div>
 
                   {/* Readonly Email Address */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '电子邮箱地址' : 'Email Address'}
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                       <input
                         type="email"
                         disabled
                         value={profileData.email}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-800 bg-[#111827] text-sm text-slate-400 cursor-not-allowed"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-card-border bg-beige text-sm text-muted cursor-not-allowed font-sans"
                       />
                     </div>
-                    <p className="text-[11px] text-slate-500 mt-1">
+                    <p className="text-[11px] text-muted mt-1 font-sans">
                       {lang === 'zh' ? '登录邮箱无法直接修改' : 'Email address is linked to account login.'}
                     </p>
                   </div>
 
                   {/* Phone Country Code & Number */}
-                  {/* Phone Country Code & Number */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '联系电话' : 'Phone Number'}
                     </label>
                     <div className="flex gap-2">
@@ -349,13 +348,13 @@ export default function ProfilePage() {
                       />
 
                       <div className="relative flex-1">
-                        <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                        <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                         <input
                           type="tel"
                           value={profileData.phone}
                           onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                           placeholder="10-digit number"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 transition-all"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-card-border bg-ivory text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30 transition-all font-sans"
                         />
                       </div>
                     </div>
@@ -363,24 +362,24 @@ export default function ProfilePage() {
 
                   {/* WeChat ID */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '微信号 (WeChat ID)' : 'WeChat ID'}
                     </label>
                     <div className="relative">
-                      <MessageSquare className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <MessageSquare className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                       <input
                         type="text"
                         value={profileData.wechatId}
                         onChange={(e) => setProfileData({ ...profileData, wechatId: e.target.value })}
                         placeholder="e.g. wx_pilgrim88"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-card-border bg-ivory text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30 transition-all font-sans"
                       />
                     </div>
                   </div>
 
                   {/* Country Select Dropdown */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '居住国家 / 地区' : 'Country / Region'}
                     </label>
                     <CountrySelect
@@ -391,12 +390,12 @@ export default function ProfilePage() {
                 </form>
               </div>
 
-              <div className="pt-6 border-t border-slate-800">
+              <div className="pt-6 border-t border-card-border">
                 <button
                   type="submit"
                   form="profile-form"
                   disabled={savingProfile}
-                  className="w-full inline-flex items-center justify-center space-x-2 bg-saffron-500 hover:bg-saffron-600 active:scale-95 text-neutral-950 font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                  className="w-full inline-flex items-center justify-center space-x-2 bg-maroon-700 hover:bg-maroon-800 active:scale-95 text-white font-bold text-sm px-6 py-3.5 rounded-2xl border border-[#9F2845] transition-all shadow-md disabled:opacity-50 cursor-pointer"
                 >
                   {savingProfile ? (
                     <>
@@ -414,37 +413,37 @@ export default function ProfilePage() {
             </div>
 
             {/* 2. Security & Password Change Form */}
-            <div className="bg-[#161f30] p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6 flex flex-col justify-between">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-card-border shadow-md space-y-6 flex flex-col justify-between font-sans">
               <div>
-                <div className="flex items-center space-x-2 border-b border-slate-800 pb-4 mb-6">
-                  <KeyRound className="h-5 w-5 text-saffron-400" />
-                  <h2 className="text-lg font-serif font-bold text-white">
+                <div className="flex items-center space-x-2 border-b border-card-border pb-4 mb-6">
+                  <KeyRound className="h-5 w-5 text-saffron-500" />
+                  <h2 className="text-lg font-serif font-bold text-heading">
                     {lang === 'zh' ? '修改账户密码' : 'Change Password'}
                   </h2>
                 </div>
 
                 {passwordSuccess && (
-                  <div className="mb-4 p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <div className="mb-4 p-3.5 rounded-2xl bg-jade-500/10 border border-jade-500/30 text-jade-500 text-xs flex items-center gap-2 font-sans">
+                    <CheckCircle2 className="h-4 w-4 text-jade-500 shrink-0" />
                     <span>{passwordSuccess}</span>
                   </div>
                 )}
 
                 {passwordError && (
-                  <div className="mb-4 p-3.5 rounded-xl bg-red-950/80 border border-red-800 text-red-300 text-xs flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />
+                  <div className="mb-4 p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 font-sans">
+                    <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
                     <span>{passwordError}</span>
                   </div>
                 )}
 
-                <form id="password-form" onSubmit={handlePasswordSubmit} className="space-y-4">
+                <form id="password-form" onSubmit={handlePasswordSubmit} className="space-y-4 font-sans">
                   {/* Old / Current Password */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '旧密码 (当前密码)' : 'Current (Old) Password'} *
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                       <input
                         type={showCurrentPassword ? 'text' : 'password'}
                         required
@@ -453,12 +452,12 @@ export default function ProfilePage() {
                           setPasswordData({ ...passwordData, currentPassword: e.target.value })
                         }
                         placeholder={lang === 'zh' ? '请输入您现有的旧密码' : 'Enter your old password'}
-                        className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 transition-all"
+                        className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-card-border bg-ivory text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30 transition-all font-sans"
                       />
                       <button
                         type="button"
                         onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-maroon-700"
                       >
                         {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -467,11 +466,11 @@ export default function ProfilePage() {
 
                   {/* New Password */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '新密码' : 'New Password'} *
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                       <input
                         type={showNewPassword ? 'text' : 'password'}
                         required
@@ -480,12 +479,12 @@ export default function ProfilePage() {
                           setPasswordData({ ...passwordData, newPassword: e.target.value })
                         }
                         placeholder={lang === 'zh' ? '至少8位包含字母与数字' : 'Min 8 chars with letter & number'}
-                        className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 transition-all"
+                        className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-card-border bg-ivory text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30 transition-all font-sans"
                       />
                       <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-maroon-700"
                       >
                         {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -494,11 +493,11 @@ export default function ProfilePage() {
 
                   {/* Confirm New Password */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-body mb-1.5">
                       {lang === 'zh' ? '确认新密码' : 'Confirm New Password'} *
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
                         required
@@ -507,12 +506,12 @@ export default function ProfilePage() {
                           setPasswordData({ ...passwordData, confirmPassword: e.target.value })
                         }
                         placeholder={lang === 'zh' ? '再次输入您的新密码' : 'Re-enter your new password'}
-                        className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-700 bg-[#192235] text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400 transition-all"
+                        className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-card-border bg-ivory text-sm text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30 transition-all font-sans"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-maroon-700"
                       >
                         {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -521,12 +520,12 @@ export default function ProfilePage() {
                 </form>
               </div>
 
-              <div className="pt-6 border-t border-slate-800">
+              <div className="pt-6 border-t border-card-border">
                 <button
                   type="submit"
                   form="password-form"
                   disabled={savingPassword}
-                  className="w-full inline-flex items-center justify-center space-x-2 bg-[#192235] hover:bg-slate-800 active:scale-95 text-saffron-400 font-bold text-sm px-6 py-3 rounded-xl border border-slate-700 hover:border-saffron-400/50 transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                  className="w-full inline-flex items-center justify-center space-x-2 bg-beige hover:bg-card-border active:scale-95 text-maroon-700 font-bold text-sm px-6 py-3.5 rounded-2xl border border-card-border transition-all shadow-xs disabled:opacity-50 cursor-pointer font-sans"
                 >
                   {savingPassword ? (
                     <>

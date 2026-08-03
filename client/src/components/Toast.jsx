@@ -19,7 +19,7 @@ export default function Toast({ message, type = 'success', onClose, duration = 3
   const isError = type === 'error';
 
   return (
-    <div className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:bottom-6 sm:right-6 z-[100] flex justify-center sm:justify-end pointer-events-none">
+    <div className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:bottom-6 sm:right-6 z-100 flex justify-center sm:justify-end pointer-events-none">
       <div
         role="status"
         className={`pointer-events-auto flex items-center gap-2.5 max-w-sm w-full sm:w-auto px-4 py-3 rounded-xl border shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-2 fade-in duration-200 ${

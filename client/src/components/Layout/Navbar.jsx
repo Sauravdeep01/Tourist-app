@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
 import { Menu, X, Globe, User, LogOut } from 'lucide-react';
@@ -8,17 +8,22 @@ export default function Navbar() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Track scroll position so the bar can pick up a very subtle dark tint
-  // for readability, while staying full-width with no blur/glass/shadow.
+
+  const scrolled = scrollY > 50;
+
+  const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/destinations/');
+  const overHero = isHeroPage && !scrolled;
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrollY(window.scrollY);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [location.pathname]);
 
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'zh' ? 'en' : 'zh';
@@ -43,14 +48,16 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 w-full transition-colors duration-350 ease-in-out ${
-        scrolled ? 'bg-[rgba(10,15,25,0.75)]' : 'bg-transparent'
+      className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ease-in-out ${
+        scrolled
+          ? 'bg-ivory/65 backdrop-blur-[14px] border-b border-card-border shadow-[0_4px_24px_rgba(31,31,31,0.06)]'
+          : 'bg-transparent border-b border-transparent shadow-none'
       }`}
     >
       <div className="relative mx-auto max-w-8xl px-4 sm:px-6 lg:px-20">
         <div className="flex h-17 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group shrink-0">
+          <Link to="/" className="flex items-center space-x-2.5 group shrink-0">
             {/* Dharma Wheel SVG logo */}
             <svg
               className="h-8 w-8 text-saffron-500 transition-transform duration-700 ease-out group-hover:rotate-180"
@@ -72,22 +79,30 @@ export default function Navbar() {
                 />
               ))}
             </svg>
-            <span className="font-semibold text-lg sm:text-xl tracking-wide text-white">
+            <span
+              className={`font-serif font-bold text-lg sm:text-xl tracking-wide transition-colors duration-500 ${
+                overHero ? 'text-white drop-shadow-md' : 'text-heading'
+              }`}
+            >
               Bodhipath Tour & Travels
             </span>
           </Link>
 
-          {/* Desktop Nav Links — true-centered regardless of logo/button width */}
+          {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-9 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `relative pb-1 text-[15px] font-medium tracking-wide transition-colors duration-300 ${
+                  `relative pb-1 text-[15px] font-semibold tracking-wide transition-colors duration-300 ${
                     isActive
-                      ? 'text-saffron-400 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-saffron-400'
-                      : 'text-white hover:text-saffron-400'
+                      ? overHero
+                        ? 'text-white after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-0.5 after:bg-white after:rounded-full'
+                        : 'text-maroon-700 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-0.5 after:bg-maroon-700 after:rounded-full'
+                      : overHero
+                      ? 'text-white/90 hover:text-white'
+                      : 'text-heading hover:text-maroon-700'
                   }`
                 }
               >
@@ -97,13 +112,13 @@ export default function Navbar() {
           </nav>
 
           {/* Right Controls (Language & Auth) */}
-          <div className="hidden md:flex items-center space-x-3 shrink-0">
+          <div className="hidden md:flex items-center space-x-3 shrink-0 font-sans">
             {/* Language Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer border border-white/30 bg-transparent hover:border-saffron-400 text-white hover:text-saffron-300"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer border border-card-border bg-white hover:border-maroon-700 text-heading shadow-xs"
             >
-              <Globe className="h-4 w-4" />
+              <Globe className="h-3.5 w-3.5 text-saffron-500" />
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
@@ -118,30 +133,32 @@ export default function Navbar() {
                       ? '/owner/dashboard'
                       : '/admin/dashboard'
                   }
-                  className="flex items-center space-x-1.5 rounded-full border border-white/40 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:border-saffron-400 hover:text-saffron-300"
+                  className="flex items-center space-x-1.5 rounded-full border border-card-border bg-white px-4 py-1.5 text-xs font-semibold text-heading transition-all duration-300 hover:border-maroon-700 hover:text-maroon-700 shadow-xs"
                 >
-                  <User className="h-4 w-4" />
+                  <User className="h-3.5 w-3.5 text-saffron-500" />
                   <span>{user.name}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center rounded-full border border-white/30 p-2 text-white/80 transition-all duration-300 hover:border-red-400 hover:text-red-400 cursor-pointer"
+                  className="flex items-center rounded-full border border-card-border bg-white p-2 text-body transition-all duration-300 hover:border-red-400 hover:text-red-600 cursor-pointer shadow-xs"
                   title={t('navbar.logout')}
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-3.5 w-3.5" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-white hover:text-saffron-400 transition-colors duration-300"
+                  className={`text-xs font-semibold transition-colors duration-300 px-2 ${
+                    overHero ? 'text-white/90 hover:text-white' : 'text-body hover:text-maroon-700'
+                  }`}
                 >
                   {t('navbar.login')}
                 </Link>
                 <Link
                   to="/signup"
-                  className="text-sm font-semibold text-white rounded-full border border-white/40 px-4 py-2 transition-all duration-300 hover:border-saffron-400 hover:text-saffron-300"
+                  className="text-xs font-semibold text-white rounded-full bg-maroon-700 hover:bg-maroon-800 border border-[#9F2845] px-4 py-2 transition-all duration-300 shadow-md hover:shadow-maroon-700/20"
                 >
                   {t('navbar.signup')}
                 </Link>
@@ -150,39 +167,39 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Hamburger Menu Toggle */}
-          <div className="flex md:hidden items-center space-x-2">
+          <div className="flex md:hidden items-center space-x-2 font-sans">
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer border border-white/30 bg-transparent text-white"
+              className="flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer border border-card-border bg-white text-heading"
             >
-              <Globe className="h-3.5 w-3.5" />
+              <Globe className="h-3.5 w-3.5 text-saffron-500" />
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-full focus:outline-none cursor-pointer text-white border border-white/30"
+              className="p-1.5 rounded-full focus:outline-none cursor-pointer text-heading border border-card-border bg-white"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu — solid for legibility since it overlays page content */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0b0f17] text-white animate-in slide-in-from-top duration-200">
-          <div className="space-y-1 px-4 py-3">
+        <div className="md:hidden bg-ivory text-heading border-b border-card-border animate-in slide-in-from-top duration-200 shadow-xl font-sans">
+          <div className="space-y-1 px-4 py-4">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `block py-2 px-3 rounded-lg text-base font-medium transition-colors ${
+                  `block py-2.5 px-3 rounded-xl text-base font-semibold transition-colors ${
                     isActive
-                      ? 'text-saffron-400'
-                      : 'text-slate-200 hover:text-saffron-400'
+                      ? 'text-maroon-700 bg-beige'
+                      : 'text-body hover:text-maroon-700'
                   }`
                 }
               >
@@ -190,12 +207,12 @@ export default function Navbar() {
               </NavLink>
             ))}
 
-            <div className="h-px my-2 bg-white/10" />
+            <div className="h-px my-3 bg-card-border" />
 
             {user ? (
               <div className="space-y-1 py-1">
-                <div className="px-3 py-1.5 flex items-center space-x-2 text-sm text-slate-400">
-                  <User className="h-4 w-4" />
+                <div className="px-3 py-1.5 flex items-center space-x-2 text-sm text-body">
+                  <User className="h-4 w-4 text-saffron-500" />
                   <span>
                     {user.name} ({user.role})
                   </span>
@@ -209,13 +226,13 @@ export default function Navbar() {
                       : '/admin/dashboard'
                   }
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2 px-3 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800"
+                  className="block py-2.5 px-3 rounded-xl text-base font-medium text-heading hover:bg-beige"
                 >
                   {t('navbar.myAccount')}
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left flex items-center space-x-2 py-2 px-3 rounded-lg text-base font-medium text-red-400 hover:bg-red-950/40 cursor-pointer"
+                  className="w-full text-left flex items-center space-x-2 py-2.5 px-3 rounded-xl text-base font-medium text-red-600 hover:bg-red-50 cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>{t('navbar.logout')}</span>
@@ -226,14 +243,14 @@ export default function Navbar() {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex justify-center items-center py-2 rounded-lg text-base font-medium border border-slate-700 text-white hover:bg-slate-800"
+                  className="flex justify-center items-center py-2.5 rounded-xl text-sm font-semibold border border-card-border bg-white text-heading hover:bg-beige"
                 >
                   {t('navbar.login')}
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex justify-center items-center py-2 rounded-lg text-base font-bold bg-saffron-500 text-neutral-950 hover:bg-saffron-600 shadow-xs"
+                  className="flex justify-center items-center py-2.5 rounded-xl text-sm font-bold bg-maroon-700 text-white hover:bg-maroon-800 shadow-md"
                 >
                   {t('navbar.signup')}
                 </Link>

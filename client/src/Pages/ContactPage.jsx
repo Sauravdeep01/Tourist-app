@@ -29,6 +29,7 @@ import StepReview from '../components/ContactForm/StepReview';
 import SuccessScreen from '../components/ContactForm/SuccessScreen';
 import { EMAIL_RE, WECHAT_RE, PHONE_RE, STEPS } from '../components/ContactForm/formConstants';
 import wechatQr from '../assets/wechat_qr.jpg';
+import Watermark from '../components/Decor/Watermark';
 
 // Fields that belong to each step — used to scope validation + "touch on
 // attempted advance" so errors only surface for the fields the user can
@@ -343,21 +344,21 @@ export default function ContactPage() {
   const stepProps = { form, setForm, errors, touched, markTouched, lang };
 
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-white py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-ivory text-heading py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
       {/* Dharma dot pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#ff9f00_1px,transparent_1px)] bg-size-[36px_36px] opacity-7 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(#7A1F35_1px,transparent_1px)] bg-size-[36px_36px] opacity-5 pointer-events-none" />
 
       {/* Blurred ambient orbs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-212.5 h-100 bg-saffron-500/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 -left-32 w-120 h-120 bg-maroon-600/15 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute top-1/3 -right-32 w-105 h-105 bg-saffron-600/10 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-212.5 h-100 bg-maroon-700/5 blur-[150px] rounded-full pointer-events-none" />
+      <Watermark variant="lotus" size={420} className="top-24 -right-24 hidden lg:block" />
+      <Watermark variant="dharma" size={380} className="bottom-24 -left-24 hidden lg:block" />
 
       {/* Floating particles */}
       <div className="hidden sm:block">
         {PARTICLES.map((p, i) => (
           <motion.span
             key={i}
-            className="absolute rounded-full bg-saffron-400/40 pointer-events-none"
+            className="absolute rounded-full bg-maroon-700/20 pointer-events-none"
             style={{ top: p.top, left: p.left, width: p.size, height: p.size }}
             animate={{ y: [0, -16, 0], opacity: [0.3, 0.7, 0.3] }}
             transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut' }}
@@ -373,36 +374,36 @@ export default function ContactPage() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="text-center max-w-2xl mx-auto space-y-4 mb-14"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-saffron-500/20 text-saffron-300 border border-saffron-500/30 text-xs font-semibold uppercase tracking-wider">
-            <Compass className="h-4 w-4 text-saffron-400 animate-spin-slow" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-maroon-700/10 text-maroon-700 border border-maroon-700/20 text-xs font-semibold uppercase tracking-wider">
+            <Compass className="h-4 w-4 text-saffron-500 animate-spin-slow" />
             <span>{lang === 'zh' ? '朝圣咨询 · 专属行程服务' : 'PILGRIMAGE INQUIRY & BOOKING'}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-serif font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-serif font-extrabold tracking-tight text-heading leading-tight">
             {lang === 'zh' ? (
               <>
-                开启圣地参学 · <span className="text-saffron-400">在线定制报价</span>
+                开启圣地参学 · <span className="text-maroon-700">在线定制报价</span>
               </>
             ) : (
               <>
-                Plan Your Sacred Circuit · <span className="text-saffron-400">Request a Quote</span>
+                Plan Your Sacred Circuit · <span className="text-maroon-700">Request a Quote</span>
               </>
             )}
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-body leading-relaxed max-w-xl mx-auto">
             {lang === 'zh'
               ? '只需几个简单步骤，我们的高级朝圣顾问将在24小时内向您提供精确报价。'
               : 'A few simple steps and our senior planners will send you a personalized quote within 24 hours.'}
           </p>
         </motion.div>
 
-        {/* Multi-step Inquiry Wizard — narrow, portrait-style, glassmorphism card */}
+        {/* Multi-step Inquiry Wizard — narrow, portrait-style, light card */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-2xl mx-auto"
         >
-          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6 sm:p-10">
+          <div className="rounded-2xl border border-card-border bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-8 sm:p-10 font-sans">
             {!submitted && (
               <div className="mb-8">
                 <Stepper steps={STEPS} currentIndex={currentStep} lang={lang} onStepClick={jumpToStep} />
@@ -418,8 +419,8 @@ export default function ContactPage() {
                   transition={{ duration: 0.25 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-4 rounded-2xl bg-red-950/60 border border-red-800 text-red-300 text-xs flex items-center gap-2.5">
-                    <AlertCircle className="h-4 w-4 shrink-0" />
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5 font-sans shadow-xs">
+                    <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
                     <span>{errorMsg}</span>
                   </div>
                 </motion.div>
@@ -450,7 +451,7 @@ export default function ContactPage() {
                     <>
                       <StepReview form={form} tours={tours} lang={lang} onEdit={jumpToStep} />
                       {!user && (
-                        <p className="mt-4 text-[11px] text-slate-400 text-center">
+                        <p className="mt-4 text-[11px] text-body text-center font-sans">
                           {lang === 'zh' ? '提交前需要登录账户。' : "You'll need to be logged in to submit."}
                         </p>
                       )}
@@ -461,11 +462,11 @@ export default function ContactPage() {
             </AnimatePresence>
 
             {!submitted && (
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-800">
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-card-border">
                 <button
                   type="button"
                   onClick={goBack}
-                  className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer ${
+                  className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-body hover:text-heading hover:bg-beige transition-colors cursor-pointer ${
                     currentStep === 0 ? 'invisible' : ''
                   }`}
                 >
@@ -479,7 +480,7 @@ export default function ContactPage() {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={goNext}
-                    className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-neutral-950 text-xs font-bold shadow-lg transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-6 py-3 rounded-2xl bg-maroon-700 hover:bg-maroon-800 text-white text-xs font-bold shadow-md border border-[#9F2845] transition-colors cursor-pointer"
                   >
                     {lang === 'zh' ? '下一步' : 'Continue'}
                     <ChevronRight className="h-4 w-4" />
@@ -491,7 +492,7 @@ export default function ContactPage() {
                     whileTap={{ scale: submitting || Object.keys(errors).length > 0 ? 1 : 0.97 }}
                     onClick={handleFinalSubmit}
                     disabled={submitting || Object.keys(errors).length > 0}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-neutral-950 text-xs font-bold shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-maroon-700 hover:bg-maroon-800 text-white text-xs font-bold shadow-md border border-[#9F2845] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {submitting ? (
                       <>
@@ -512,13 +513,13 @@ export default function ContactPage() {
         </motion.div>
 
         {/* CTA band — alternative contact methods */}
-        <div className="max-w-2xl mx-auto mt-10">
-          <div className="rounded-3xl border border-slate-800 bg-white/3 backdrop-blur-md p-6 sm:p-8 text-center space-y-5">
+        <div className="max-w-2xl mx-auto mt-10 font-sans">
+          <div className="rounded-2xl border border-card-border bg-white p-6 sm:p-8 text-center space-y-5 shadow-md">
             <div>
-              <h3 className="text-base sm:text-lg font-serif font-bold text-white mb-1">
+              <h3 className="text-base sm:text-lg font-serif font-bold text-heading mb-1">
                 {lang === 'zh' ? '需要协助规划您的朝圣之旅吗？' : 'Need help planning your pilgrimage?'}
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-body">
                 {lang === 'zh'
                   ? '我们的高级朝圣顾问随时为您解答，可通过微信、WhatsApp、电话或邮件与我们联系。'
                   : 'Our specialists are ready to help — reach out via WeChat, WhatsApp, Call, or Email.'}
@@ -529,25 +530,25 @@ export default function ContactPage() {
               <button
                 type="button"
                 onClick={() => setShowWechatModal(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-600/30 transition-all cursor-pointer shadow-lg hover:shadow-emerald-950/40"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-jade-500/10 border border-jade-500/30 text-jade-500 text-xs font-bold hover:bg-jade-500/20 transition-all cursor-pointer shadow-xs"
               >
-                <QrCode className="h-4 w-4 text-emerald-400" />
+                <QrCode className="h-4 w-4 text-jade-500" />
                 {lang === 'zh' ? '微信扫码联系' : 'Scan WeChat QR'}
               </button>
               <a
                 href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold hover:border-emerald-500/50 hover:text-emerald-300 transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-beige border border-card-border text-heading text-xs font-bold hover:border-jade-500/50 hover:text-jade-500 transition-colors cursor-pointer"
               >
-                <MessageCircle className="h-4 w-4" />
+                <MessageCircle className="h-4 w-4 text-jade-500" />
                 {lang === 'zh' ? 'WhatsApp 咨询' : 'WhatsApp Us'}
               </a>
-              <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold cursor-default select-none">
+              <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-beige border border-card-border text-muted text-xs font-bold cursor-default select-none">
                 <Mail className="h-4 w-4" />
                 {lang === 'zh' ? '邮件联系' : 'Email Us'}
               </div>
-              <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-slate-700 text-slate-200 text-xs font-bold cursor-default select-none">
+              <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-beige border border-card-border text-muted text-xs font-bold cursor-default select-none">
                 <Phone className="h-4 w-4" />
                 {lang === 'zh' ? '电话咨询' : 'Call Us'}
               </div>
@@ -564,7 +565,7 @@ export default function ContactPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setShowWechatModal(false)}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md overflow-y-auto"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 15 }}
@@ -572,13 +573,13 @@ export default function ContactPage() {
                 exit={{ opacity: 0, scale: 0.9, y: 15 }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative bg-[#141b29] border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl max-w-lg w-full text-center flex flex-col items-center overflow-hidden"
+                className="relative bg-white border border-card-border rounded-2xl p-6 sm:p-8 shadow-2xl max-w-lg w-full text-center flex flex-col items-center overflow-hidden font-sans"
               >
                 {/* Close Button */}
                 <button
                   type="button"
                   onClick={() => setShowWechatModal(false)}
-                  className="absolute top-4 right-4 h-9 w-9 rounded-full bg-white/5 hover:bg-white/15 border border-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer z-10"
+                  className="absolute top-4 right-4 h-9 w-9 rounded-full bg-ivory hover:bg-beige border border-card-border text-body hover:text-heading flex items-center justify-center transition-colors cursor-pointer z-10"
                   aria-label="Close modal"
                 >
                   <X className="h-5 w-5" />
@@ -586,14 +587,14 @@ export default function ContactPage() {
 
                 {/* Modal Title & Header */}
                 <div className="space-y-1 mb-5 pr-6 pl-6">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold mb-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-jade-500/10 border border-jade-500/30 text-jade-500 text-xs font-semibold mb-1">
                     <MessageCircle className="h-3.5 w-3.5" />
                     <span>{lang === 'zh' ? '微信官方客服' : 'WeChat Contact'}</span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-white">
+                  <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-heading">
                     {lang === 'zh' ? '微信扫码添加好友' : 'Scan to Connect on WeChat'}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-body">
                     {lang === 'zh'
                       ? '打开微信“扫一扫”，即可直接添加朝圣专员为好友。'
                       : 'Open the WeChat app and scan the QR code below to connect with us.'}
@@ -601,7 +602,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* High-Resolution Uploaded WeChat QR Code Image */}
-                <div className="relative group rounded-2xl border border-emerald-500/30 bg-white p-2.5 shadow-2xl mb-5 w-full max-w-[420px] sm:max-w-[460px]">
+                <div className="relative group rounded-2xl border border-jade-500/30 bg-white p-2.5 shadow-lg mb-5 w-full max-w-105 sm:max-w-115">
                   <img
                     src={wechatQr}
                     alt="WeChat QR Code"
@@ -610,24 +611,24 @@ export default function ContactPage() {
                 </div>
 
                 {/* WeChat ID and Copy Button */}
-                <div className="flex items-center justify-center gap-3 w-full bg-[#192235] px-4 py-3 rounded-xl border border-slate-800">
-                  <span className="text-xs text-slate-400">{lang === 'zh' ? '微信号：' : 'WeChat ID:'}</span>
-                  <code className="text-xs font-mono font-bold text-emerald-300 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-800/50">
+                <div className="flex items-center justify-center gap-3 w-full bg-ivory px-4 py-3 rounded-2xl border border-card-border">
+                  <span className="text-xs text-body">{lang === 'zh' ? '微信号：' : 'WeChat ID:'}</span>
+                  <code className="text-xs font-mono font-bold text-maroon-700 bg-white px-2.5 py-1 rounded-lg border border-card-border">
                     {CONTACT_DETAILS.wechatId}
                   </code>
                   <button
                     type="button"
                     onClick={copyWechatId}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-beige text-xs font-semibold text-heading border border-card-border transition-colors cursor-pointer"
                   >
                     {copiedWechat ? (
                       <>
-                        <Check className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="text-emerald-400">{lang === 'zh' ? '已复制' : 'Copied'}</span>
+                        <Check className="h-3.5 w-3.5 text-jade-500" />
+                        <span className="text-jade-500">{lang === 'zh' ? '已复制' : 'Copied'}</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="h-3.5 w-3.5 text-slate-400" />
+                        <Copy className="h-3.5 w-3.5 text-body" />
                         <span>{lang === 'zh' ? '复制' : 'Copy'}</span>
                       </>
                     )}
@@ -639,55 +640,55 @@ export default function ContactPage() {
         </AnimatePresence>
 
         {/* FAQ Search Accordion */}
-        <div className="max-w-4xl mx-auto mt-10 bg-[#161f30] p-8 sm:p-12 rounded-3xl border border-slate-800 shadow-2xl space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+        <div className="max-w-4xl mx-auto mt-10 bg-white p-8 sm:p-12 rounded-2xl border border-card-border shadow-[0_8px_30px_rgba(0,0,0,0.06)] space-y-6 font-sans">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-card-border pb-6">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white">
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-heading">
                 {lang === 'zh' ? '常见朝圣问题解答' : 'Frequently Asked Questions'}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-body mt-0.5">
                 {lang === 'zh' ? '输入关键词实时搜索签证、饮食与行程解答' : 'Type to search answers on visa, dining, or guide arrangements'}
               </p>
             </div>
 
             <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
               <input
                 type="text"
                 placeholder={lang === 'zh' ? '搜索问题...' : 'Search FAQs...'}
                 value={faqSearch}
                 onChange={(e) => setFaqSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#192235] border border-slate-700 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-saffron-400"
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-ivory border border-card-border text-xs text-heading placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-maroon-700/30"
               />
             </div>
           </div>
 
           <div className="space-y-3">
             {filteredFaqs.length === 0 ? (
-              <div className="py-8 text-center text-xs text-slate-400">
+              <div className="py-8 text-center text-xs text-body">
                 {lang === 'zh' ? '未找到相关解答，请直接提交上面表单联系我们！' : 'No matching questions found — feel free to submit the form above!'}
               </div>
             ) : (
               filteredFaqs.map((faq, idx) => (
-                <div key={idx} className="bg-[#192235] rounded-2xl border border-slate-800 overflow-hidden shadow-sm transition-all">
+                <div key={idx} className="bg-white rounded-2xl border border-card-border overflow-hidden shadow-xs transition-all">
                   <button
                     type="button"
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left font-serif font-bold text-sm text-white hover:text-saffron-400 cursor-pointer transition-colors"
+                    className="w-full px-6 py-4 flex items-center justify-between text-left font-serif font-bold text-sm text-heading hover:text-maroon-700 cursor-pointer transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <HelpCircle className="h-4 w-4 text-saffron-400 shrink-0" />
+                      <HelpCircle className="h-4 w-4 text-saffron-500 shrink-0" />
                       <span>{faq.q[lang] || faq.q.en}</span>
                     </span>
                     <ChevronDown
-                      className={`h-4 w-4 text-slate-400 shrink-0 transition-transform duration-200 ${
-                        openFaq === idx ? 'rotate-180 text-saffron-400' : ''
+                      className={`h-4 w-4 text-muted shrink-0 transition-transform duration-200 ${
+                        openFaq === idx ? 'rotate-180 text-maroon-700' : ''
                       }`}
                     />
                   </button>
 
                   {openFaq === idx && (
-                    <div className="px-6 pb-4 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed font-sans border-t border-slate-800/50">
+                    <div className="px-6 pb-4 pt-1 text-xs sm:text-sm text-body leading-relaxed font-sans border-t border-card-border">
                       {faq.a[lang] || faq.a.en}
                     </div>
                   )}

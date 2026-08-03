@@ -84,10 +84,10 @@ export default function DestinationSearch() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-2xl mx-auto mt-8">
+    <div ref={containerRef} className="relative w-full max-w-2xl mx-auto mt-8 font-sans">
       {/* Search Input Box with embedded Explore button */}
-      <div className="relative bg-[#131a2a]/90 backdrop-blur-md rounded-2xl border border-slate-700/80 p-2 sm:p-2.5 flex items-center shadow-2xl transition-all focus-within:ring-2 focus-within:ring-saffron-500/50">
-        <Search className="h-5 w-5 text-slate-400 ml-3 shrink-0" />
+      <div className="relative bg-white/95 backdrop-blur-md rounded-2xl border border-card-border p-2 sm:p-2.5 flex items-center shadow-lg transition-all focus-within:ring-2 focus-within:ring-maroon-700/30">
+        <Search className="h-5 w-5 text-saffron-500 ml-3 shrink-0" />
         
         <input
           type="text"
@@ -104,7 +104,7 @@ export default function DestinationSearch() {
               ? '搜索圣地目的地、朝圣路线或参学体验...'
               : 'Search destinations, yatras, or experiences...'
           }
-          className="w-full bg-transparent pl-3 pr-4 py-2 text-sm sm:text-base text-white placeholder:text-slate-400 font-medium focus:outline-none"
+          className="w-full bg-transparent pl-3 pr-4 py-2 text-sm sm:text-base text-heading placeholder:text-muted font-medium focus:outline-none"
         />
 
         {query && (
@@ -113,7 +113,7 @@ export default function DestinationSearch() {
               setQuery('');
               setIsOpen(false);
             }}
-            className="p-1.5 text-slate-400 hover:text-white rounded-full mr-2"
+            className="p-1.5 text-muted hover:text-heading rounded-full mr-2 cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -122,18 +122,18 @@ export default function DestinationSearch() {
         {/* Embedded Explore Button */}
         <button
           onClick={handleExplore}
-          className="bg-saffron-500 hover:bg-saffron-600 active:scale-95 text-neutral-950 font-bold px-6 py-2.5 sm:py-3 rounded-xl transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer text-sm sm:text-base"
+          className="bg-maroon-700 hover:bg-maroon-800 active:scale-95 text-white font-bold px-6 py-2.5 sm:py-3 rounded-xl border border-[#9F2845] transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer text-sm sm:text-base"
         >
           <span>{lang === 'zh' ? '探索' : 'Explore'}</span>
-          <Navigation className="h-4 w-4 rotate-45 fill-current" />
+          <Navigation className="h-4 w-4 rotate-45 fill-current text-white" />
         </button>
       </div>
 
       {/* Instant Dropdown Menu */}
       {isOpen && query.trim().length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-[#131a2a] rounded-2xl shadow-2xl border border-slate-700 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-card-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
           {filtered.length > 0 ? (
-            <div className="max-h-72 overflow-y-auto divide-y divide-slate-800 text-left">
+            <div className="max-h-72 overflow-y-auto divide-y divide-card-border text-left">
               {filtered.map((item, index) => (
                 <div
                   key={item._id}
@@ -143,7 +143,7 @@ export default function DestinationSearch() {
                     setQuery('');
                   }}
                   className={`p-3.5 flex items-center space-x-3 cursor-pointer transition-colors ${
-                    index === selectedIndex ? 'bg-saffron-500/20 text-saffron-300' : 'hover:bg-slate-800/80 text-white'
+                    index === selectedIndex ? 'bg-maroon-700/10 text-maroon-700' : 'hover:bg-beige text-heading'
                   }`}
                 >
                   <img
@@ -152,28 +152,28 @@ export default function DestinationSearch() {
                       'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=200&q=80'
                     }
                     alt=""
-                    className="h-12 w-16 object-cover rounded-lg shrink-0 border border-slate-700"
+                    className="h-12 w-16 object-cover rounded-lg shrink-0 border border-card-border"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-white text-xs sm:text-sm truncate">
+                    <h4 className="font-bold text-heading text-xs sm:text-sm truncate">
                       {item.name?.en} {item.name?.zh && `· ${item.name.zh}`}
                     </h4>
-                    <p className="text-[11px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
-                      <MapPin className="h-3 w-3 text-saffron-400" />
+                    <p className="text-[11px] text-body truncate flex items-center gap-1 mt-0.5">
+                      <MapPin className="h-3 w-3 text-saffron-500" />
                       <span>{item.stateCountry?.[lang] || item.stateCountry?.en}</span>
                     </p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-slate-500" />
+                  <ChevronRight className="h-4 w-4 text-muted" />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-xs text-slate-400 space-y-2">
+            <div className="p-4 text-center text-xs text-body space-y-2">
               <p>{lang === 'zh' ? '未找到相关圣地' : 'No destination found'}</p>
               <Link
                 to="/destinations"
                 onClick={() => setIsOpen(false)}
-                className="inline-block text-saffron-400 font-bold hover:underline"
+                className="inline-block text-maroon-700 font-bold hover:underline"
               >
                 {lang === 'zh' ? '浏览全部圣地 →' : 'Browse All Destinations →'}
               </Link>

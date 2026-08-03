@@ -63,7 +63,7 @@ export default function OwnerDashboardPage() {
 
   // Auth Guard for Owner role
   if (authLoading) {
-    return <div className="min-h-screen bg-neutral-900 flex items-center justify-center text-white text-xs">Loading session...</div>;
+    return <div className="min-h-screen bg-[#EFE8D9] flex items-center justify-center text-[#1E1E1E] font-sans text-xs">Loading session...</div>;
   }
   if (!user || (user.role !== 'owner' && user.role !== 'admin')) {
     return <Navigate to="/login" replace />;
@@ -90,7 +90,7 @@ export default function OwnerDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#f8f7f4] font-sans">
+    <div className="min-h-screen flex bg-[#EFE8D9] font-sans">
       {/* Navigation Sidebar */}
       <AdminSidebar
         activeTab={activeTab}

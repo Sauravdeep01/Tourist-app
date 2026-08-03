@@ -2,14 +2,18 @@ import React, { useContext, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, LogIn, Loader2, CheckCircle2 } from 'lucide-react';
-import AuthLayout from '../components/Auth/AuthLayout';
-import FormField from '../components/Auth/FormField';
-import PasswordField from '../components/Auth/PasswordField';
+import AuthLayoutClassic from '../components/Auth/AuthLayoutClassic';
+import FormFieldClassic from '../components/Auth/FormFieldClassic';
+import PasswordFieldClassic from '../components/Auth/PasswordFieldClassic';
 import ErrorSummary from '../components/Auth/ErrorSummary';
 import { AuthContext } from '../context/AuthContext';
 import api from '../utils/api';
 import { validateLoginForm, serverMessage, fromServerFieldErrors } from '../utils/authValidation';
 
+// NOTE: LoginPage intentionally keeps the site's original dark
+// maroon/saffron gradient aesthetic via AuthLayoutClassic/FormFieldClassic/
+// PasswordFieldClassic. It does not use the shared light-theme components —
+// do not migrate it to the global theme system.
 export default function LoginPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -73,7 +77,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout
+    <AuthLayoutClassic
       eyebrow={t('auth.login.eyebrow')}
       heroTitle={lang === 'zh' ? '追寻佛陀的足迹' : 'Walk in the Footsteps of the Buddha'}
       heroSubtitle={
@@ -96,7 +100,7 @@ export default function LoginPage() {
         <p className="text-sm text-neutral-500 mb-7">{t('auth.login.subtitle')}</p>
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          <FormField
+          <FormFieldClassic
             id="email"
             label={t('auth.login.email')}
             icon={Mail}
@@ -109,7 +113,7 @@ export default function LoginPage() {
           />
 
           <div>
-            <PasswordField
+            <PasswordFieldClassic
               id="password"
               label={t('auth.login.password')}
               placeholder={t('auth.login.passwordPlaceholder')}
@@ -156,6 +160,6 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-    </AuthLayout>
+    </AuthLayoutClassic>
   );
 }

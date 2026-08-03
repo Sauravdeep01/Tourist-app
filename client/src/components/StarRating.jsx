@@ -18,7 +18,7 @@ export default function StarRating({
     lg: 'h-7 w-7',
   }[size] || 'h-5 w-5';
 
-  const emptyColor = variant === 'dark' ? 'text-slate-700' : 'text-neutral-300';
+  const emptyColor = variant === 'dark' ? 'text-dark-border' : 'text-card-border';
 
   return (
     <div
@@ -38,7 +38,7 @@ export default function StarRating({
         >
           <Star
             className={`${sizeClasses} transition-colors ${
-              star <= display ? 'text-saffron-400 fill-saffron-400' : emptyColor
+              star <= display ? 'text-saffron-500 fill-saffron-500' : emptyColor
             }`}
           />
         </button>

@@ -44,8 +44,8 @@ export default function StepPersonal({ form, setForm, errors, touched, markTouch
         />
 
         <div>
-          <p className="text-[11px] font-semibold text-slate-400 mb-1.5 pl-1">
-            {lang === 'zh' ? '联系电话' : 'Phone Number'} <span className="text-saffron-400">*</span>
+          <p className="text-[11px] font-semibold text-[#4B4B4B] mb-1.5 pl-1">
+            {lang === 'zh' ? '联系电话' : 'Phone Number'} <span className="text-saffron-500">*</span>
           </p>
           <div className="flex gap-2">
             <PhoneCodeSelect value={form.phoneCountryCode} onChange={(val) => setForm((prev) => ({ ...prev, phoneCountryCode: val }))} />
@@ -69,8 +69,8 @@ export default function StepPersonal({ form, setForm, errors, touched, markTouch
         </div>
 
         <div>
-          <p className="text-[11px] font-semibold text-slate-400 mb-1.5 pl-1">
-            {lang === 'zh' ? '居住国家 / 地区' : 'Country / Region'} <span className="text-saffron-400">*</span>
+          <p className="text-[11px] font-semibold text-[#4B4B4B] mb-1.5 pl-1">
+            {lang === 'zh' ? '居住国家 / 地区' : 'Country / Region'} <span className="text-saffron-500">*</span>
           </p>
           <CountrySelect
             id="country"
@@ -83,7 +83,7 @@ export default function StepPersonal({ form, setForm, errors, touched, markTouch
             touched={touched.country}
           />
           {touched.country && errors.country && (
-            <p id="country-error" role="alert" className="text-[11px] text-red-400 pl-1 mt-1 font-sans">
+            <p id="country-error" role="alert" className="text-[11px] text-[#D14343] pl-1 mt-1 font-sans">
               {errors.country}
             </p>
           )}

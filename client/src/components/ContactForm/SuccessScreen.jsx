@@ -28,27 +28,27 @@ export default function SuccessScreen({ lang }) {
         </span>
       </motion.div>
 
-      <motion.h3 variants={item} className="text-2xl sm:text-3xl font-serif font-bold text-white">
+      <motion.h3 variants={item} className="text-2xl sm:text-3xl font-serif font-bold text-heading">
         {lang === 'zh' ? '我们已收到您的咨询！' : "We've received your inquiry."}
       </motion.h3>
 
-      <motion.p variants={item} className="text-sm text-slate-300 mt-3 max-w-sm leading-relaxed">
+      <motion.p variants={item} className="text-sm text-body mt-3 max-w-sm leading-relaxed font-sans">
         {lang === 'zh'
           ? '我们的高级朝圣顾问将在24小时内与您联系，为您提供专属报价与行程建议。'
           : 'Our travel expert will contact you within 24 hours with a personalized itinerary and quote.'}
       </motion.p>
 
-      <motion.div variants={item} className="flex flex-col sm:flex-row items-center gap-3 mt-8 w-full sm:w-auto">
+      <motion.div variants={item} className="flex flex-col sm:flex-row items-center gap-3 mt-8 w-full sm:w-auto font-sans">
         <Link
           to="/"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-slate-700 text-white text-sm font-semibold hover:bg-white/5 transition-colors cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-card-border bg-beige text-heading text-sm font-semibold hover:bg-card-border transition-colors cursor-pointer shadow-xs"
         >
           <Home className="h-4 w-4" />
           {lang === 'zh' ? '返回首页' : 'Return Home'}
         </Link>
         <Link
           to="/tours"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-neutral-950 text-sm font-bold shadow-lg transition-colors cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-maroon-700 hover:bg-maroon-800 text-white text-sm font-bold shadow-md transition-colors cursor-pointer"
         >
           <Compass className="h-4 w-4" />
           {lang === 'zh' ? '探索朝圣路线' : 'Explore Tours'}

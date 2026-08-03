@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Maximize2, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../utils/api';
+import ScrollReveal from '../components/Decor/ScrollReveal';
+import Watermark from '../components/Decor/Watermark';
 
-// Deterministic mosaic pattern: occasional tall / wide cells for a Pinterest-style rhythm
-// without depending on each image's (unknown, remote) intrinsic dimensions.
 function getMosaicSpan(index) {
   const cycle = index % 12;
   if (cycle === 3 || cycle === 9) return 'row-span-2';
@@ -92,31 +92,32 @@ export default function GalleryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 py-16 px-4 sm:px-6 lg:px-8 animate-page-fade-in">
-      <div className="max-w-7xl mx-auto space-y-14">
+    <div className="min-h-screen bg-ivory text-heading py-24 sm:py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden animate-page-fade-in font-sans">
+      <Watermark variant="lotus" size={420} className="-top-16 -right-20 hidden lg:block" />
+      <div className="max-w-7xl mx-auto space-y-14 relative">
         {/* Page Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
-          <h1 className="text-4xl sm:text-5xl font-serif font-extrabold text-white tracking-tight">
+        <ScrollReveal className="text-center max-w-2xl mx-auto space-y-4">
+          <h1 className="text-4xl sm:text-5xl font-serif font-extrabold text-heading tracking-tight">
             Journey Highlights
           </h1>
-          <div className="h-1 w-14 bg-saffron-500 mx-auto rounded-full" />
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+          <div className="h-1 w-14 bg-maroon-700 mx-auto rounded-full" />
+          <p className="text-sm sm:text-base text-body leading-relaxed">
             Every journey tells a story. Here are some unforgettable moments captured during our tours.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Mosaic / Pinterest-style Image Grid */}
         {loading ? (
-          <div className="py-24 flex items-center justify-center text-slate-400 space-x-2 text-xs">
+          <div className="py-24 flex items-center justify-center text-body space-x-2 text-xs">
             <Loader2 className="h-5 w-5 animate-spin text-saffron-500" />
             <span>Loading photos...</span>
           </div>
         ) : total === 0 ? (
-          <div className="py-24 text-center text-slate-400 text-sm">
+          <div className="py-24 text-center text-body text-sm">
             No gallery photos uploaded yet.
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 auto-rows-[140px] sm:auto-rows-[180px] lg:auto-rows-[200px] gap-4 sm:gap-5 [grid-auto-flow:dense]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 auto-rows-35 sm:auto-rows-45 lg:auto-rows-50 gap-4 sm:gap-5 grid-flow-dense">
             {galleryItems.map((photo, idx) => {
               const isLoaded = !!loadedMap[photo._id];
               return (
@@ -124,11 +125,11 @@ export default function GalleryPage() {
                   key={photo._id}
                   onClick={() => setActiveIndex(idx)}
                   style={{ animationDelay: `${(idx % 12) * 70}ms` }}
-                  className={`animate-fade-up-in group relative bg-slate-800 rounded-2xl overflow-hidden shadow-lg shadow-black/30 ring-1 ring-white/10 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 cursor-pointer ${getMosaicSpan(idx)}`}
+                  className={`animate-fade-up-in group relative bg-white rounded-2xl overflow-hidden shadow-md border border-card-border hover:border-maroon-700/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${getMosaicSpan(idx)}`}
                 >
                   {/* Skeleton placeholder shown until the image finishes loading */}
                   {!isLoaded && (
-                    <div className="absolute inset-0 bg-slate-700 animate-pulse" />
+                    <div className="absolute inset-0 bg-beige animate-pulse" />
                   )}
                   <img
                     src={photo.imageUrl}
@@ -138,9 +139,9 @@ export default function GalleryPage() {
                     onLoad={() => setLoadedMap((prev) => ({ ...prev, [photo._id]: true }))}
                     className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md text-white border border-white/30 text-xs font-medium tracking-wide translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                      <Maximize2 className="h-3.5 w-3.5" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/30 text-xs font-medium tracking-wide translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                      <Maximize2 className="h-3.5 w-3.5 text-saffron-500" />
                       View Photo
                     </div>
                   </div>

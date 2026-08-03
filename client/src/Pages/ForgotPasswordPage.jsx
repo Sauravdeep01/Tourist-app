@@ -62,13 +62,13 @@ export default function ForgotPasswordPage() {
           : "It happens to the best of us. Enter your email and we'll help you get back to planning your journey."
       }
     >
-      <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-neutral-100 shadow-lg shadow-maroon-900/5 p-7 sm:p-9">
+      <div className="bg-white rounded-3xl border border-card-border shadow-xl p-7 sm:p-9 font-sans text-heading">
         {!sent ? (
           <>
             <ErrorSummary errors={errors} lang={lang} />
 
-            <h1 className="text-2xl font-bold text-neutral-900 mb-1.5">{t('auth.forgot.title')}</h1>
-            <p className="text-sm text-neutral-500 mb-7">{t('auth.forgot.subtitle')}</p>
+            <h1 className="text-2xl font-serif font-bold text-heading mb-1.5">{t('auth.forgot.title')}</h1>
+            <p className="text-sm text-body mb-7">{t('auth.forgot.subtitle')}</p>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-5">
               <FormField
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm py-3 rounded-xl transition-colors shadow-xs cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm py-3.5 rounded-2xl border border-[#9F2845] transition-all shadow-md cursor-pointer"
               >
                 {submitting ? (
                   <>
@@ -104,19 +104,19 @@ export default function ForgotPasswordPage() {
           </>
         ) : (
           <div className="text-center py-2">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-saffron-100 text-saffron-600">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-maroon-700/10 text-maroon-700">
               <MailCheck className="h-7 w-7" />
             </div>
-            <h1 className="text-2xl font-bold text-neutral-900 mb-2">{t('auth.forgot.sentTitle')}</h1>
-            <p className="text-sm text-neutral-500 leading-relaxed">
+            <h1 className="text-2xl font-serif font-bold text-heading mb-2">{t('auth.forgot.sentTitle')}</h1>
+            <p className="text-sm text-body leading-relaxed">
               {t('auth.forgot.sentMessage', { email })}
             </p>
-            <p className="mt-4 text-xs text-neutral-400">
+            <p className="mt-4 text-xs text-muted">
               {t('auth.forgot.sentHint')}{' '}
               <button
                 type="button"
                 onClick={submitRequest}
-                className="font-semibold text-maroon-700 hover:text-maroon-800 cursor-pointer"
+                className="font-bold text-maroon-700 hover:underline cursor-pointer"
               >
                 {t('auth.forgot.resend')}
               </button>
@@ -126,7 +126,7 @@ export default function ForgotPasswordPage() {
 
         <Link
           to="/login"
-          className="mt-7 flex items-center justify-center gap-1.5 text-sm font-medium text-neutral-500 hover:text-maroon-700 transition-colors"
+          className="mt-7 flex items-center justify-center gap-1.5 text-sm font-medium text-body hover:text-maroon-700 transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           {t('auth.forgot.backToLogin')}

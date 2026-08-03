@@ -1,66 +1,124 @@
 @import "tailwindcss";
 
 @theme {
-  --color-maroon-50: #faf0f2;
-  --color-maroon-100: #f5e1e5;
-  --color-maroon-200: #ebc3cb;
-  --color-maroon-300: #dca3ae;
-  --color-maroon-400: #c67484;
-  --color-maroon-500: #b04d60;
-  --color-maroon-600: #93384a;
-  --color-maroon-700: #7b2939; /* Brand core maroon - monk robe colors */
-  --color-maroon-800: #662430;
-  --color-maroon-900: #55212a;
-  --color-maroon-950: #300f13;
+  /* "Saffron Dawn" rebrand — Burgundy + Gold on a warm ivory light theme. */
+  --color-maroon-50: #fdf2f4;
+  --color-maroon-100: #f9e2e6;
+  --color-maroon-200: #f3c7d0;
+  --color-maroon-300: #e89fb0;
+  --color-maroon-400: #d66f88;
+  --color-maroon-500: #bf4766;
+  --color-maroon-600: #a43452;
+  --color-maroon-700: #7A1F35; /* Primary Brand Burgundy */
+  --color-maroon-800: #65192C; /* Burgundy — hover */
+  --color-maroon-900: #551625;
+  --color-maroon-950: #2B0B13;
 
-  --color-saffron-50: #fff9eb;
-  --color-saffron-100: #ffedd4;
-  --color-saffron-200: #ffd8a8;
-  --color-saffron-300: #ffbd70;
-  --color-saffron-400: #ff9b37;
-  --color-saffron-500: #ff9f00; /* Brand core saffron - monk robe colors */
-  --color-saffron-600: #cc7a00;
-  --color-saffron-700: #995c00;
-  --color-saffron-800: #734500;
-  --color-saffron-900: #4d2e00;
-  --color-saffron-950: #261700;
+  --color-saffron-50: #fcf8ee;
+  --color-saffron-100: #f8edd3;
+  --color-saffron-200: #f0d8a5;
+  --color-saffron-300: #e6be6f;
+  --color-saffron-400: #d9a040;
+  --color-saffron-500: #C6922E; /* Accent Gold */
+  --color-saffron-600: #a76d1f;
+  --color-saffron-700: #85511b;
+  --color-saffron-800: #6d411b;
+  --color-saffron-900: #593519;
+  --color-saffron-950: #331c0b;
 
-  --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --color-burnt-50: #fcf4ef;
+  --color-burnt-500: #B85C2E; /* Accent Burnt Orange */
+  --color-burnt-600: #9e4a23;
+
+  --color-jade-50: #f0f7f4;
+  --color-jade-500: #2E7D5A; /* Success Jade Green */
+  --color-jade-600: #246347;
+
+  /* Section background palette — gives each section a distinct, complementary
+     tone so the page reads as layered sections rather than one flat surface. */
+  --color-ivory: #F8F5EE;   /* Main Background — Warm Ivory */
+  --color-beige: #F5EFE3;   /* Alternate Section — Soft Sand */
+  --color-sand: #F8F4EA;    /* Highlight Section */
+  --color-stone: #F0E8DC;   /* Special CTA / Footer Section */
+  --color-card-border: #E8E0D3;
+
+  /* Text hierarchy */
+  --color-heading: #1F1F1F;
+  --color-body: #5C5C5C;
+  --color-muted: #7A7A7A;
+
+  --color-dark-bg: #1C1714;
+  --color-dark-surface: #2A231F;
+  --color-dark-card: #342B25;
+  --color-dark-border: #443932;
+
+  --color-warm-white: #F5F1E8;
+  --color-warm-beige: #CFC6B8;
+
+  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Custom premium scrollbar and smooth scrolling */
 html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
 }
 
 body {
-  background-color: #0b0f17; /* Sleek midnight dark theme background */
-  color: #f8fafc; /* Crisp white text */
+  background-color: var(--color-ivory); /* Warm ivory light theme background */
+  color: #1F1F1F; /* Primary heading/body text */
 }
 
-/* Glassmorphism utility classes */
+
+.premium-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-card-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(31, 31, 31, 0.06);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.premium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px -10px rgba(198, 146, 46, 0.3), 0 10px 22px -8px rgba(122, 31, 53, 0.16);
+  border-color: rgba(198, 146, 46, 0.4);
+}
+
+/* Glassmorphism utility classes for light theme */
 .glass-nav {
-  background: rgba(11, 15, 23, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+  background: rgba(248, 245, 238, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid #E8E0D3;
 }
 
 .glass-card {
-  background: rgba(22, 31, 48, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  border: 1px solid #E8E0D3;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.05);
+}
+
+/* Subtle Buddhist lotus pattern background */
+.pattern-lotus {
+  background-image: radial-gradient(rgba(198, 146, 46, 0.05) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+}
+
+/* Subtle Dharma wheel background */
+.pattern-dharma {
+  background-image: radial-gradient(rgba(122, 31, 53, 0.06) 1.5px, transparent 1.5px);
+  background-size: 36px 36px;
 }
 
 /* Micro-animations and hover transitions */
 .hover-lift {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 20px -8px rgba(123, 41, 57, 0.15);
+  box-shadow: 0 14px 28px -10px rgba(122, 31, 53, 0.25);
+  border-color: rgba(198, 146, 46, 0.4);
 }
 
 /* Slow up-down float for the WhatsApp button */
@@ -72,7 +130,7 @@ body {
   animation: float-updown 2.8s ease-in-out infinite;
 }
 
-/* Gallery: staggered card entrance */
+/* Staggered card entrance */
 @keyframes fade-up-in {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
@@ -81,7 +139,7 @@ body {
   animation: fade-up-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Gallery: lightbox backdrop + image transitions */
+/* Modal lightbox backdrop + image transitions */
 @keyframes modal-backdrop-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -98,7 +156,7 @@ body {
   animation: modal-image-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Gallery page: gentle fade-in on load */
+/* Page fade-in */
 @keyframes page-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -106,4 +164,3 @@ body {
 .animate-page-fade-in {
   animation: page-fade-in 0.6s ease-out both;
 }
-

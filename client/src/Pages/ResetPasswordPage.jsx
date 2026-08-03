@@ -67,13 +67,13 @@ export default function ResetPasswordPage() {
           : 'Set a new password and pick up right where you left off.'
       }
     >
-      <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-neutral-100 shadow-lg shadow-maroon-900/5 p-7 sm:p-9">
+      <div className="bg-white rounded-3xl border border-card-border shadow-xl p-7 sm:p-9 font-sans text-heading">
         {stage === 'form' && (
           <>
             <ErrorSummary errors={errors} lang={lang} />
 
-            <h1 className="text-2xl font-bold text-neutral-900 mb-1.5">{t('auth.reset.title')}</h1>
-            <p className="text-sm text-neutral-500 mb-7">{t('auth.reset.subtitle')}</p>
+            <h1 className="text-2xl font-serif font-bold text-heading mb-1.5">{t('auth.reset.title')}</h1>
+            <p className="text-sm text-body mb-7">{t('auth.reset.subtitle')}</p>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <PasswordField
@@ -102,7 +102,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm py-3 rounded-xl transition-colors shadow-xs cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm py-3.5 rounded-2xl border border-[#9F2845] transition-all shadow-md cursor-pointer"
               >
                 {submitting ? (
                   <>
@@ -122,14 +122,14 @@ export default function ResetPasswordPage() {
 
         {stage === 'success' && (
           <div className="text-center py-2">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-jade-500/10 text-jade-500">
               <CheckCircle2 className="h-7 w-7" />
             </div>
-            <h1 className="text-2xl font-bold text-neutral-900 mb-2">{t('auth.reset.successTitle')}</h1>
-            <p className="text-sm text-neutral-500 leading-relaxed mb-6">{t('auth.reset.successMessage')}</p>
+            <h1 className="text-2xl font-serif font-bold text-heading mb-2">{t('auth.reset.successTitle')}</h1>
+            <p className="text-sm text-body leading-relaxed mb-6">{t('auth.reset.successMessage')}</p>
             <Link
               to="/login"
-              className="inline-flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 text-white font-medium text-sm px-6 py-3 rounded-xl transition-colors shadow-xs"
+              className="inline-flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 text-white font-bold text-sm px-6 py-3.5 rounded-2xl border border-[#9F2845] transition-colors shadow-md"
             >
               {t('auth.reset.goToLogin')}
             </Link>
@@ -138,14 +138,14 @@ export default function ResetPasswordPage() {
 
         {stage === 'invalid' && (
           <div className="text-center py-2">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-500">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-500">
               <XCircle className="h-7 w-7" />
             </div>
-            <h1 className="text-2xl font-bold text-neutral-900 mb-2">{t('auth.reset.invalidTitle')}</h1>
-            <p className="text-sm text-neutral-500 leading-relaxed mb-6">{t('auth.reset.invalidMessage')}</p>
+            <h1 className="text-2xl font-serif font-bold text-heading mb-2">{t('auth.reset.invalidTitle')}</h1>
+            <p className="text-sm text-body leading-relaxed mb-6">{t('auth.reset.invalidMessage')}</p>
             <Link
               to="/forgot-password"
-              className="inline-flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 text-white font-medium text-sm px-6 py-3 rounded-xl transition-colors shadow-xs"
+              className="inline-flex items-center justify-center gap-2 bg-maroon-700 hover:bg-maroon-800 text-white font-bold text-sm px-6 py-3.5 rounded-2xl border border-[#9F2845] transition-colors shadow-md"
             >
               {t('auth.reset.requestNew')}
             </Link>

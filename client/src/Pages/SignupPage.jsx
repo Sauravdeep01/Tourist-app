@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { User, Mail, Phone, MessageCircle, UserPlus, Loader2 } from 'lucide-react';
-import AuthLayout from '../components/Auth/AuthLayout';
-import FormField from '../components/Auth/FormField';
-import PasswordField from '../components/Auth/PasswordField';
+import AuthLayoutClassic from '../components/Auth/AuthLayoutClassic';
+import FormFieldClassic from '../components/Auth/FormFieldClassic';
+import PasswordFieldClassic from '../components/Auth/PasswordFieldClassic';
 import CountryCodeSelect from '../components/Auth/CountryCodeSelect';
 import ErrorSummary from '../components/Auth/ErrorSummary';
 import { AuthContext } from '../context/AuthContext';
@@ -20,6 +20,7 @@ const initialForm = {
   password: '',
   confirmPassword: '',
 };
+
 
 export default function SignupPage() {
   const { t, i18n } = useTranslation();
@@ -96,7 +97,7 @@ export default function SignupPage() {
   };
 
   return (
-    <AuthLayout
+    <AuthLayoutClassic
       eyebrow={t('auth.signup.eyebrow')}
       heroTitle={lang === 'zh' ? '智慧、慈悲与觉悟之旅' : 'A Journey of Wisdom, Compassion, and Enlightenment'}
       heroSubtitle={
@@ -112,7 +113,7 @@ export default function SignupPage() {
         <p className="text-sm text-neutral-500 mb-7">{t('auth.signup.subtitle')}</p>
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          <FormField
+          <FormFieldClassic
             id="name"
             label={t('auth.signup.name')}
             icon={User}
@@ -123,7 +124,7 @@ export default function SignupPage() {
             error={fieldError('name')}
           />
 
-          <FormField
+          <FormFieldClassic
             id="email"
             label={t('auth.signup.email')}
             icon={Mail}
@@ -167,7 +168,7 @@ export default function SignupPage() {
             {fieldError('phone') && <p className="mt-1.5 text-xs text-red-600">{fieldError('phone')}</p>}
           </div>
 
-          <FormField
+          <FormFieldClassic
             id="wechatId"
             label={t('auth.signup.wechat')}
             icon={MessageCircle}
@@ -178,7 +179,7 @@ export default function SignupPage() {
           />
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <PasswordField
+            <PasswordFieldClassic
               id="password"
               label={t('auth.signup.password')}
               placeholder={t('auth.signup.passwordPlaceholder')}
@@ -189,7 +190,7 @@ export default function SignupPage() {
               showLabel={t('auth.login.show')}
               hideLabel={t('auth.login.hide')}
             />
-            <PasswordField
+            <PasswordFieldClassic
               id="confirmPassword"
               label={t('auth.signup.confirmPassword')}
               placeholder={t('auth.signup.confirmPasswordPlaceholder')}
@@ -231,6 +232,6 @@ export default function SignupPage() {
           </Link>
         </p>
       </div>
-    </AuthLayout>
+    </AuthLayoutClassic>
   );
 }
