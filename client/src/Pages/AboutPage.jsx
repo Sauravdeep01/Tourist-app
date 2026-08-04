@@ -29,7 +29,8 @@ export default function AboutPage() {
         en: 'Where Queen Mayadevi gave birth to Prince Siddhartha Gautama under the Sal trees in 623 BCE.',
         zh: '公元前623年，摩耶夫人于沙罗双树下诞下悉达多太子之地，立有阿育王石柱。'
       },
-      image: 'https://images.unsplash.com/photo-1596120206416-291885f81e3a?q=80&w=1000&auto=format&fit=crop'
+      // Same Cloudinary cover image as the Lumbini card on the Destinations page.
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785186701/1_vmnimn.webp'
     },
     {
       title: { en: '2. Bodh Gaya — Supreme Enlightenment', zh: '2. 菩提伽耶 · 佛陀成道处' },
@@ -38,7 +39,8 @@ export default function AboutPage() {
         en: 'Under the sacred Bodhi Tree, Prince Siddhartha attained supreme enlightenment and became the Buddha.',
         zh: '悉达多太子于圣菩提树下禅定开悟，成就无上正等正觉，此地建有金刚宝座与摩诃菩提寺。'
       },
-      image: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=1000&auto=format&fit=crop'
+      // Same Cloudinary cover image as the Bodh Gaya card on the Destinations page.
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785185923/istockphoto-530927704-612x612_xieosw.jpg'
     },
     {
       title: { en: '3. Sarnath — Turning the Dharma Wheel', zh: '3. 鹿野苑 · 初转法轮处' },
@@ -47,7 +49,8 @@ export default function AboutPage() {
         en: 'The Deer Park where the Buddha delivered his first sermon on the Four Noble Truths to the 5 disciples.',
         zh: '佛陀于鹿野苑向五比丘宣讲“四圣谛”与“八正道”，三宝于此具足，佛法之轮从此开转。'
       },
-      image: 'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=1000&auto=format&fit=crop'
+      // Same Cloudinary cover image as the Sarnath card on the Destinations page.
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785185748/sarnath-varanasi-1-attr-hero_nhomd2.jpg'
     },
     {
       title: { en: '4. Kushinagar — Mahaparinirvana', zh: '4. 拘尸那伽 · 佛陀涅槃地' },
@@ -56,7 +59,8 @@ export default function AboutPage() {
         en: 'Where the Buddha entered final Mahaparinirvana between two Sal trees at the age of 80.',
         zh: '佛陀八十岁时于娑罗双树间示寂入灭，建有大涅槃寺与卧佛像，为朝圣必到圣地。'
       },
-      image: 'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=1000&auto=format&fit=crop'
+      // Same Cloudinary cover image as the Kushinagar card on the Destinations page.
+      image: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785186633/About-Kushinagar-1_dt1xj5.jpg'
     }
   ];
 
