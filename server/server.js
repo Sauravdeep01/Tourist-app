@@ -52,32 +52,17 @@ app.use('/api/auth/signup', authLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
 
 
-const stripTrailingSlash = (url) => url?.replace(/\/+$/, '');
-
-const allowedOrigins = [
-  ...new Set(
-    (process.env.CLIENT_URL || '')
-      .split(',')
-      .map((url) => stripTrailingSlash(url.trim()))
-      .filter(Boolean)
-      .concat([
-        'http://localhost:5173',
-        'http://127.0.0.1:5173',
-        'https://tourist-app-xi.vercel.app',
-      ])
-  ),
-];
-
+// Wide open on purpose: `origin: true` reflects whatever Origin the request
+// came from, so any domain is allowed — this is what actually behaves like
+// "*" while staying valid alongside `credentials: true` (the CORS spec
+// forbids a literal "*" combined with credentials; browsers just reject it).
+// Safe here because auth is a Bearer token in the Authorization header
+// (see client/src/utils/api.js), not a cookie — so unlike cookie-based
+// auth, a third-party origin can't silently ride along with a signed-in
+// user's session. If you ever want to lock this back down to specific
+// domains, restore an allowlist check against process.env.CLIENT_URL here.
 const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, or Postman)
-    if (!origin || allowedOrigins.includes(stripTrailingSlash(origin))) {
-      callback(null, true);
-    } else {
-      console.error(`CORS policy error: Origin "${origin}" not in allowed list: [${allowedOrigins.join(', ')}]`);
-      callback(new Error('CORS policy error: Origin not allowed'));
-    }
-  },
+  origin: true,
   credentials: true,
 };
 app.use(cors(corsOptions));
