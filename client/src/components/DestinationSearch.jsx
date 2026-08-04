@@ -84,7 +84,7 @@ export default function DestinationSearch() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-2xl mx-auto mt-8 font-sans">
+    <div ref={containerRef} className="relative w-full max-w-2xl mx-auto mt-12 sm:mt-14 font-sans">
       {/* Search Input Box with embedded Explore button */}
       <div className="relative bg-white/95 backdrop-blur-md rounded-2xl border border-card-border p-2 sm:p-2.5 flex items-center shadow-lg transition-all focus-within:ring-2 focus-within:ring-maroon-700/30">
         <Search className="h-5 w-5 text-saffron-500 ml-3 shrink-0" />

@@ -2,13 +2,18 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
-import { Menu, X, Globe, User, LogOut } from 'lucide-react';
+import { Menu, X, Globe, LogOut } from 'lucide-react';
+import UserMenu from './UserMenu';
+import ConfirmDialog from '../ConfirmDialog';
+import Toast from '../Toast';
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [confirmLogoutOpen, setConfirmLogoutOpen] = useState(false);
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,10 +36,18 @@ export default function Navbar() {
     localStorage.setItem('lng', nextLang);
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  // Logging out is never immediate — the user dropdown only opens the
+  // confirmation modal; the actual sign-out happens in confirmLogout below.
+  const requestLogout = () => {
     setMobileMenuOpen(false);
+    setConfirmLogoutOpen(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    setConfirmLogoutOpen(false);
+    navigate('/');
+    setToast({ message: t('logoutConfirm.toast'), type: 'success' });
   };
 
   const navItems = [
@@ -122,30 +135,9 @@ export default function Navbar() {
               <span>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </button>
 
-            {/* User Auth Info */}
+            {/* User Auth Info — profile dropdown (My Profile / Logout) */}
             {user ? (
-              <div className="flex items-center space-x-3">
-                <Link
-                  to={
-                    user.role === 'user'
-                      ? '/account'
-                      : user.role === 'owner'
-                      ? '/owner/dashboard'
-                      : '/admin/dashboard'
-                  }
-                  className="flex items-center space-x-1.5 rounded-full border border-card-border bg-white px-4 py-1.5 text-xs font-semibold text-heading transition-all duration-300 hover:border-maroon-700 hover:text-maroon-700 shadow-xs"
-                >
-                  <User className="h-3.5 w-3.5 text-saffron-500" />
-                  <span>{user.name}</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center rounded-full border border-card-border bg-white p-2 text-body transition-all duration-300 hover:border-red-400 hover:text-red-600 cursor-pointer shadow-xs"
-                  title={t('navbar.logout')}
-                >
-                  <LogOut className="h-3.5 w-3.5" />
-                </button>
-              </div>
+              <UserMenu variant="desktop" user={user} onRequestLogout={requestLogout} />
             ) : (
               <div className="flex items-center space-x-3">
                 <Link
@@ -210,34 +202,12 @@ export default function Navbar() {
             <div className="h-px my-3 bg-card-border" />
 
             {user ? (
-              <div className="space-y-1 py-1">
-                <div className="px-3 py-1.5 flex items-center space-x-2 text-sm text-body">
-                  <User className="h-4 w-4 text-saffron-500" />
-                  <span>
-                    {user.name} ({user.role})
-                  </span>
-                </div>
-                <Link
-                  to={
-                    user.role === 'user'
-                      ? '/account'
-                      : user.role === 'owner'
-                      ? '/owner/dashboard'
-                      : '/admin/dashboard'
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2.5 px-3 rounded-xl text-base font-medium text-heading hover:bg-beige"
-                >
-                  {t('navbar.myAccount')}
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left flex items-center space-x-2 py-2.5 px-3 rounded-xl text-base font-medium text-red-600 hover:bg-red-50 cursor-pointer"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>{t('navbar.logout')}</span>
-                </button>
-              </div>
+              <UserMenu
+                variant="mobile"
+                user={user}
+                onRequestLogout={requestLogout}
+                onNavigate={() => setMobileMenuOpen(false)}
+              />
             ) : (
               <div className="grid grid-cols-2 gap-2 pt-2 pb-1">
                 <Link
@@ -259,6 +229,20 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Logout confirmation — logging out is never a single click */}
+      <ConfirmDialog
+        open={confirmLogoutOpen}
+        icon={LogOut}
+        title={t('logoutConfirm.title')}
+        message={t('logoutConfirm.message')}
+        confirmLabel={t('logoutConfirm.confirm')}
+        cancelLabel={t('logoutConfirm.cancel')}
+        onConfirm={confirmLogout}
+        onCancel={() => setConfirmLogoutOpen(false)}
+      />
+
+      <Toast message={toast?.message} type={toast?.type} onClose={() => setToast(null)} />
     </header>
   );
 }

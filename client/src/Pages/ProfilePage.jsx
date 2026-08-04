@@ -19,8 +19,28 @@ import {
   Eye,
   EyeOff,
   Save,
-  KeyRound
+  KeyRound,
+  CalendarDays,
+  Clock
 } from 'lucide-react';
+
+// One tile in the Account Overview card. Falls back to a muted placeholder
+// when the optional field isn't available, instead of leaving a blank gap.
+function InfoTile({ icon: Icon, label, value, fallback }) {
+  return (
+    <div className="flex items-start gap-3 p-4 rounded-2xl bg-ivory/70 border border-card-border/80">
+      <div className="h-9 w-9 rounded-xl bg-white border border-card-border flex items-center justify-center shrink-0">
+        <Icon className="h-4 w-4 text-maroon-700" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-muted">{label}</p>
+        <p className={`text-sm font-semibold truncate mt-0.5 ${value ? 'text-heading' : 'text-muted italic font-medium'}`}>
+          {value || fallback}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -36,7 +56,9 @@ export default function ProfilePage() {
     phone: '',
     wechatId: '',
     country: 'China',
-    role: 'user'
+    role: 'user',
+    createdAt: null,
+    lastLogin: null
   });
 
   // Password Change States
@@ -77,7 +99,9 @@ export default function ProfilePage() {
           phone: data.phone || '',
           wechatId: data.wechatId || '',
           country: data.country || 'China',
-          role: data.role || 'user'
+          role: data.role || 'user',
+          createdAt: data.createdAt || null,
+          lastLogin: data.lastLogin || null
         });
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -91,6 +115,32 @@ export default function ProfilePage() {
 
     fetchProfile();
   }, [user, lang]);
+
+  // Formats ISO date strings for display, returning null (not a fallback
+  // string) when missing so InfoTile can show its own graceful placeholder.
+  const formatDate = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatDateTime = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   // Handle Profile Form Submission
   const handleProfileSubmit = async (e) => {
@@ -244,28 +294,90 @@ export default function ProfilePage() {
       <div className="absolute inset-0 bg-[radial-gradient(#7A1F35_1px,transparent_1px)] bg-size-[32px_32px] opacity-5 pointer-events-none" />
 
       <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-card-border shadow-md">
-          <div className="flex items-center space-x-4">
-            <div className="h-16 w-16 rounded-2xl bg-maroon-700 border border-[#9F2845] flex items-center justify-center text-white font-bold font-serif text-2xl shadow-md">
-              {profileData.name ? profileData.name.charAt(0).toUpperCase() : 'U'}
+        {/* Account Overview — premium glassmorphism summary card */}
+        {loadingProfile ? (
+          <div className="glass-card p-6 sm:p-8 rounded-3xl animate-pulse" aria-busy="true" aria-label={t('profile.loading')}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="h-16 w-16 rounded-2xl bg-card-border shrink-0" />
+              <div className="flex-1 space-y-2.5 w-full">
+                <div className="h-6 w-1/2 sm:w-56 rounded-lg bg-card-border" />
+                <div className="h-4 w-2/3 sm:w-72 rounded-lg bg-card-border" />
+              </div>
+              <div className="h-7 w-24 rounded-full bg-card-border shrink-0" />
             </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-heading">
-                {profileData.name || user?.name || (lang === 'zh' ? '用户资料' : 'User Profile')}
-              </h1>
-              <p className="text-xs sm:text-sm text-body flex items-center gap-1.5 mt-0.5">
-                <Mail className="h-3.5 w-3.5 text-saffron-500" />
-                <span>{profileData.email || user?.email}</span>
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6 pt-6 border-t border-card-border">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="h-16 rounded-2xl bg-card-border/70" />
+              ))}
             </div>
           </div>
+        ) : (
+          <div className="glass-card p-6 sm:p-8 rounded-3xl animate-fade-up-in">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center space-x-4">
+                {/* Default initials avatar — the app has no photo-upload feature */}
+                <div className="h-16 w-16 rounded-2xl bg-maroon-700 border border-[#9F2845] flex items-center justify-center text-white font-bold font-serif text-2xl shadow-md shrink-0">
+                  {profileData.name ? profileData.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-2xl sm:text-3xl font-serif font-bold text-heading truncate">
+                    {profileData.name || user?.name || (lang === 'zh' ? '用户资料' : 'User Profile')}
+                  </h1>
+                  <p className="text-xs sm:text-sm text-body flex items-center gap-1.5 mt-0.5">
+                    <Mail className="h-3.5 w-3.5 text-saffron-500 shrink-0" />
+                    <span className="truncate">{profileData.email || user?.email}</span>
+                  </p>
+                </div>
+              </div>
 
-          <div className="inline-flex items-center gap-1.5 bg-maroon-700/10 text-maroon-700 border border-maroon-700/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
-            <ShieldCheck className="h-4 w-4 text-maroon-700" />
-            <span>{profileData.role === 'admin' ? 'ADMIN' : profileData.role === 'owner' ? 'OWNER' : 'TOURIST'}</span>
+              <div className="inline-flex items-center gap-1.5 bg-maroon-700/10 text-maroon-700 border border-maroon-700/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shrink-0">
+                <ShieldCheck className="h-4 w-4 text-maroon-700" />
+                <span>
+                  {profileData.role === 'admin'
+                    ? t('profile.roleAdmin')
+                    : profileData.role === 'owner'
+                    ? t('profile.roleOwner')
+                    : t('profile.roleUser')}
+                </span>
+              </div>
+            </div>
+
+            {/* Additional stored profile information — gracefully falls back
+                when a field (phone, WeChat, last login, ...) isn't set. */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6 pt-6 border-t border-card-border">
+              <InfoTile
+                icon={Phone}
+                label={t('profile.phone')}
+                value={profileData.phone ? `${profileData.phoneCountryCode} ${profileData.phone}` : ''}
+                fallback={t('profile.notProvided')}
+              />
+              <InfoTile
+                icon={MessageSquare}
+                label={t('profile.wechat')}
+                value={profileData.wechatId}
+                fallback={t('profile.notProvided')}
+              />
+              <InfoTile
+                icon={Globe}
+                label={t('profile.country')}
+                value={profileData.country}
+                fallback={t('profile.notProvided')}
+              />
+              <InfoTile
+                icon={CalendarDays}
+                label={t('profile.memberSince')}
+                value={formatDate(profileData.createdAt)}
+                fallback={t('profile.notAvailable')}
+              />
+              <InfoTile
+                icon={Clock}
+                label={t('profile.lastLogin')}
+                value={formatDateTime(profileData.lastLogin)}
+                fallback={t('profile.notAvailable')}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {loadingProfile ? (
           <div className="py-20 flex items-center justify-center text-body space-x-2 text-xs font-sans">

@@ -1,14 +1,9 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+import React from 'react';
 import { CONTACT_DETAILS } from '../../utils/constants';
 import whatsappLogo from '../../assets/whatsapp.png';
 
+
 export default function WhatsAppButton() {
-  const { user } = useContext(AuthContext);
-
-  // Gated: only visible to logged-in users (C-6)
-  if (!user) return null;
-
   return (
     <a
       href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`}
