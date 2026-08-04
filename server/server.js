@@ -60,7 +60,11 @@ const allowedOrigins = [
       .split(',')
       .map((url) => stripTrailingSlash(url.trim()))
       .filter(Boolean)
-      .concat(['http://localhost:5173', 'http://127.0.0.1:5173'])
+      .concat([
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'https://tourist-app-xi.vercel.app',
+      ])
   ),
 ];
 
