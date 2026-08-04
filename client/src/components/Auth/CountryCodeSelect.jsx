@@ -56,7 +56,7 @@ export default function CountryCodeSelect({ value, onChange, error, searchPlaceh
               className="w-full rounded-lg border-0 bg-neutral-50 py-1.5 pl-7 pr-2 text-xs text-neutral-700 focus:outline-none focus:ring-1 focus:ring-maroon-200"
             />
           </div>
-          <ul className="max-h-48 overflow-y-auto py-1">
+          <ul className="max-h-48 overflow-y-auto py-1" data-lenis-prevent>
             {filtered.length === 0 && (
               <li className="px-3 py-2 text-xs text-neutral-400">No match</li>
             )}

@@ -64,7 +64,7 @@ export function CountrySelect({ value, onChange, id = 'country', error, touched 
             />
           </div>
 
-          <div className="max-h-60 overflow-y-auto divide-y divide-card-border">
+          <div className="max-h-60 overflow-y-auto divide-y divide-card-border" data-lenis-prevent>
             {filtered.map((item) => (
               <div
                 key={item.name}
@@ -133,7 +133,7 @@ export function PhoneCodeSelect({ value, onChange }) {
 
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-52 bg-white rounded-[14px] shadow-[0_20px_45px_-10px_rgba(31,31,31,0.18)] border-2 border-card-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
-          <div className="max-h-60 overflow-y-auto divide-y divide-card-border">
+          <div className="max-h-60 overflow-y-auto divide-y divide-card-border" data-lenis-prevent>
             {COUNTRY_CODES.map((item) => (
               <div
                 key={item.code + item.country}

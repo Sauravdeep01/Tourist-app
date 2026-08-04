@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { ReactLenis } from 'lenis/react';
 import { AuthProvider } from './context/AuthContext';
+import { LENIS_OPTIONS } from './lib/lenisConfig';
+import usePrefersReducedMotion from './hooks/usePrefersReducedMotion';
 import ScrollToTop from './components/ScrollToTop';
 import Layout from './components/Layout/Layout';
 import HomePage from './Pages/HomePage';
@@ -46,44 +49,62 @@ const SiteLayout = () => (
 );
 
 export default function App() {
+  // Respect the OS-level "reduce motion" setting: when it's on, we skip
+  // Lenis entirely and fall back to plain native scrolling (instant jumps,
+  // no glide) rather than trying to smooth-scroll and cancel the animation.
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  const routes = (
+    <Router>
+      <ScrollToTop />
+      <Routes>
+        {/* Full-bleed auth pages */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+        {/* Technical Admin Control Panel */}
+        <Route path="/admin" element={<AdminDashboardPage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+
+        {/* Owner Portal Control Panel */}
+        <Route path="/owner" element={<OwnerDashboardPage />} />
+        <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+
+        {/* Public routes keeping standard Navbar/Footer chrome */}
+        <Route element={<SiteLayout />}>
+          <Route path="/" element={<HomePage />} />
+
+          {/* Tour & Public Routes */}
+          <Route path="/tours" element={<ToursPage />} />
+          <Route path="/tours/:slug" element={<TourDetailPage />} />
+          <Route path="/destinations" element={<DestinationsPage />} />
+          <Route path="/destinations/:slug" element={<DestinationDetailPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+
+          {/* Authenticated User Profile */}
+          <Route path="/account" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+
   return (
     <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Full-bleed auth pages */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-
-          {/* Technical Admin Control Panel */}
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-
-          {/* Owner Portal Control Panel */}
-          <Route path="/owner" element={<OwnerDashboardPage />} />
-          <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
-
-          {/* Public routes keeping standard Navbar/Footer chrome */}
-          <Route element={<SiteLayout />}>
-            <Route path="/" element={<HomePage />} />
-
-            {/* Tour & Public Routes */}
-            <Route path="/tours" element={<ToursPage />} />
-            <Route path="/tours/:slug" element={<TourDetailPage />} />
-            <Route path="/destinations" element={<DestinationsPage />} />
-            <Route path="/destinations/:slug" element={<DestinationDetailPage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-
-            {/* Authenticated User Profile */}
-            <Route path="/account" element={<ProfilePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Route>
-        </Routes>
-      </Router>
+      {prefersReducedMotion ? (
+        routes
+      ) : (
+        // `root` mounts Lenis against `window`/`document.documentElement`
+        // directly instead of rendering wrapper/content divs, so it needs
+        // no layout changes anywhere else in the app.
+        <ReactLenis root options={LENIS_OPTIONS}>
+          {routes}
+        </ReactLenis>
+      )}
     </AuthProvider>
   );
 }

@@ -111,7 +111,10 @@ export default function OwnerDashboardPage() {
         />
 
         {/* Active Tab View */}
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+        {/* data-lenis-prevent: this panel scrolls independently of the
+            window (the shell around it is overflow-hidden), so the global
+            Lenis instance must not hijack wheel events here. */}
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8" data-lenis-prevent>
           {activeTab === 'overview' && (
             <OverviewTab
               stats={stats}

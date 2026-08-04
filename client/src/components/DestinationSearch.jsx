@@ -133,7 +133,7 @@ export default function DestinationSearch() {
       {isOpen && query.trim().length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-card-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150">
           {filtered.length > 0 ? (
-            <div className="max-h-72 overflow-y-auto divide-y divide-card-border text-left">
+            <div className="max-h-72 overflow-y-auto divide-y divide-card-border text-left" data-lenis-prevent>
               {filtered.map((item, index) => (
                 <div
                   key={item._id}

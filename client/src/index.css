@@ -60,7 +60,12 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* No `scroll-behavior: smooth` here on purpose: Lenis (see
+     src/lib/lenisConfig.js) now owns all scroll animation. Layering the
+     browser's native smooth-scroll on top of Lenis's own easing would
+     produce two competing curves and visible jitter. When Lenis is
+     disabled for prefers-reduced-motion, native scrolling should be
+     instant anyway, which is what this default (`auto`) gives us. */
   font-family: var(--font-sans);
 }
 

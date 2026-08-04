@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { useLenis } from 'lenis/react';
 import { X, Maximize2, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../utils/api';
 import ScrollReveal from '../components/Decor/ScrollReveal';
@@ -19,6 +20,7 @@ export default function GalleryPage() {
   const [loadedMap, setLoadedMap] = useState({});
   const [activeIndex, setActiveIndex] = useState(null);
   const touchStartX = useRef(null);
+  const lenis = useLenis();
 
   // Fetch public gallery photos
   useEffect(() => {
@@ -70,13 +72,19 @@ export default function GalleryPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeIndex, closeLightbox, goPrev, goNext]);
 
-  // Lock body scroll while the lightbox is open
+  // Lock body scroll while the lightbox is open. `lenis.stop()` pauses its
+  // wheel/touch handling too — without it, Lenis would keep trying to
+  // smooth-scroll the (visually frozen) page underneath the lightbox.
   useEffect(() => {
     if (activeIndex === null) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prevOverflow; };
-  }, [activeIndex]);
+    lenis?.stop();
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      lenis?.start();
+    };
+  }, [activeIndex, lenis]);
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;

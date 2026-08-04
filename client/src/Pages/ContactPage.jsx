@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import { AuthContext } from '../context/AuthContext';
 import { CONTACT_DETAILS } from '../utils/constants';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import api from '../utils/api';
 import {
   Compass,
@@ -96,6 +98,8 @@ export default function ContactPage() {
   const { i18n } = useTranslation();
   const lang = i18n.language;
   const { user } = useContext(AuthContext);
+  const lenis = useLenis();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Wizard state
   const [currentStep, setCurrentStep] = useState(0);
@@ -143,14 +147,19 @@ export default function ContactPage() {
     if (showWechatModal) {
       window.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
+      // Pause Lenis while the modal is open so it doesn't keep animating
+      // the page scroll underneath the backdrop.
+      lenis?.stop();
     } else {
       document.body.style.overflow = 'unset';
+      lenis?.start();
     }
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
+      lenis?.start();
     };
-  }, [showWechatModal]);
+  }, [showWechatModal, lenis]);
 
   const errors = useMemo(() => validateAll(form, lang), [form, lang]);
 
@@ -193,7 +202,7 @@ export default function ContactPage() {
         const el = document.getElementById(fieldName);
         if (el) {
           el.focus();
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'center' });
           break;
         }
       }
@@ -565,6 +574,10 @@ export default function ContactPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setShowWechatModal(false)}
+              // Lenis is stopped while this modal is open (see effect above),
+              // which would otherwise block wheel-scrolling here too on
+              // small screens where the modal content overflows.
+              data-lenis-prevent
               className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md overflow-y-auto"
             >
               <motion.div
