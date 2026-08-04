@@ -50,18 +50,25 @@ app.use('/api/auth/signup', authLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
 
 // CORS middleware configurations
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-].filter(Boolean);
+// Strip trailing slashes so an env var like "https://x.vercel.app/" still
+// matches the browser's Origin header, which never has one.
+const stripTrailingSlash = (url) => url?.replace(/\/+$/, '');
+
+// CLIENT_URL may be a single URL or a comma-separated list (e.g. a Vercel
+// production domain + a custom domain), so both can be allowed at once.
+const allowedOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((url) => stripTrailingSlash(url.trim()))
+  .filter(Boolean)
+  .concat(['http://localhost:5173', 'http://127.0.0.1:5173']);
 
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, or Postman)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(stripTrailingSlash(origin))) {
       callback(null, true);
     } else {
+      console.error(`CORS policy error: Origin "${origin}" not in allowed list: [${allowedOrigins.join(', ')}]`);
       callback(new Error('CORS policy error: Origin not allowed'));
     }
   },
