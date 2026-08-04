@@ -73,6 +73,9 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    user.lastLogin = new Date();
+    await user.save();
+
     const token = createToken(user._id, user.email, user.role, user.tokenVersion || 0);
 
     res.status(200).json({
@@ -86,8 +89,6 @@ const login = async (req, res) => {
     res.status(500).json({ error: 'Server error occurred' });
   }
 };
-
-// Verify the emailed 6-digit code (§3.7a)
 
 
 
@@ -109,6 +110,8 @@ const getMe = async (req, res) => {
       phone: user.phone,
       wechatId: user.wechatId,
       country: user.country,
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin,
     });
   } catch (error) {
     console.error('getMe error:', error);
