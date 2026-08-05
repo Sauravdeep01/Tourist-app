@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { User, LogOut, ChevronDown } from 'lucide-react';
+import { User, LogOut, ChevronDown, LayoutDashboard } from 'lucide-react';
 
 const CLOSE_DELAY_MS = 200;
 
@@ -20,7 +20,8 @@ function InitialAvatar({ name }) {
 const itemFocusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-maroon-700/40';
 
 export default function UserMenu({ user, variant = 'desktop', onRequestLogout, onNavigate }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
   const triggerRef = useRef(null);
@@ -85,7 +86,6 @@ export default function UserMenu({ user, variant = 'desktop', onRequestLogout, o
     }
   };
 
-  // Menu closes automatically after either option is selected
   const handleProfileClick = () => {
     close();
     onNavigate?.();
@@ -97,9 +97,12 @@ export default function UserMenu({ user, variant = 'desktop', onRequestLogout, o
 
   if (!user) return null;
 
+  const isAdmin = user.role === 'admin';
+  const isOwner = user.role === 'owner';
+
   if (variant === 'mobile') {
     return (
-      <div ref={containerRef} className="py-1">
+      <div ref={containerRef} className="py-1 font-sans">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -118,24 +121,50 @@ export default function UserMenu({ user, variant = 'desktop', onRequestLogout, o
 
         {open && (
           <div role="menu" aria-orientation="vertical" className="pl-2 pt-1 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-200">
-            <Link
-              to="/account"
-              role="menuitem"
-              ref={firstItemRef}
-              onClick={handleProfileClick}
-              className={`flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-medium text-heading hover:bg-beige transition-colors ${itemFocusRing}`}
-            >
-              <User className="h-4 w-4 text-saffron-500" />
-              <span>{t('navbar.myProfile')}</span>
-            </Link>
+            {isAdmin ? (
+              <Link
+                to="/admin/dashboard"
+                role="menuitem"
+                ref={firstItemRef}
+                onClick={handleProfileClick}
+                className={`flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-bold text-heading hover:bg-beige transition-colors ${itemFocusRing}`}
+              >
+                <LayoutDashboard className="h-4 w-4 text-saffron-600 shrink-0" />
+                <span>{lang === 'zh' ? '我的控制台' : 'My Dashboard'}</span>
+              </Link>
+            ) : isOwner ? (
+              <Link
+                to="/owner/dashboard"
+                role="menuitem"
+                ref={firstItemRef}
+                onClick={handleProfileClick}
+                className={`flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-bold text-heading hover:bg-beige transition-colors ${itemFocusRing}`}
+              >
+                <LayoutDashboard className="h-4 w-4 text-saffron-600 shrink-0" />
+                <span>{lang === 'zh' ? '我的控制台' : 'My Dashboard'}</span>
+              </Link>
+            ) : (
+              <Link
+                to="/account"
+                role="menuitem"
+                ref={firstItemRef}
+                onClick={handleProfileClick}
+                className={`flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-medium text-heading hover:bg-beige transition-colors ${itemFocusRing}`}
+              >
+                <User className="h-4 w-4 text-saffron-500 shrink-0" />
+                <span>{t('navbar.myProfile')}</span>
+              </Link>
+            )}
+
             <div className="h-px bg-card-border/70 mx-3" />
+
             <button
               type="button"
               role="menuitem"
               onClick={handleLogoutClick}
               className={`w-full text-left flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer ${itemFocusRing}`}
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-4 w-4 text-red-500 shrink-0" />
               <span>{t('navbar.logout')}</span>
             </button>
           </div>
@@ -144,11 +173,11 @@ export default function UserMenu({ user, variant = 'desktop', onRequestLogout, o
     );
   }
 
-  // Desktop variant — hover-to-open with click/keyboard as a fallback.
+  // Desktop variant
   return (
     <div
       ref={containerRef}
-      className="relative"
+      className="relative font-sans"
       onMouseEnter={openNow}
       onMouseLeave={scheduleClose}
     >
@@ -166,33 +195,52 @@ export default function UserMenu({ user, variant = 'desktop', onRequestLogout, o
         <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
 
-      {/* Padding (not margin) keeps this bridge region part of the same
-          hoverable box as the trigger and card below — no dead zone for
-          the cursor to cross, so the menu never closes mid-travel. */}
       <div
-        className={`absolute right-0 top-full w-60 pt-2 z-50 transition-all duration-300 ease-out ${
+        className={`absolute right-0 top-full w-56 pt-2 z-50 transition-all duration-200 ease-out ${
           open
             ? 'opacity-100 translate-y-0 visible pointer-events-auto'
             : 'opacity-0 -translate-y-1.5 invisible pointer-events-none'
         }`}
       >
-        {/* Floating glass card — no flat/opaque background, just a soft
-            translucent surface that blends with the navbar behind it. */}
         <div
           role="menu"
           aria-orientation="vertical"
-          className="origin-top-right rounded-2xl border border-card-border/60 bg-white/95 backdrop-blur-xl shadow-2xl overflow-hidden py-1.5"
+          className="origin-top-right rounded-2xl border border-card-border/60 bg-white/95 backdrop-blur-xl shadow-xl overflow-hidden py-1.5 font-sans"
         >
-          <Link
-            to="/account"
-            role="menuitem"
-            ref={firstItemRef}
-            onClick={handleProfileClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm font-medium text-heading hover:bg-beige transition-colors ${itemFocusRing}`}
-          >
-            <User className="h-4 w-4 text-saffron-500 shrink-0" />
-            <span>{t('navbar.myProfile')}</span>
-          </Link>
+          {isAdmin ? (
+            <Link
+              to="/admin/dashboard"
+              role="menuitem"
+              ref={firstItemRef}
+              onClick={handleProfileClick}
+              className={`flex items-center gap-3 px-4 py-3 text-sm font-bold text-heading hover:bg-beige transition-colors duration-200 cursor-pointer ${itemFocusRing}`}
+            >
+              <LayoutDashboard className="h-4 w-4 text-saffron-600 shrink-0" />
+              <span>{lang === 'zh' ? '我的控制台' : 'My Dashboard'}</span>
+            </Link>
+          ) : isOwner ? (
+            <Link
+              to="/owner/dashboard"
+              role="menuitem"
+              ref={firstItemRef}
+              onClick={handleProfileClick}
+              className={`flex items-center gap-3 px-4 py-3 text-sm font-bold text-heading hover:bg-beige transition-colors duration-200 cursor-pointer ${itemFocusRing}`}
+            >
+              <LayoutDashboard className="h-4 w-4 text-saffron-600 shrink-0" />
+              <span>{lang === 'zh' ? '我的控制台' : 'My Dashboard'}</span>
+            </Link>
+          ) : (
+            <Link
+              to="/account"
+              role="menuitem"
+              ref={firstItemRef}
+              onClick={handleProfileClick}
+              className={`flex items-center gap-3 px-4 py-3 text-sm font-medium text-heading hover:bg-beige transition-colors duration-200 cursor-pointer ${itemFocusRing}`}
+            >
+              <User className="h-4 w-4 text-saffron-500 shrink-0" />
+              <span>{t('navbar.myProfile')}</span>
+            </Link>
+          )}
 
           <div className="h-px bg-card-border/60 mx-3 my-1" />
 
@@ -200,9 +248,9 @@ export default function UserMenu({ user, variant = 'desktop', onRequestLogout, o
             type="button"
             role="menuitem"
             onClick={handleLogoutClick}
-            className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer ${itemFocusRing}`}
+            className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors duration-200 cursor-pointer ${itemFocusRing}`}
           >
-            <LogOut className="h-4 w-4 shrink-0" />
+            <LogOut className="h-4 w-4 text-red-500 shrink-0" />
             <span>{t('navbar.logout')}</span>
           </button>
         </div>

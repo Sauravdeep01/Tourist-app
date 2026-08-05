@@ -66,7 +66,7 @@ export default function App() {
 
         {/* Technical Admin Control Panel */}
         <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin/*" element={<AdminDashboardPage />} />
 
         {/* Owner Portal Control Panel */}
         <Route path="/owner" element={<OwnerDashboardPage />} />
