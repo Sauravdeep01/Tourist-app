@@ -114,9 +114,12 @@ const seedDatabase = async () => {
       },
       days: 11,
       nights: 10,
-      coverImage: 'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=600',
+      coverImage: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785180099/bodhipath_homepage/drdbhqgqrjs8ptwk701q.jpg',
       images: [
-        'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=600',
+        'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785180099/bodhipath_homepage/drdbhqgqrjs8ptwk701q.jpg',
+        'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785779505/sarnath-varanasi-1-attr-hero_cj1isp.jpg',
+        'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80',
       ],
       validFrom: {
         en: 'Valid from October 2026',
@@ -124,7 +127,7 @@ const seedDatabase = async () => {
       },
       featured: true,
       active: true,
-      priceFrom: 1285,
+      priceFrom: 941,
       hotelCategory: {
         en: '5-Star or Similar',
         zh: '五星级或同等级',
@@ -308,7 +311,7 @@ const seedDatabase = async () => {
       ],
       pricing: [
         { label: { en: 'Minimum group size', zh: '最低成团人数' }, amount: { en: '12 paying passengers', zh: '12 位付费旅客' } },
-        { label: { en: 'Cost per person (twin sharing)', zh: '每人费用（双人共住）' }, amount: { en: 'US$ 1,285', zh: '1,285 美元' } },
+        { label: { en: 'Cost per person (twin sharing)', zh: '每人费用（双人共住）' }, amount: { en: 'US$ 941', zh: '941 美元' } },
         { label: { en: 'Single room supplement', zh: '单人间附加费' }, amount: { en: 'US$ 705', zh: '705 美元' } }
       ],
       supplements: [
@@ -349,15 +352,14 @@ const seedDatabase = async () => {
       },
       days: 13,
       nights: 12,
-      coverImage: 'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=800',
+      coverImage: 'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785180317/bodhipath_homepage/iux0yylfugxgpitkn3l2.jpg',
       images: [
-        'https://images.unsplash.com/photo-1545124445-53a55e756f4d?q=80&w=800',
-        'https://images.unsplash.com/photo-1625316708582-7c38734be31d?q=80&w=800',
-        'https://images.unsplash.com/photo-1608958416738-42289635fc9d?q=80&w=800',
-        'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=800',
-        'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=800',
-        'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800',
-        'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800',
+        'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785180317/bodhipath_homepage/iux0yylfugxgpitkn3l2.jpg',
+        'https://res.cloudinary.com/dzb5izmbr/image/upload/v1785073805/bodhipath_homepage/fkd5wvjzkc60riw9ep5n.jpg',
+        'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1609949279531-cf48d64bed89?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
       ],
       validFrom: {
         en: 'Valid from October 2026',
@@ -365,7 +367,7 @@ const seedDatabase = async () => {
       },
       featured: false,
       active: true,
-      priceFrom: 941,
+      priceFrom: 1285,
       cityStays: [
         { city: { en: 'Delhi', zh: '德里' }, nights: 2 },
         { city: { en: 'Varanasi', zh: '瓦拉纳西' }, nights: 1 },
@@ -538,7 +540,7 @@ const seedDatabase = async () => {
       pricing: [
         { label: { en: '15 + 01 Pax paying', zh: '15 + 01 付费人数' }, amount: { en: 'USD 1032 Per person', zh: 'USD 1032 每人' } },
         { label: { en: '20 + 01 Pax paying', zh: '20 + 01 付费人数' }, amount: { en: 'USD 975 Per person', zh: 'USD 975 每人' } },
-        { label: { en: '25 + 01 Pax paying', zh: '25 + 01 付费人数' }, amount: { en: 'USD 941 Per person', zh: 'USD 941 每人' } },
+        { label: { en: '25 + 01 Pax paying', zh: '25 + 01 付费人数' }, amount: { en: 'USD 1285 Per person', zh: 'USD 1285 每人' } },
         { label: { en: 'Single Room Supplement', zh: '单人间附加费' }, amount: { en: 'USD 652 Per single room', zh: 'USD 652 每间' } }
       ],
       supplements: [
@@ -572,17 +574,17 @@ const seedDatabase = async () => {
     // Create packages only if they don't already exist — $setOnInsert means a
     // re-run never clobbers coverImage/pricing/etc. that were since edited
     // from the dashboard (matches the Destinations seeding behavior below).
-    console.log('Seeding Package A (skipped if it already exists)...');
+    console.log('Seeding/Updating Package A...');
     const tourADoc = await Tour.findOneAndUpdate(
       { slug: packageA.slug },
-      { $setOnInsert: packageA },
+      { $set: packageA },
       { upsert: true, new: true }
     );
 
-    console.log('Seeding Package B (skipped if it already exists)...');
+    console.log('Seeding/Updating Package B...');
     const tourBDoc = await Tour.findOneAndUpdate(
       { slug: packageB.slug },
-      { $setOnInsert: packageB },
+      { $set: packageB },
       { upsert: true, new: true }
     );
 

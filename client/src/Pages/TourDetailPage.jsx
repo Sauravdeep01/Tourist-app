@@ -116,6 +116,10 @@ export default function TourDetailPage() {
                 src={tour.coverImage}
                 alt={L(tour.title, lang)}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80';
+                }}
               />
             ) : (
               <div className="w-full h-full bg-linear-to-br from-maroon-700 to-saffron-500 flex items-center justify-center">

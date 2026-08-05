@@ -159,9 +159,13 @@ export default function ToursTab({ tours, reloadData, user }) {
                     <td className="py-3.5 px-4">
                       <div className="flex items-center space-x-3">
                         <img
-                          src={tour.coverImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa'}
+                          src={tour.coverImage || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80'}
                           alt=""
                           className="h-10 w-12 rounded-lg object-cover bg-neutral-100"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80';
+                          }}
                         />
                         <div>
                           <p className="font-bold text-neutral-900">
