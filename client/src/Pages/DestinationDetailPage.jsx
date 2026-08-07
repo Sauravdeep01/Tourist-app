@@ -18,6 +18,7 @@ import {
 import api from '../utils/api';
 import ScrollReveal from '../components/Decor/ScrollReveal';
 import Watermark from '../components/Decor/Watermark';
+import { CONTACT_DETAILS } from '../utils/constants';
 
 // Public destination detail page matching SRS specifications
 export default function DestinationDetailPage() {
@@ -292,7 +293,7 @@ export default function DestinationDetailPage() {
             </Link>
 
             <a
-              href="https://wa.me/911204135777"
+              href={`https://wa.me/${CONTACT_DETAILS.whatsapp}`}
               target="_blank"
               rel="noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-jade-500 hover:bg-jade-600 text-white font-bold text-xs px-6 py-3.5 rounded-2xl shadow-md transition-all cursor-pointer"
